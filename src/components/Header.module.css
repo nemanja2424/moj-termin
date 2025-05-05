@@ -257,3 +257,21 @@
         height: 50px;
     }
   }
+
+
+
+
+
+
+
+
+
+  @media (max-width: 750px) {
+    .forPC {
+      display: none;
+    }
+  
+    .forPh {
+      display: block;
+    }
+  }
