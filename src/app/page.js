@@ -188,9 +188,9 @@ export default function HomePage() {
         <div className={styles['zatamni-cta']}></div>
         <div className={styles['cta-content']}>
           <h2>Zainteresovani? Prijavite se za besplatan probni period od 14 dana!</h2>
-          <p>Isprobajte sve funkcionalnosti...</p>
+          <p>Isprobajte sve funkcionalnosti našeg sistema bez obaveza i odlučite da li je pravo rešenje za vas.</p>
           <button className={styles['cta-button']}>Zatraži probni period</button>
-          <p className={styles['cta-note']}>Bez obaveza, bez automatske naplate...</p>
+          <p className={styles['cta-note']}>Bez obaveza, bez automatske naplate. Javićemo vam se u najkraćem roku.</p>
         </div>
       </section>
       
