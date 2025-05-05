@@ -7,7 +7,7 @@ const Footer = () => {
       <div className={styles['footer-container']}>
         <div className={styles['footer-section']}>
           <div className={styles.logo} style={{display:'flex',alignItems:'center',marginBottom:'20px'}}>
-           <Image src={'../public/Images/logo.png'} alt='logo' width={45} height={45} />
+           <Image src={'/Images/logo.png'} alt='logo' width={45} height={45} />
             <h3>Moj Termin</h3>
           </div>
           <p>Jednostavno digitalno zakazivanje termina – za svaki biznis.</p>
