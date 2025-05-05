@@ -11,7 +11,7 @@
     overflow: hidden;
     z-index: 2;
     top: 0;
-    background: url('/Images/hero.jpg') no-repeat center center;
+    background: url('/images/hero.jpg') no-repeat center center;
     background-size: cover;
     padding: 0 50px;
 }
@@ -316,7 +316,7 @@ line-height: 1.6;
 
 
 .cta-section {
-background: url('/Images/cta-bg.jpg') no-repeat center 40%;
+background: url('/images/cta-bg.jpg') no-repeat center 40%;
 background-size: cover;
 background-attachment: fixed;
 color: white;
