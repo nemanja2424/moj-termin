@@ -3,6 +3,7 @@ import { useState } from 'react';
 import styles from './Header.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
+import Button1 from './Button1';
 
 export default function Header() {
   const [navOpen, setNavOpen] = useState(false);
@@ -14,13 +15,13 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${navOpen ? styles.open : ''}`}>
       <div className={styles.topRow}>
-      <Image src="/images/logo.png" alt="logo" width={70} height={70} />
+      <Link href={"/"}><Image src="/images/logo.png" alt="logo" width={70} height={70} /></Link>
       <nav className={styles.nav}>
-          <a href="">Zašto mi</a>
-          <a href="">Paketi</a>
-          <Link href="">Demo</Link>
+          <a href="/#about">Zašto mi</a>
+          <a href="/#paketi">Paketi</a>
+          <Link href="/panel">Korisnički panel</Link>
         </nav>
-        <button className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</button>
+        <a href='#footer' className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</a>
         <div
           className={`${styles.navIcon3} ${styles.forPh} ${navOpen ? styles.open : ''}`}
           onClick={toggleNav}

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Footer = () => {
   return (
-    <footer className={styles.footer}>
+    <footer id='footer' className={styles.footer}>
       <div className={styles['footer-container']}>
         <div className={styles['footer-section']}>
           <div className={styles.logo} style={{display:'flex',alignItems:'center',marginBottom:'20px'}}>
@@ -16,9 +16,9 @@ const Footer = () => {
         <div className={styles['footer-section']}>
           <h4>Navigacija</h4>
           <ul>
-            <li><a href="#features">Karakteristike</a></li>
-            <li><a href="#pricing">Cene</a></li>
-            <li><a href="#cta">Probaj besplatno</a></li>
+            <li><a href="">Korisnički panel</a></li>
+            <li><a href="#paketi">Usluge</a></li>
+            <li><a href="">Probaj besplatno</a></li>
           </ul>
         </div>
 

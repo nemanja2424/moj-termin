@@ -14,6 +14,7 @@
     background: url('/images/hero.jpg') no-repeat center center;
     background-size: cover;
     padding: 0 50px;
+    color: whitesmoke;
 }
 .hero-bg{
     min-width: 100%;
@@ -214,7 +215,9 @@ bottom: 20px;
 left: 50%;
 transform: translateX(-50%);
 }
-
+.cena a:hover{
+    color: #0AADFF;
+}
 @media (max-width: 768px) {
 .benefits-cards {
     flex-direction: column;
