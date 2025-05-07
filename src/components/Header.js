@@ -34,9 +34,9 @@ export default function Header() {
       </div>
 
       <div className={`${styles.phoneNav} ${navOpen ? styles.open : ''}`}>
-        <a href="">Zašto mi</a>
-        <a href="">Paketi</a>
-        <Link href="">Demo</Link>
+        <a href="/#about">Zašto mi</a>
+        <a href="/#paketi">Paketi</a>
+        <Link href="/panel">Korisnički panel</Link>
         <button className={`${styles.button1} ${styles.forPh}`}>Kontaktirajte nas</button>
       </div>
     </header>

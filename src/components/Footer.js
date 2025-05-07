@@ -1,5 +1,6 @@
 import styles from './footer.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -16,9 +17,9 @@ const Footer = () => {
         <div className={styles['footer-section']}>
           <h4>Navigacija</h4>
           <ul>
-            <li><a href="">Korisnički panel</a></li>
-            <li><a href="#paketi">Usluge</a></li>
-            <li><a href="">Probaj besplatno</a></li>
+            <li><Link href="/panel">Korisnički panel</Link></li>
+            <li><Link href="/usluge">Usluge</Link></li>
+            <li><Link href="/login">Probaj besplatno</Link></li>
           </ul>
         </div>
 
