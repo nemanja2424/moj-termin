@@ -1,11 +1,9 @@
-"use client"
+"use client";
 import { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/navigation'; // Importuj useRouter
 
 function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -14,9 +12,8 @@ function useAuth() {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
-      router.push('/login');
     }
-  }, [router]);
+  }, []);
 
   function isTokenValid(token) {
     try {

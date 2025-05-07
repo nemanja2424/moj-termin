@@ -1,8 +1,9 @@
 import styles from './footer.module.css';
 import Image from 'next/image';
-import Link from 'next/link';
+import useRedirekt from '@/hooks/useRedirekt';
 
 const Footer = () => {
+  const redirekt = useRedirekt();
   return (
     <footer id='footer' className={styles.footer}>
       <div className={styles['footer-container']}>
@@ -17,16 +18,16 @@ const Footer = () => {
         <div className={styles['footer-section']}>
           <h4>Navigacija</h4>
           <ul>
-            <li><Link href="/panel">Korisnički panel</Link></li>
-            <li><Link href="/usluge">Usluge</Link></li>
-            <li><Link href="/login">Probaj besplatno</Link></li>
+            <li><a onClick={() => {redirekt('/panel')}}>Korisnički panel</a></li>
+            <li><a onClick={() => {redirekt('/usluge')}}>Usluge</a></li>
+            <li><a onClick={() => {redirekt('/login')}}>Probaj besplatno</a></li>
           </ul>
         </div>
 
         <div className={styles['footer-section']}>
           <h4>Kontakt</h4>
-          <a href="mailto:jakovljevic.nemanja@outlook.com" className={styles.contactLink}>jakovljevic.nemanja@outlook.com</a>
-          <a href="tel:+381604339800" className={styles.contactLink}>+381 60 433 9800</a>
+          <a href="mailto:jakovljevic.nemanja@outlook.com" className={styles.contacta}>jakovljevic.nemanja@outlook.com</a>
+          <a href="tel:+381604339800" className={styles.contacta}>+381 60 433 9800</a>
         </div>
       </div>
 

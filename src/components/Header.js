@@ -1,25 +1,28 @@
 'use client';
 import { useState } from 'react';
 import styles from './Header.module.css';
-import Link from 'next/link';
+import useRedirekt from '@/hooks/useRedirekt';
 import Image from 'next/image';
 import Button1 from './Button1';
 
 export default function Header() {
+  const redirekt = useRedirekt();
   const [navOpen, setNavOpen] = useState(false);
 
   const toggleNav = () => {
     setNavOpen(!navOpen);
   };
 
+
+
   return (
     <header className={`${styles.header} ${navOpen ? styles.open : ''}`}>
       <div className={styles.topRow}>
-      <Link href={"/"}><Image src="/images/logo.png" alt="logo" width={70} height={70} /></Link>
+      <a href={"/"}><Image src="/images/logo.png" alt="logo" width={70} height={70} /></a>
       <nav className={styles.nav}>
-          <a href="/#about">Zašto mi</a>
-          <a href="/#paketi">Paketi</a>
-          <Link href="/panel">Korisnički panel</Link>
+          <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
+          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
+          <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
         </nav>
         <a href='#footer' className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</a>
         <div
@@ -34,9 +37,9 @@ export default function Header() {
       </div>
 
       <div className={`${styles.phoneNav} ${navOpen ? styles.open : ''}`}>
-        <a href="/#about">Zašto mi</a>
-        <a href="/#paketi">Paketi</a>
-        <Link href="/panel">Korisnički panel</Link>
+          <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
+          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
+          <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
         <button className={`${styles.button1} ${styles.forPh}`}>Kontaktirajte nas</button>
       </div>
     </header>

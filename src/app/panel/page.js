@@ -1,16 +1,24 @@
 "use client";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import useAuth from '../../hooks/useAuth';
 
 export default function PanelPage() {
   const isAuthenticated = useAuth();
+  const router = useRouter();
 
-  if (!isAuthenticated) {
-    return (
-      <main>
-        <h1>Pristup odbijen</h1>
-        <p>Token nije validan ili je istekao.</p>
-      </main>
-    );
+  useEffect(() => {
+    if (isAuthenticated === false) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  if (isAuthenticated === null) {
+    return <p>Učitavanje...</p>; // Loading dok proverava token
+  }
+
+  if (isAuthenticated === false) {
+    return null; // Vrati ništa dok ne redirectuje
   }
 
   return (

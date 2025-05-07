@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'
 import styles from './home.module.css';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
