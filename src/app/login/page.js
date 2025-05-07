@@ -107,7 +107,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-export async function generateStaticParams() {
-  return [];
-}

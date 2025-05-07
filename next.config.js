@@ -8,12 +8,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   trailingSlash: false,
-  exportPathMap: async function (defaultPathMap) {
-    return {
-      ...defaultPathMap,
-      '/login': { page: '/login' },
-    };
-  },
 };
 
 module.exports = nextConfig;
