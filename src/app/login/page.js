@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import styles from './login.module.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -161,25 +162,27 @@ const LoginPage = () => {
         <div className={styles.wrapper}>
           <div className={`${styles.innerWrapper} ${Login ? styles.rotateWrapper : ""}`}>
             <div className={styles.cardFront}>
+              <Image src={'/images/login2.webp'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
               <div className={styles.zatamniLogin}></div>
               <h2>Prijava</h2>
-            <form onSubmit={handleLoginSubmit} className={styles.forma}>
-              <div className={styles.formGroup}>
-                <input value={email} onChange={(e) => {setEmail(e.target.value);setEmailError(false);}}
-                type='text' className={`${styles.formStyle} ${emailError ? styles.errorInput : ''}`} placeholder='Email'/>
-                <i className={`${styles.inputIcon} uil uil-at`}></i>
-              </div>
-              <div className={styles.formGroup}>
-                <input value={password} onChange={(e) => {setPassword(e.target.value);setPassError(false);}}
-                type={showPassword ? 'text' : 'password'} className={`${styles.formStyle} ${passError ? styles.errorInput : ''}`} placeholder='Lozinka'/>
-                <i className={`${styles.inputIcon} uil uil-lock`}></i>
-                <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'} ${styles.oko}`} onClick={() => setShowPassword(prev => !prev)}></i>
-              </div>
-              <button type='submit' className={styles.btn}>Prijavi se</button>
-            </form>
+              <form onSubmit={handleLoginSubmit} className={styles.forma}>
+                <div className={styles.formGroup}>
+                  <input value={email} onChange={(e) => {setEmail(e.target.value);setEmailError(false);}}
+                  type='text' className={`${styles.formStyle} ${emailError ? styles.errorInput : ''}`} placeholder='Email'/>
+                  <i className={`${styles.inputIcon} uil uil-at`}></i>
+                </div>
+                <div className={styles.formGroup}>
+                  <input value={password} onChange={(e) => {setPassword(e.target.value);setPassError(false);}}
+                  type={showPassword ? 'text' : 'password'} className={`${styles.formStyle} ${passError ? styles.errorInput : ''}`} placeholder='Lozinka'/>
+                  <i className={`${styles.inputIcon} uil uil-lock`}></i>
+                  <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'} ${styles.oko}`} onClick={() => setShowPassword(prev => !prev)}></i>
+                </div>
+                <button type='submit' className={styles.btn}>Prijavi se</button>
+              </form>
             </div>
 
             <div className={styles.cardBack}>
+              <Image src={'/images/login2.webp'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
               <div className={styles.zatamniLogin}></div>
               <h2>Registracija</h2>
               <form onSubmit={handleRegSubmit} className={styles.forma}>
