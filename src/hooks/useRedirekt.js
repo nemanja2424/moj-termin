@@ -7,11 +7,12 @@ export default function useRedirekt() {
   const isAuthenticated = useAuth();
 
   return (putanja) => {
-    if (isAuthenticated === null) return; // čekamo proveru
-    if (putanja === '/panel' && !isAuthenticated) {
+    const authToken = localStorage.getItem('authToken');
+    if (putanja === '/panel' && !authToken) {
       router.push('/login');
     } else {
       router.push(putanja);
+      console.log('/panel')
     }
   };
 }

@@ -1,0 +1,106 @@
+.sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 300px;
+    max-width: 200px;
+    background-color: lightgray;
+    transition: max-width 0.2s ease;
+    overflow: hidden;
+}
+.sidebar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        #00c6ff,   /* svetla plava */
+        #0072ff,   /* klasična plava */
+        #004aad,   /* tamnija plava */
+        #00eaff    /* tirkizna */
+    );
+}
+.sidebar.skupljen{
+    max-width: 72px;
+}
+.sidebar nav{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 90px;
+    padding-left: 23px;
+}
+.sidebar nav a{
+    padding: 2px;
+    font-size: 20px;
+    border-radius: 5px;
+    max-width: 165px;
+    min-height: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+}
+.sidebar nav a:hover{
+    background: linear-gradient(
+        50deg,
+        #00c6ff,   /* svetla plava */
+        #0072ff,   /* klasična plava */
+        #004aad   /* tamnija plava */
+    );
+}
+.sidebar.skupljen nav a{
+    max-width: 26px;
+}
+.sidebar nav a p {
+    opacity: 100;
+    transition: all 0.2s ease;
+}
+.sidebar.skupljen nav a p {
+    opacity: 0;
+    max-width: 0px;
+    visibility: hidden;
+}
+.ikona{
+    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ikona svg{
+    width: 24px;
+    height: 24px;
+}
+.logo{
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.toggle {
+    position: absolute;
+    bottom: 40px;
+    left: 25px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    background: linear-gradient(
+        30deg,
+        #00c6ff,   /* svetla plava */
+        #0072ff,   /* klasična plava */
+        #004aad   /* tamnija plava */
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.toggle.skupljen{
+    transform: rotate(180deg);
+}
