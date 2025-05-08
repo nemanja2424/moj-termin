@@ -11,7 +11,7 @@
     overflow: hidden;
     z-index: 2;
     top: 0;
-    background: url('/images/hero.webp') no-repeat center center;
+    background: url('/Images/hero.webp') no-repeat center center;
     background-size: cover;
     padding: 0 50px;
     color: whitesmoke;
@@ -319,7 +319,7 @@ line-height: 1.6;
 
 
 .cta-section {
-background: url('/images/cta-bg.webp') no-repeat center 40%;
+background: url('/Images/cta-bg.webp') no-repeat center 40%;
 background-size: cover;
 background-attachment: fixed;
 color: white;

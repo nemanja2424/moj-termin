@@ -15,7 +15,7 @@ export const metadata = {
   title: "Moj Termin",
   description: "Digitalno zakazivanje termina za moderan biznis",
   icons:{
-    icon: "/images/logo.png"
+    icon: "/Images/logo.png"
   }
 };
 

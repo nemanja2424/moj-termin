@@ -23,7 +23,7 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${navOpen ? styles.open : ''}`}>
       <div className={styles.topRow}>
-      <a href={"/"}><Image src="/images/logo.png" alt="logo" width={70} height={70} /></a>
+      <a href={"/"}><Image src="/Images/logo.png" alt="logo" width={70} height={70} /></a>
       <nav className={styles.nav}>
           <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
           <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>

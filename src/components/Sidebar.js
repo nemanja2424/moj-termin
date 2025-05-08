@@ -19,7 +19,7 @@ export default function Sidebar() {
 
   return (
     <div className={`${styles.sidebar} ${rasirenSidebar ? '' : styles.skupljen}`}>
-      <a onClick={() => redirekt('/panel')}><Image className={styles.logo} src={"/images/logo.png"} alt="logo" width={55} height={55} /></a>
+      <a onClick={() => redirekt('/panel')}><Image className={styles.logo} src={"/Images/logo.png"} alt="logo" width={55} height={55} /></a>
       <nav>
         <Link href={'/panel'}>
           <div className={styles.ikona}>

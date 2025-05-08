@@ -162,7 +162,7 @@ const LoginPage = () => {
         <div className={styles.wrapper}>
           <div className={`${styles.innerWrapper} ${Login ? styles.rotateWrapper : ""}`}>
             <div className={styles.cardFront}>
-              <Image src={'/images/login2.jpg'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
+              <Image src={'/Images/login2.jpg'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
               <div className={styles.zatamniLogin}></div>
               <h2>Prijava</h2>
               <form onSubmit={handleLoginSubmit} className={styles.forma}>
@@ -182,7 +182,7 @@ const LoginPage = () => {
             </div>
 
             <div className={styles.cardBack}>
-              <Image src={'/images/login2.jpg'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
+              <Image src={'/Images/login2.jpg'} alt={'cover'} width={800} height={700} className={styles.loginBg}/>
               <div className={styles.zatamniLogin}></div>
               <h2>Registracija</h2>
               <form onSubmit={handleRegSubmit} className={styles.forma}>
