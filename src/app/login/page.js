@@ -118,10 +118,9 @@ const LoginPage = () => {
         return;
       }
   
-      toast.success('Uspešna registracija!');
       localStorage.setItem('authToken', data.authToken);
       localStorage.setItem('userId', data.id);
-      window.location.href = '/panel';
+      window.location.href = '/panel/pomoc';  
     } catch (error) {
       console.error(error);
       toast.error('Došlo je do greške. Pokušajte ponovo.');
@@ -168,7 +167,7 @@ const LoginPage = () => {
               <form onSubmit={handleLoginSubmit} className={styles.forma}>
                 <div className={styles.formGroup}>
                   <input value={email} onChange={(e) => {setEmail(e.target.value);setEmailError(false);}}
-                  type='text' className={`${styles.formStyle} ${emailError ? styles.errorInput : ''}`} placeholder='Email'/>
+                  type='email' className={`${styles.formStyle} ${emailError ? styles.errorInput : ''}`} placeholder='Email'/>
                   <i className={`${styles.inputIcon} uil uil-at`}></i>
                 </div>
                 <div className={styles.formGroup}>
@@ -192,7 +191,7 @@ const LoginPage = () => {
                   <i className={`${styles.inputIcon} uil uil-user`}></i>
                 </div>
                 <div className={styles.formGroup}>
-                  <input type='text' value={regEmail} onChange={(e) => {setRegEmail(e.target.value)}}
+                  <input type='email' value={regEmail} onChange={(e) => {setRegEmail(e.target.value)}}
                    className={styles.formStyle} placeholder='Email'/>
                   <i className={`${styles.inputIcon} uil uil-at`}></i>
                 </div>

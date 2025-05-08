@@ -1,0 +1,125 @@
+.kalendarWrapper {
+    width: 100%;
+    min-height: 60%;
+    margin: auto;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header button {
+    width: 45px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.header button:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.2)); /* Dodavanje senke pri hover-u */
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    height: 90%;
+}
+
+.dayName {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+}
+
+.date {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    background: #f2f2f2;
+    min-height: 40px;
+    position: relative;
+}
+
+.date:hover {
+    background-color: #c5c5c5;
+}
+.eventCount{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    color: red;
+
+}
+
+.selectedDay {
+    border: 2px solid #4105f3;
+}
+
+.otherMonth {
+    opacity: 0.5;
+}
+
+
+
+.dayWrapper{
+    display: flex;
+    min-width: 100%;
+    min-height: 50%;
+    height: 50%;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 1rem;
+    background-color: #fff;
+    margin-top: 20px;
+}
+.eventCard{
+    border-bottom: 1px solid #555;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+    .kalendarWrapper {
+        padding: 0.5rem;
+        border-radius: 8px;
+        box-shadow: none;
+        width: 100%;
+    }
+
+    .header {
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.25rem;
+        
+    }
+
+    .date {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        min-height: 40px;
+    }
+
+    .dayName {
+        font-size: 0.75rem;
+    }
+}

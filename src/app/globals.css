@@ -4,9 +4,6 @@ html {
 *{
 
   font-family: 'Poppins', sans-serif;
-  user-select: none;
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: transparent;
 }
 body{
   margin: 0;

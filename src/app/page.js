@@ -75,7 +75,7 @@ export default function HomePage() {
 
 
   return (
-    <>
+    <div className={styles.sve}>
       <Header />
       <div className={styles.hero}>
         <div className={styles['zatamni-hero']}></div>
@@ -196,8 +196,8 @@ export default function HomePage() {
           </div>
           <div className={`${styles.paket} anim2`}>
             <h2>Pro paket</h2>
-            <p>1 organizacija</p>
-            <p>Do 5 korisničkih naloga</p>
+            <p>3 organizacija</p>
+            <p>Do 9 korisničkih naloga</p>
             <p>Online kalendar</p>
             <p>Statistika</p>
             <p>Email obaveštenja</p>
@@ -242,7 +242,7 @@ export default function HomePage() {
             <p>Bez korisničke podrške</p>
             <div className={styles.cena}>
               <h3>Besplatno</h3>
-              <a style={{fontSize:'14px',cursor:'pointer'}}>Napravite nalog</a>
+              <a href='/login' style={{fontSize:'14px',cursor:'pointer'}}>Napravite nalog</a>
             </div>
           </div>
         </div>
@@ -278,6 +278,6 @@ export default function HomePage() {
       </section>
       
       <Footer />
-    </>
+    </div>
   );
 }
