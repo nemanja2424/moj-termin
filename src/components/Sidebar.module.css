@@ -33,6 +33,7 @@
     gap: 10px;
     margin-top: 90px;
     padding: 20px;
+    width: 165px;
 }
 
 .sidebar nav a{
@@ -54,6 +55,9 @@
         #0072ff,   /* klasična plava */
         #004aad   /* tamnija plava */
     );
+}
+.sidebar.skupljen nav{
+    max-width: 30px;
 }
 .sidebar.skupljen nav a{
     max-width: 26px;

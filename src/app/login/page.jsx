@@ -50,7 +50,7 @@ const LoginPage = () => {
         } 
         else if (data.message === 'Invalid Password.') {
           setPassError(true);
-          toast.error("Neispravna lozinka adresa.");
+          toast.error("Neispravna lozinka.");
         } 
         else {
           setEmailError(false);
@@ -60,6 +60,7 @@ const LoginPage = () => {
   
       localStorage.setItem('authToken', data.authToken);
       localStorage.setItem('userId', data.id);
+      localStorage.setItem('rola', data.rola);
       window.location.href = '/panel';
     } catch (error) {
       console.error(error);
@@ -120,6 +121,7 @@ const LoginPage = () => {
   
       localStorage.setItem('authToken', data.authToken);
       localStorage.setItem('userId', data.id);
+      localStorage.setItem('rola', 1);
       window.location.href = '/panel/pomoc';  
     } catch (error) {
       console.error(error);

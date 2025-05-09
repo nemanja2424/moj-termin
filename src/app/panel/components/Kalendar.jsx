@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Kalendar.module.css";
 
 const formatDate = (date) => {
@@ -21,6 +21,8 @@ export default function Kalendar() {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(formatDate(today));
   const [selectedEvents, setSelectedEvents] = useState([]);
+  const scrollRef = useRef(null);
+
 
   const generateCalendar = (month, year) => {
     const firstDay = new Date(year, month, 1);
@@ -101,58 +103,84 @@ export default function Kalendar() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const userId = localStorage.getItem("userId");
-      const authToken = localStorage.getItem("authToken");
+    if (typeof window !== "undefined") {
+      const rola = localStorage.getItem('rola');
 
-      if (!userId || !authToken) {
-        console.error("Nedostaje userId ili authToken u localStorage.");
-        return;
+      if (rola === '1') {
+        const fetchData = async () => {
+          const userId = localStorage.getItem("userId");
+          const authToken = localStorage.getItem("authToken");
+
+          if (!userId || !authToken) {
+            console.error("Nedostaje userId ili authToken u localStorage.");
+            return;
+          }
+
+          try {
+            const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error("Greška pri dohvatanju podataka.");
+            }
+
+            const data = await response.json();
+
+            const allEvents = data.zakazano.flat().map((item) => ({
+              ...item,
+              datum: item.datum_rezervacije,
+            })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
+
+            setDesavanjaData(allEvents);
+
+            const formatted = formatDate(today);
+            const todayEvents = allEvents.filter((e) => e.datum === formatted);
+            setSelectedEvents(todayEvents);
+
+          } catch (error) {
+            console.error("Greška:", error);
+          }
+        };
+
+        fetchData();
+
+        const intervalId = setInterval(fetchData, 3600000);
+
+        return () => clearInterval(intervalId);
       }
+    }
+  }, []);
 
-      try {
-        const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
 
-        if (!response.ok) {
-          throw new Error("Greška pri dohvatanju podataka.");
-        }
-
-        const data = await response.json();
-
-        const allEvents = data.zakazano.flat().map((item) => ({
-          ...item,
-          datum: item.datum_rezervacije,
-        }));
-
-        setDesavanjaData(allEvents);
-
-        // Automatski prikaz termina za danas
-        const formatted = formatDate(today);
-        const todayEvents = allEvents.filter((e) => e.datum === formatted);
-        setSelectedEvents(todayEvents);
-      } catch (error) {
-        console.error("Greška:", error);
+  
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+  
+    const onWheel = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        const scrollSpeed = 3; 
+        el.scrollLeft += e.deltaY * scrollSpeed;
       }
     };
+  
+    el.addEventListener("wheel", onWheel, { passive: false });
+  
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [selectedEvents.length]);
+  
 
-    fetchData();
-
-    const intervalId = setInterval(fetchData, 3600000); // 10000ms = 10s
-
-    return () => clearInterval(intervalId);
-
-  }, []);
 
   useEffect(() => {
     generateCalendar(currentMonth, currentYear);
   }, [desavanjaData, currentMonth, currentYear]);
 
   return (
-    <div>
+    <div className={styles.kalendarContent}>
       <div className={styles.kalendarWrapper}>
         <div className={styles.header}>
           <button onClick={() => changeMonth(-1)}>&lt;</button>
@@ -177,7 +205,7 @@ export default function Kalendar() {
                   ${d.isOtherMonth ? styles.otherMonth : ""}
                   ${isSelected ? styles.selectedDay : ""}
                 `}
-                style={isHighlighted(d.date) ? { color: "#6c3dff", fontWeight: "600" } : {}}
+                style={isHighlighted(d.date) ? { color: "#0072ff", fontWeight: "600" } : {}}
                 onClick={() => handleDateClick(d.date)}
               >
                 <div>{d.day}</div>
@@ -190,18 +218,18 @@ export default function Kalendar() {
         </div>
       </div>
 
-      <div className={styles.dayWrapper}>
+      <div style={{width:'100%'}}>
         {selectedDate ? (
           selectedEvents.length > 0 ? (
-            <div className={styles.eventCards}>
+            <div className={styles.dayWrapper} ref={scrollRef}>
               {selectedEvents.map((event, index) => (
                 <div key={index} className={styles.eventCard}>
                   <h3>{event.ime}</h3>
                   <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
                   <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
                   <p><strong>Opis:</strong> {event.opis}</p>
-                  <p><strong>Telefon:</strong> {event.telefon}</p>
-                  <p><strong>Email:</strong> {event.email}</p>
+                  <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{color:'#3b82f6'}}>{event.telefon}</a></p>
+                  <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{color:'#3b82f6'}}>{event.email}</a></p>
                 </div>
               ))}
             </div>

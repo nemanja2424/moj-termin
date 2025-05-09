@@ -1,4 +1,8 @@
-
+.sve *{
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: transparent;
+}
 .hero{
     display: flex;
     align-items: center;

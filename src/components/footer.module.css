@@ -1,3 +1,8 @@
+.footer *{
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+}
 .footer {
     background-color: #d1d4d7;
     color: #222;

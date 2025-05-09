@@ -18,6 +18,9 @@
 .content.skupljen{
     max-width: calc(100% - 70px);
 }
+.content a{
+    color: #3b82f6;
+}
 .child{
     width: 100%;
     max-width: calc(100% - 40px);
@@ -93,6 +96,88 @@
     transform: scaleX(1);
     transform-origin: bottom left;
 }
+
+
+
+.noviTermini{
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+.noviTermini h2,
+.noviTermini p{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.tableContainer {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  cursor: default;
+}
+
+.table thead {
+  position: sticky;
+  top: -4px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f5f1f1;
+}
+
+.table tbody tr:hover {
+  background-color: #eaeaea;
+}
+
+.table td {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.opis{
+    min-width: 200px !important;
+}
+.tableContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background-color: #7e848b;
+  border-radius: 10px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #005ecb;
+}
+
+
+
 
 
 

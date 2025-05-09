@@ -1,6 +1,9 @@
+.kalendarContent{
+    height: 100%;
+}
 .kalendarWrapper {
     width: 100%;
-    min-height: 60%;
+    min-height: 45%;
     margin: auto;
     padding: 1rem;
     background-color: #fff;
@@ -68,7 +71,7 @@
 }
 
 .selectedDay {
-    border: 2px solid #4105f3;
+    border: 2px solid #00c6ff;
 }
 
 .otherMonth {
@@ -76,23 +79,48 @@
 }
 
 
+.dayWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  height: 360px;
+  padding: 10px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  scroll-behavior: smooth;
+}
 
-.dayWrapper{
-    display: flex;
-    min-width: 100%;
-    min-height: 50%;
-    height: 50%;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    padding: 1rem;
-    background-color: #fff;
-    margin-top: 20px;
+.eventCard {
+  margin-right: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  background: linear-gradient(130deg, #f7faff, #d3e5ff);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  height: 300px;
+  flex-shrink: 0;
 }
-.eventCard{
-    border-bottom: 1px solid #555;
-    width: 100%;
-    margin-bottom: 10px;
+
+.dayWrapper::-webkit-scrollbar {
+  height: 8px;
 }
+
+.dayWrapper::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.dayWrapper::-webkit-scrollbar-thumb {
+  background-color: #7e848b;
+  border-radius: 10px;
+}
+
+
 
 @media (max-width: 600px) {
     .kalendarWrapper {
@@ -122,4 +150,5 @@
     .dayName {
         font-size: 0.75rem;
     }
+
 }
