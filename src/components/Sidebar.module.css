@@ -90,7 +90,7 @@
 }
 .toggle {
     position: absolute;
-    top: 90vh;
+    bottom: 40px;
     left: 25px;
     font-size: 24px;
     cursor: pointer;
@@ -129,5 +129,8 @@
     .sidebar.skupljen {
         width: 72px;
         max-width: 72px;
+    }
+    .toggle{
+        bottom: 80px;
     }
 }
