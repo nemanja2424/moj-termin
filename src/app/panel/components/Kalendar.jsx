@@ -224,6 +224,7 @@ export default function Kalendar() {
                   <p><strong>Opis:</strong> {event.opis}</p>
                   <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{color:'#3b82f6'}}>{event.telefon}</a></p>
                   <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{color:'#3b82f6'}}>{event.email}</a></p>
+                  <p><strong>Nije potvrđeno</strong></p>
                 </div>
               ))}
             </div>

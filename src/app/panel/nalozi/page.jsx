@@ -77,6 +77,7 @@ export default function NaloziPage() {
             toast.success("Uspešno ste dodali novog korisnika.");
             setShowDodajKorisnika(false);
             fetchData();
+            setIme('');setRegEmail('');setRegPass('');setRegPassConf('');setBrTel('+381');setZaposlenU(0)
         } catch (error) {
             console.error(error);
             toast.error('Došlo je do greške. Pokušajte ponovo.');
@@ -187,7 +188,9 @@ export default function NaloziPage() {
             return;
         }
         toast.success("Uspešno ste promenili lozinku.");
-        setPromeniLozinkuEl(false)
+        setPromeniLozinkuEl(false);
+        setNewPass('');
+        setNewPassConf('');
     }
 
     return (
@@ -295,7 +298,7 @@ export default function NaloziPage() {
             {promeniLozinkuEl && (
                 <div style={{minHeight:'100%',minWidth:'100%'}}>
                     <div className={localStyles.blur}></div>
-                    <div className={localStyles.dodajKorisnika} style={{height:'600px'}}>
+                    <div className={localStyles.dodajKorisnika} style={{height:'300px'}}>
                         <div className={styles.zatamniLogin}></div>
                         <form onSubmit={handlePromenaLozinke} className={styles.forma}>
                             <h2>Promeni lozinku</h2>
