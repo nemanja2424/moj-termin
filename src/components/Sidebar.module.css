@@ -90,7 +90,7 @@
 }
 .toggle {
     position: absolute;
-    bottom: 40px;
+    top: 90vh;
     left: 25px;
     font-size: 24px;
     cursor: pointer;
@@ -126,8 +126,6 @@
         overflow: hidden;
         z-index: 1000; /* da bude iznad ostalog sadržaja */
     }
-    
-
     .sidebar.skupljen {
         width: 72px;
         max-width: 72px;

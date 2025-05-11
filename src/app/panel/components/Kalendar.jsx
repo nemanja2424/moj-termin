@@ -218,13 +218,29 @@ export default function Kalendar() {
             <div className={styles.dayWrapper} ref={scrollRef}>
               {selectedEvents.map((event, index) => (
                 <div key={index} className={styles.eventCard}>
-                  <h3>{event.ime}</h3>
-                  <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
-                  <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
-                  <p><strong>Opis:</strong> {event.opis}</p>
-                  <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{color:'#3b82f6'}}>{event.telefon}</a></p>
-                  <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{color:'#3b82f6'}}>{event.email}</a></p>
-                  <p><strong>Nije potvrđeno</strong></p>
+                  <div>
+                    <h3>{event.ime}</h3>
+                    <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
+                    <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
+                    <p><strong>Opis:</strong> {event.opis}</p>
+                    <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{color:'#3b82f6'}}>{event.telefon}</a></p>
+                    <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{color:'#3b82f6'}}>{event.email}</a></p>
+                    <p>
+                      {event.potvrdio !== 0 ? (
+                        <>
+                          <strong>Potvrdio: </strong>{event.potvrdio_user.username}
+                        </>
+                      ) : (
+                        <strong>Nije potvrđeno</strong>
+                      )}
+                    </p>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'row',gap:'10px'}}>
+                    {event.potvrdio === 0 ? (
+                        <button onClick={() => potvrdiTermin(event.id)} className={styles.btn}>Potvrdi termin</button>
+                      ) : null}
+                    <button className={styles.btn}>Izmeni termin</button>
+                  </div>
                 </div>
               ))}
             </div>
