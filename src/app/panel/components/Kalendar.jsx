@@ -103,55 +103,49 @@ export default function Kalendar() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const rola = localStorage.getItem('rola');
+    const fetchData = async () => {
+      const userId = localStorage.getItem("userId");
+      const authToken = localStorage.getItem("authToken");
 
-      if (rola === '1') {
-        const fetchData = async () => {
-          const userId = localStorage.getItem("userId");
-          const authToken = localStorage.getItem("authToken");
-
-          if (!userId || !authToken) {
-            console.error("Nedostaje userId ili authToken u localStorage.");
-            return;
-          }
-
-          try {
-            const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            });
-
-            if (!response.ok) {
-              throw new Error("Greška pri dohvatanju podataka.");
-            }
-
-            const data = await response.json();
-
-            const allEvents = data.zakazano.flat().map((item) => ({
-              ...item,
-              datum: item.datum_rezervacije,
-            })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
-
-            setDesavanjaData(allEvents);
-
-            const formatted = formatDate(today);
-            const todayEvents = allEvents.filter((e) => e.datum === formatted);
-            setSelectedEvents(todayEvents);
-
-          } catch (error) {
-            console.error("Greška:", error);
-          }
-        };
-
-        fetchData();
-
-        const intervalId = setInterval(fetchData, 3600000);
-
-        return () => clearInterval(intervalId);
+      if (!userId || !authToken) {
+        console.error("Nedostaje userId ili authToken u localStorage.");
+        return;
       }
-    }
+
+      try {
+        const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Greška pri dohvatanju podataka.");
+        }
+
+        const data = await response.json();
+
+        const allEvents = data.zakazano.flat().map((item) => ({
+          ...item,
+          datum: item.datum_rezervacije,
+        })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
+
+        setDesavanjaData(allEvents);
+
+        const formatted = formatDate(today);
+        const todayEvents = allEvents.filter((e) => e.datum === formatted);
+        setSelectedEvents(todayEvents);
+
+      } catch (error) {
+        console.error("Greška:", error);
+      }
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 3600000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
 

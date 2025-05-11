@@ -7,47 +7,41 @@ export default function DashboardPage() {
   const scrollRef = useRef(null);
   
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const rola = localStorage.getItem('rola');
+    const fetchDashboardData = async () => {
+      const userId = localStorage.getItem("userId");
+      const authToken = localStorage.getItem("authToken");
 
-      if (rola === '1') {
-        const fetchDashboardData = async () => {
-          const userId = localStorage.getItem("userId");
-          const authToken = localStorage.getItem("authToken");
-
-          if (!userId || !authToken) {
-            console.error("Nedostaje userId ili authToken u localStorage.");
-            return;
-          }
-
-          try {
-            const response = await fetch(
-              `https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}/dashboard`,
-              {
-                headers: {
-                  Authorization: `Bearer ${authToken}`,
-                },
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error("Greška pri dohvatanju podataka.");
-            }
-
-            const data = await response.json();
-            const kombinovaniTermini = data.zakazano.flat();
-
-            kombinovaniTermini.sort((a, b) => b.id - a.id);
-
-            setSviTermini(kombinovaniTermini);
-          } catch (error) {
-            console.error("Greška:", error);
-          }
-        };
-
-        fetchDashboardData();
+      if (!userId || !authToken) {
+        console.error("Nedostaje userId ili authToken u localStorage.");
+        return;
       }
-    }
+
+      try {
+        const response = await fetch(
+          `https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}/dashboard`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Greška pri dohvatanju podataka.");
+        }
+
+        const data = await response.json();
+        const kombinovaniTermini = data.zakazano.flat();
+
+        kombinovaniTermini.sort((a, b) => b.id - a.id);
+
+        setSviTermini(kombinovaniTermini);
+      } catch (error) {
+        console.error("Greška:", error);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
 
