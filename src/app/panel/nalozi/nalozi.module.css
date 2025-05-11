@@ -1,5 +1,162 @@
-.dodajKorisnika{
+@keyframes zoomFadeIn {
+    0% {
+        transform: scale(0.8) translate(-50%, -50%);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+.dodajKorisnika {
+    padding: 20px;
     width: 100%;
     max-width: 350px;
     text-align: center;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url('/Images/login2.webp');
+    border-radius: 15px;
+    background-size: cover;
+    color: whitesmoke;
+    opacity: 0;
+    animation: zoomFadeIn 0.4s ease-out forwards;
+}
+.dodajKorisnika *{
+    z-index: 100;
+}
+.blur{
+    min-width: 100%;
+    min-height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tableContainer {
+    
+    overflow-y: auto;
+    position: relative;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f4f6f8;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 40px;
+}
+.table tr{
+    min-height: 54px;
+}
+.table th,
+.table td {
+    padding: 0px 15px;
+    font-size: 14px;
+    min-height: 73px;
+    border-bottom: 1px solid #e0e6ed;
+    vertical-align: middle;
+    min-width: 170px;
+}
+
+.table th {
+    font-weight: 600;
+    color: #5f6c7b;
+}
+
+.table input[type="text"],
+.table input[type="email"],
+.table select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: #fff;
+}
+
+.table input:focus,
+.table select:focus {
+    border-color: #0088E5;
+}
+
+.table button {
+    align-self: center;
+    min-height: 25px;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.table button:hover {
+    background-color: #e5e7eb;
+}
+
+.table button:nth-child(1) {
+    color: #374151;
+}
+
+.table button:nth-child(2) {
+    color: #1d4ed8;
+}
+
+.table button:nth-child(3) {
+    color: #dc2626;
+}
+.tableContainer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background-color: #7e848b;
+  border-radius: 10px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #005ecb;
+}
+
+
+
+.x{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 23px;
+    cursor: pointer;
+}
+.x:hover{
+    color: #dc2626;
 }

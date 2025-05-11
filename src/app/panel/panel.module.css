@@ -99,6 +99,21 @@
 
 
 
+
+.noviTermini {
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  max-height: 310px;
+}
+
+.noviTermini h2,
+.noviTermini p {
+  margin-top: 10px;
+  margin-left: 10px;
+}
 .noviTermini{
     width: 100%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -152,15 +167,17 @@
 }
 
 .table td {
-  max-width: 200px;
+  width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 150px;
 }
 .opis{
-    min-width: 200px !important;
+  min-width: 200px !important;
 }
 .tableContainer::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 .tableContainer::-webkit-scrollbar-track {
@@ -175,8 +192,6 @@
 .tableContainer::-webkit-scrollbar-thumb:hover {
   background-color: #005ecb;
 }
-
-
 
 
 

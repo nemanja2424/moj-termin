@@ -8,6 +8,7 @@
     background-color: lightgray;
     transition: max-width 0.2s ease;
     overflow: hidden;
+    z-index: 1000;
 }
 .sidebar::after {
     content: "";
