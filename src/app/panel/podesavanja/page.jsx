@@ -15,23 +15,45 @@ export default function PodesavanjaPage() {
     /*promene vrednosti */
     const [editingUsername, setEditingUsername] = useState(false);
     const [editingEmail, setEditingEmail] = useState(false);
+    const [editingBrTel, setEditingBrtel] = useState(false);
+    const [showChangePass, setShowChangePass] = useState(false);
+    const [currentPass, setCurrentPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [newPassConf, setNewPassConf] = useState('');
+
 
     const handleEditUsernameClick = () => {
         setEditingUsername(true);
     };
-    const handleConfirmUsernameClick = () => {
-        console.log('Korisničko ime poslato:', korisnik.username);
-        setEditingUsername(false);
-    };
-
     const handleEditEmailClick = () => {
         setEditingEmail(true);
     };
-    const handleConfirmEmailClick = () => {
-        console.log('Email poslato:', korisnik.email);
-        setEditingEmail(false);
+    const handleEditBrTelClick = () => {
+        setEditingBrtel(true);
     };
+    const handleImeEmailTel = async () => {
+        console.log(korisnik);
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/user/${userId}`, {
+            method: 'PATCH',
+            headers:{
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(korisnik)
+        });
+        const data = await res.json();
 
+        if (!res.ok) {
+            toast.error(data.message || 'Greška prilikom registracije.');
+            return;
+        }
+        toast.success("Uspešno ste promenili podatke.");
+        setEditingEmail(false);
+        setEditingUsername(false);
+        setEditingBrtel(false);
+    }
 
     
     
@@ -127,7 +149,6 @@ export default function PodesavanjaPage() {
 
     useEffect(() => {
         fetchData();
-        const userId = localStorage.getItem('localStorage');
         setLink(`https://arbitrawin.com/dashboard.html`);
     }, []);
 
@@ -148,7 +169,7 @@ export default function PodesavanjaPage() {
                     )}
                 </div>
                 <button 
-                    onClick={editingUsername ? handleConfirmUsernameClick : handleEditUsernameClick} 
+                    onClick={editingUsername ? handleImeEmailTel : handleEditUsernameClick} 
                     className={styles.btn}
                 >
                     {editingUsername ? 'Potvrdi' : 'Izmeni'}
@@ -167,7 +188,7 @@ export default function PodesavanjaPage() {
                     )}
                 </div>
                 <button 
-                    onClick={editingEmail ? handleConfirmEmailClick : handleEditEmailClick} 
+                    onClick={editingEmail ? handleImeEmailTel : handleEditEmailClick} 
                     className={styles.btn}
                 >
                     {editingEmail ? 'Potvrdi' : 'Izmeni'}
@@ -175,17 +196,29 @@ export default function PodesavanjaPage() {
             </div>
             <div className={styles.stavka}>
                 <div>
-                    <span>Br. telefona:</span>
-                    <h4>{korisnik.brTel}</h4>
+                    <span>Broj telefona:</span>
+                    {editingBrTel ? (
+                        <input 
+                            value={korisnik.brTel} 
+                            onChange={(e) => setKorisnik({ ...korisnik, brTel: e.target.value })} 
+                        />
+                    ) : (
+                        <h4>{korisnik.brTel}</h4>
+                    )}
                 </div>
-                <button className={styles.btn}>Izmeni</button>
+                <button 
+                    onClick={editingBrTel ? handleImeEmailTel : handleEditBrTelClick} 
+                    className={styles.btn}
+                >
+                    {editingBrTel ? 'Potvrdi' : 'Izmeni'}
+                </button>
             </div>
             <div className={styles.stavka}>
                 <div>
                     <h4>Promena lozinke</h4>
                     <span style={{fontSize:'14px'}}>Lozinka je zaštićena i ne može se prikazati.</span>
                 </div>
-                <button className={styles.btn}>Izmeni</button>
+                <button onClick={() => setShowChangePass(true)} className={styles.btn}>Izmeni</button>
             </div>
             <div className={styles.stavka}>
                 <div>
@@ -218,40 +251,43 @@ export default function PodesavanjaPage() {
                 <div>
                     <span>Ime:</span>
                     <h4>{korisnik.ime_preduzeca}</h4>
+                    <span>Ukupan broj zaposlenih:</span>
+                    <h4>{brRadnika}</h4>
                 </div>
-                <button className={styles.btn}>Izmeni</button>
+                <button className={styles.btn} style={{maxHeight:'30px'}}>Izmeni</button>
             </div>
             <div className={styles.stavka} style={{maxHeight:'150px'}}>
                 <div>
                     <h4>Logo:</h4>
                     <span style={{fontSize:'14px'}}>Maksimalno do 2MB <br /></span>
-                    <button className={styles.btn}>Izmeni logo</button>
+                    <button className={styles.btn} style={{width:'120px', textAlign:'center'}}>Izmeni logo</button>
                 </div>
                 <img loading='lazy' src={korisnik.putanja_za_logo} />
             </div>
-            <div className={styles.stavka}>
-                <div>
-                    <span>Ukupan broj zaposlenih:</span>
-                    <h4>{brRadnika}</h4>
-                </div>
-                <a href="/panel/nalozi"><button className={styles.btn}>Izmeni</button></a>
-            </div>
-            <div className={styles.stavka} style={{flexDirection:'column',alignItems:'center'}}>
+            <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column',alignItems:'center'}}>
                 <h2>Moje lokacije</h2>
-            <button className={styles.btn}>Nova lokacija</button>
-            {preduzeca.map((firma) => (
-                <div key={firma.id} className={styles.firma}>
-                    <div>
-                        <h4>{firma.ime}</h4>
-                        <span>{firma.adresa}</span>
-                        <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
+                <button className={styles.btn}>Nova lokacija</button>
+                {preduzeca.map((firma) => (
+                    <div key={firma.id} className={styles.firma}>
+                        <div>
+                            <h4>{firma.ime}</h4>
+                            <span>{firma.adresa}</span>
+                            <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
+                        </div>
+                        <button className={styles.btn}>Izmeni</button>
                     </div>
-                    <button className={styles.btn}>Izmeni</button>
-                </div>
-            ))}
+                ))}
 
             </div>
         </div>
+
+        {showChangePass && (
+            <div>
+                <div>
+                    
+                </div>
+            </div>
+        )}
 
         <ToastContainer />
     </div>
