@@ -131,6 +131,7 @@ export default function Kalendar() {
         })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
 
         setDesavanjaData(allEvents);
+        console.log(allEvents);
 
         const formatted = formatDate(today);
         const todayEvents = allEvents.filter((e) => e.datum === formatted);
@@ -147,7 +148,6 @@ export default function Kalendar() {
 
     return () => clearInterval(intervalId);
   }, []);
-
 
   
   useEffect(() => {
@@ -172,6 +172,23 @@ export default function Kalendar() {
   useEffect(() => {
     generateCalendar(currentMonth, currentYear);
   }, [desavanjaData, currentMonth, currentYear]);
+
+
+  const potvrdiTermin = async (termin) => {
+    const authToken = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+    termin.potvrdio = userId;
+    const res = await fetch("http://127.0.0.1:5000/api/potvrdi_termin", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ termin, authToken })
+    });
+
+    const data = await res.json();
+    console.log(data);
+  }
 
   return (
     <div className={styles.kalendarContent}>
@@ -237,7 +254,7 @@ export default function Kalendar() {
                   </div>
                   <div style={{display:'flex',flexDirection:'row',gap:'10px'}}>
                     {event.potvrdio === 0 ? (
-                        <button onClick={() => potvrdiTermin(event.id)} className={styles.btn}>Potvrdi termin</button>
+                        <button onClick={() => potvrdiTermin(event)} className={styles.btn}>Potvrdi termin</button>
                       ) : null}
                     <button className={styles.btn}>Izmeni termin</button>
                   </div>
