@@ -3,7 +3,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import styles from './podesavanja.module.css';
+import stylesLogin from '@/app/login/login.module.css';
 import { QRCodeSVG } from 'qrcode.react';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 export default function PodesavanjaPage() {
     const [korisnik, setKorisnik] = useState({});
@@ -20,6 +22,16 @@ export default function PodesavanjaPage() {
     const [currentPass, setCurrentPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [newPassConf, setNewPassConf] = useState('');
+    const [showCurrentPass, setShowCurrentPass] = useState(false);
+    const [showRegPass, setShowRegPass] = useState(false);
+    const [showRegPassConf, setShowRegPassConf] = useState(false);
+    const [editingPrIme, setEditingPrIme] = useState(false);
+    const [showDodajLokaciju, setShowDodajLokaciju] = useState(false);
+    const [imeLokacije, setImeLokacije] = useState('');
+    const [adresa, setAdresa] = useState('');
+    const [editFirmaId, setEditFirmaId] = useState(null);
+    const [editedFirmData, setEditedFirmData] = useState({});
+
 
 
     const handleEditUsernameClick = () => {
@@ -28,11 +40,14 @@ export default function PodesavanjaPage() {
     const handleEditEmailClick = () => {
         setEditingEmail(true);
     };
+    const handlePrIme = () => {
+        setEditingPrIme(true);
+    }
     const handleEditBrTelClick = () => {
         setEditingBrtel(true);
     };
-    const handleImeEmailTel = async () => {
-        console.log(korisnik);
+    const handleImeEmailTel = async (e) => {
+        e.preventDefault();
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/user/${userId}`, {
@@ -53,7 +68,93 @@ export default function PodesavanjaPage() {
         setEditingEmail(false);
         setEditingUsername(false);
         setEditingBrtel(false);
+        setEditingPrIme(false);
     }
+    const handlePromenaLozinke = async (e) => {
+        e.preventDefault();
+        if(currentPass < 8) {
+            toast.error('Niste unelli tačnu trenutnu lozinku.');
+            return;
+        }
+        if(newPass.length < 8) {
+            toast.error('Lozinka mora da bude duža od 8 karaktera.');
+            return;
+        }
+        if (newPass !== newPassConf){
+            toast.error('Lozinke se ne poklapaju.');
+            return;
+        }
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/nova-lozinka/${userId}`, {
+            method: 'POST',
+            headers:{
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({currentPass, newPass})
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            if (data.message === 'Invalid Credentials.'){
+                toast.error('Niste unelli tačnu trenutnu lozinku.');
+                return;
+            }
+            else {
+                toast.error(data.message || 'Greška prilikom registracije.');
+                return;
+            }
+        }
+        toast.success("Uspešno ste promenili podatke.");
+        setShowChangePass(false);
+    }
+    const handleDodajLokaciju = async (e) => {
+        e.preventDefault();
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/dodaj-lokaciju/${userId}`, {
+            method:'POST',
+            headers:{
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({imeLokacije, adresa})
+        });
+        const data = await res.json();
+
+        if (!res.ok){
+            toast.error(data.message || 'Greška prilikom registracije.');
+            return;
+        }
+        fetchData();
+        toast.success('Uspešno ste dodali lokaciju.');
+        setShowDodajLokaciju(false);
+        setImeLokacije('');
+        setAdresa('');
+    }
+    const handleConfirmEdit = async (firmaId) => {
+        const authToken = localStorage.getItem('authToken');
+        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/izmeni-lokaciju/${firmaId}`, {
+        method:'PATCH',
+        headers:{
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editedFirmData)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        toast.error(data.message);
+        return;
+    }
+    setPreduzeca(data);
+    toast.success("Uspešno izmenili podatke lokacije.")
+    setEditFirmaId(null);
+    setEditedFirmData({});
+};
+
 
     
     
@@ -250,11 +351,24 @@ export default function PodesavanjaPage() {
             <div className={styles.stavka}>
                 <div>
                     <span>Ime:</span>
-                    <h4>{korisnik.ime_preduzeca}</h4>
+                    {editingPrIme ? (
+                        <input 
+                            value={korisnik.ime_preduzeca} 
+                            onChange={(e) => setKorisnik({ ...korisnik, ime_preduzeca: e.target.value })} 
+                        />
+                    ) : (
+                        <h4>{korisnik.ime_preduzeca  === '' ? ('Unesite ime') : (korisnik.ime_preduzeca)}</h4>
+                    )}
                     <span>Ukupan broj zaposlenih:</span>
                     <h4>{brRadnika}</h4>
                 </div>
-                <button className={styles.btn} style={{maxHeight:'30px'}}>Izmeni</button>
+                <button 
+                    onClick={editingPrIme ? handleImeEmailTel : handlePrIme} 
+                    className={styles.btn}
+                    style={{maxHeight:'35px'}}
+                >
+                    {editingPrIme ? 'Potvrdi' : 'Izmeni'}
+                </button>            
             </div>
             <div className={styles.stavka} style={{maxHeight:'150px'}}>
                 <div>
@@ -264,27 +378,112 @@ export default function PodesavanjaPage() {
                 </div>
                 <img loading='lazy' src={korisnik.putanja_za_logo} />
             </div>
-            <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column',alignItems:'center'}}>
+            <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column', alignItems:'center'}}>
                 <h2>Moje lokacije</h2>
-                <button className={styles.btn}>Nova lokacija</button>
-                {preduzeca.map((firma) => (
-                    <div key={firma.id} className={styles.firma}>
-                        <div>
-                            <h4>{firma.ime}</h4>
-                            <span>{firma.adresa}</span>
-                            <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
-                        </div>
-                        <button className={styles.btn}>Izmeni</button>
-                    </div>
-                ))}
+                <button className={styles.btn} onClick={() => setShowDodajLokaciju(true)}>Nova lokacija</button>
 
+                {preduzeca.map((firma) => {
+                    const isEditing = editFirmaId === firma.id;
+
+                    return (
+                        <div key={firma.id} className={styles.firma}>
+                            <div>
+                                {isEditing ? (
+                                    <>
+                                        <input 
+                                            value={editedFirmData.ime || ''} 
+                                            onChange={(e) => setEditedFirmData({...editedFirmData, ime: e.target.value})}
+                                        />
+                                        <input 
+                                            value={editedFirmData.adresa || ''} 
+                                            onChange={(e) => setEditedFirmData({...editedFirmData, adresa: e.target.value})}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <h4>{firma.ime}</h4>
+                                        <span>{firma.adresa}</span>
+                                    </>
+                                )}
+
+                                <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
+                            </div>
+
+                            <button 
+                                className={styles.btn} 
+                                onClick={() => {
+                                    if (isEditing) {
+                                        handleConfirmEdit(firma.id);
+                                    } else {
+                                        setEditFirmaId(firma.id);
+                                        setEditedFirmData({ ime: firma.ime, adresa: firma.adresa });
+                                    }
+                                }}
+                            >
+                                {isEditing ? 'Potvrdi' : 'Izmeni'}
+                            </button>
+                        </div>
+                    );
+                })}
             </div>
+
         </div>
 
         {showChangePass && (
             <div>
-                <div>
-                    
+                <div className={styles.blur}></div>
+                <div className={styles.dodajKorisnika} style={{height:'370px'}}>
+                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
+                    <form onSubmit={handlePromenaLozinke} className={styles.forma}>
+                        <h2 style={{marginBottom:'15px'}} >Promeni lozinku</h2>
+                        <div className={stylesLogin.formGroup}>
+                            <input type={showCurrentPass ? 'text' : 'password'} value={currentPass} onChange={(e) => { setCurrentPass(e.target.value) }}
+                                className={stylesLogin.formStyle} placeholder='Trenutna lozinka' />
+                            <i className={`${stylesLogin.inputIcon} uil uil-lock`}></i>
+                            <i className={`fa-solid ${showRegPass ? 'fa-eye-slash' : 'fa-eye'} ${stylesLogin.oko}`} onClick={() => setShowRegPass(prev => !prev)}></i>
+                        </div>
+                        <div className={stylesLogin.formGroup}>
+                            <input type={showRegPass ? 'text' : 'password'} value={newPass} onChange={(e) => { setNewPass(e.target.value) }}
+                                className={stylesLogin.formStyle} placeholder='Nova lozinka' />
+                            <i className={`${stylesLogin.inputIcon} uil uil-lock`}></i>
+                            <i className={`fa-solid ${showRegPass ? 'fa-eye-slash' : 'fa-eye'} ${stylesLogin.oko}`} onClick={() => setShowRegPass(prev => !prev)}></i>
+                        </div>
+                        <div className={stylesLogin.formGroup}>
+                            <input type={showRegPassConf ? 'text' : 'password'} value={newPassConf} onChange={(e) => { setNewPassConf(e.target.value) }}
+                                className={stylesLogin.formStyle} placeholder='Potvrdite novu lozinku' />
+                            <i className={`${stylesLogin.inputIcon} uil uil-lock`}></i>
+                            <i className={`fa-solid ${showRegPassConf ? 'fa-eye-slash' : 'fa-eye'} ${stylesLogin.oko}`} onClick={() => setShowRegPassConf(prev => !prev)}></i>
+                        </div>
+                        <button type='submit' className={styles.btn}>Promeni lozinku</button>
+                        <div className={styles.x} onClick={() => setShowChangePass(false)}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+        {showDodajLokaciju && (
+            <div>
+                <div className={styles.blur}></div>
+                <div className={styles.dodajKorisnika} style={{height:'280px'}}>
+                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
+                    <form onSubmit={handleDodajLokaciju} className={styles.forma}>
+                        <h2 style={{marginBottom:'15px'}} >Dodaj lokaciju</h2>
+                        <div className={stylesLogin.formGroup}>
+                            <input type='text' value={imeLokacije} onChange={(e) => { setImeLokacije(e.target.value) }}
+                                className={stylesLogin.formStyle} placeholder='Ime lokacije' />
+                            <i className={`${stylesLogin.inputIcon} uil uil-building`}></i>
+                        </div>
+                        <div className={stylesLogin.formGroup}>
+                            <input type='text' value={adresa} onChange={(e) => { setAdresa(e.target.value) }}
+                                className={stylesLogin.formStyle} placeholder='Adresa' />
+                            <i className={`${stylesLogin.inputIcon} fa-solid fa-location-dot`} style={{ transform: 'translateY(-25%)' }}></i>
+                        </div>
+                        <button type='submit' className={styles.btn}>Dodaj lokaciju</button>
+                        <div className={styles.x} onClick={() => setShowDodajLokaciju(false)}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </div>
+                    </form>
                 </div>
             </div>
         )}

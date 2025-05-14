@@ -8,22 +8,23 @@
 }
 
 .content{
-    display: flex;
-    max-width: calc(100% - 200px);
-    width: 100%;
-    padding: 20px;
-    transition: all 0.2s ease;
-    overflow: hidden;
+  display: flex;
+  max-width: calc(100% - 200px);
+  width: 100%;
+  padding: 0px;
+  transition: all 0.2s ease;
+  overflow: hidden;
 }
 .content.skupljen{
-    max-width: calc(100% - 70px);
+  max-width: calc(100% - 70px);
 }
 .content a{
-    color: #3b82f6;
+  color: #3b82f6;
 }
 .child{
-    width: 100%;
-    max-width: calc(100% - 40px);
+  padding: 20px;
+  width: 100%;
+  max-width: calc(100% - 40px);
 }
 .param{
     width: calc(100% - 60px);

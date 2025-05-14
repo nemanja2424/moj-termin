@@ -65,7 +65,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%" }} className={styles.child}>
       <div className="mojePreduzece">
         
       </div>

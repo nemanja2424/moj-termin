@@ -194,7 +194,7 @@ export default function NaloziPage() {
     }
 
     return (
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%' }} className={panelStyles.child}>
             <div style={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                 <h2>Lista zaposlenih</h2>
                 <button className={styles.btn} style={{margin:'0'}}
