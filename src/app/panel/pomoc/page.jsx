@@ -1,31 +1,40 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './pomoc.module.css';
-import stylesPanel from '../panel.module.css';
 
 export default function PomocPage() {
-  const [prviKoraci, setPrviKoraci] = useState(false);
+  const containerRef = useRef();
 
+  const scrollToSection = (index) => {
+    const section = containerRef.current.children[index];
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+    }
+  };
+
+  const [openNav, setOpenNav] = useState(false)
 
   return (
     <div className={styles.PomocPage}>
-      <div className={styles.header}>
-        <div><a>Prvi koraci</a></div>
-        <div><a>Pravljenje strane za zakazivanje</a></div>
-        <div><a>Promena i otkazivanje paketa</a></div>
-        <div><a>Obaveštenja</a></div>
+      {/* Navigacija po sekcijama */}
+      <div className={`${styles.navbar} ${openNav ? (styles.open) : ''}`}>
+        <div className={styles.zatamni}></div>
+        <a onClick={() => scrollToSection(0)}>Prvi koraci</a>
+        <a onClick={() => scrollToSection(1)}>Zakazivanje</a>
+        <a onClick={() => scrollToSection(2)}>Upravljanje podacima</a>
+        <a onClick={() => scrollToSection(3)}>Pretplata</a>
+        <a onClick={() => scrollToSection(4)}>Obaveštenja</a>
+        <i className='fa fa-angle-down' style={{fontSize:'27px',zIndex:'5',color:'white',cursor:'pointer'}}></i>
       </div>
-      <section onClick={() => setPrviKoraci(!prviKoraci)} className={`${styles.section} ${prviKoraci ? styles.open : ''}`}>
-        <div className={styles.naslov}>
-          <h1>Prvi koraci</h1>
-          <i className='fa fa-angle-down'></i>
-        </div>
 
-        <div className={styles.content}>
-          <p>Otkrijte kako da započnete sa korišćenjem aplikacije, uključujući registraciju i prijavu.</p>
-        </div>
-      </section>
-
+      {/* Horizontalni scroll kontejner */}
+      <div className={styles.sectionsContainer} ref={containerRef}>
+        <section className={styles.section}><h1>Prvi koraci</h1><p>Uputstvo za početak.</p></section>
+        <section className={styles.section}><h1>Zakazivanje</h1><p>Kako zakazati termine.</p></section>
+        <section className={styles.section}><h1>Upravljanje podacima</h1><p>Vaši lični podaci.</p></section>
+        <section className={styles.section}><h1>Pretplata</h1><p>Detalji o planovima.</p></section>
+        <section className={styles.section}><h1>Obaveštenja</h1><p>Notifikacije i podešavanja.</p></section>
+      </div>
     </div>
   );
 }
