@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Kalendar.module.css";
+import { toast, ToastContainer } from "react-toastify";
 
 const formatDate = (date) => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -67,7 +68,6 @@ export default function Kalendar() {
 
     setDays(daysArray);
   };
-
   const changeMonth = (dir) => {
     let newMonth = currentMonth + dir;
     let newYear = currentYear;
@@ -84,17 +84,14 @@ export default function Kalendar() {
     setCurrentYear(newYear);
     generateCalendar(newMonth, newYear);
   };
-
   const isHighlighted = (date) => {
     const formatted = formatDate(date);
     return desavanjaData.some((e) => e.datum === formatted);
   };
-
   const getEventCount = (date) => {
     const formatted = formatDate(date);
     return desavanjaData.filter((e) => e.datum === formatted).length;
   };
-
   const handleDateClick = (date) => {
     const formatted = formatDate(date);
     const events = desavanjaData.filter((e) => e.datum === formatted);
@@ -102,45 +99,48 @@ export default function Kalendar() {
     setSelectedEvents(events);
   };
 
+  const fetchData = async () => {
+    const userId = localStorage.getItem("userId");
+    const authToken = localStorage.getItem("authToken");
+
+    if (!userId || !authToken) {
+      console.error("Nedostaje userId ili authToken u localStorage.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Greška pri dohvatanju podataka.");
+      }
+
+      const data = await response.json();
+          
+    const allEvents = data.zakazano.flat().map((item) => ({
+      ...item,
+      datum: item.datum_rezervacije,
+      potvrdio_user: item.potvrdio_user || {},
+    })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
+
+      setDesavanjaData(allEvents);
+      console.log(allEvents);
+
+      const formatted = selectedDate || formatDate(today);
+      const currentEvents = allEvents.filter((e) => e.datum === formatted);
+      setSelectedEvents(currentEvents);
+
+
+    } catch (error) {
+      console.error("Greška:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const userId = localStorage.getItem("userId");
-      const authToken = localStorage.getItem("authToken");
-
-      if (!userId || !authToken) {
-        console.error("Nedostaje userId ili authToken u localStorage.");
-        return;
-      }
-
-      try {
-        const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Greška pri dohvatanju podataka.");
-        }
-
-        const data = await response.json();
-
-        const allEvents = data.zakazano.flat().map((item) => ({
-          ...item,
-          datum: item.datum_rezervacije,
-        })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
-
-        setDesavanjaData(allEvents);
-        console.log(allEvents);
-
-        const formatted = formatDate(today);
-        const todayEvents = allEvents.filter((e) => e.datum === formatted);
-        setSelectedEvents(todayEvents);
-
-      } catch (error) {
-        console.error("Greška:", error);
-      }
-    };
 
     fetchData();
 
@@ -185,9 +185,15 @@ export default function Kalendar() {
       },
       body: JSON.stringify({ termin, authToken })
     });
-
     const data = await res.json();
-    console.log(data);
+
+    if (!res.ok) {
+      toast.error(data.message);
+      return;
+    }
+    
+    toast.success("Potvrdili ste termin.");
+    fetchData();
   }
 
   return (
@@ -268,6 +274,8 @@ export default function Kalendar() {
           <h2>Izaberite datum</h2>
         )}
       </div>
+
+      <ToastContainer />
     </div>
   );
 }

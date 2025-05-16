@@ -31,6 +31,7 @@ export default function PodesavanjaPage() {
     const [adresa, setAdresa] = useState('');
     const [editFirmaId, setEditFirmaId] = useState(null);
     const [editedFirmData, setEditedFirmData] = useState({});
+    const fileInputRef = useRef();
 
 
 
@@ -153,9 +154,48 @@ export default function PodesavanjaPage() {
     toast.success("Uspešno izmenili podatke lokacije.")
     setEditFirmaId(null);
     setEditedFirmData({});
-};
-
-
+    };
+    const handleButtonClickLogo = () => {
+        fileInputRef.current.click();
+    };
+    const handleFileChange = async (event) => {
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+        const file = event.target.files[0];
+        if (!file) return;
+    
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error("Fajl je veći od 2MB!");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('id', userId);
+        formData.append('authToken', authToken);
+    
+        try {
+            const response = await fetch('http://127.0.0.1:5000/api/novi_logo', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                // Odmah ažuriraj logo u korisnik state-u
+                setKorisnik(prev => ({
+                    ...prev,
+                    putanja_za_logo: `/logos/${data.filename}`
+                }));
+                toast.success("Logo uspešno poslat!");
+            } else {
+                toast.error("Greška prilikom slanja loga.");
+            }
+        } catch (error) {
+            console.error("Greška:", error);
+            toast.error("Došlo je do greške.");
+        }
+    };
     
     
 
@@ -374,7 +414,8 @@ export default function PodesavanjaPage() {
                 <div>
                     <h4>Logo:</h4>
                     <span style={{fontSize:'14px'}}>Maksimalno do 2MB <br /></span>
-                    <button className={styles.btn} style={{width:'120px', textAlign:'center'}}>Izmeni logo</button>
+                    <button onClick={handleButtonClickLogo} className={styles.btn} style={{width:'120px', textAlign:'center'}}>Izmeni logo</button>
+                    <input type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef} onChange={handleFileChange} />
                 </div>
                 <img loading='lazy' src={korisnik.putanja_za_logo} />
             </div>
