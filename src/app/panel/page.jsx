@@ -5,41 +5,41 @@ import { useEffect, useState, useRef } from "react";
 export default function DashboardPage() {
   const [sviTermini, setSviTermini] = useState([]);
   const scrollRef = useRef(null);
-  
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      const userId = localStorage.getItem("userId");
-      const authToken = localStorage.getItem("authToken");
 
-      if (!userId || !authToken) {
-        console.error("Nedostaje userId ili authToken u localStorage.");
-        return;
-      }
+  const fetchDashboardData = async () => {
+    const userId = localStorage.getItem("userId");
+    const authToken = localStorage.getItem("authToken");
 
-      try {
-        const response = await fetch(
-          `https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}/dashboard`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+    if (!userId || !authToken) {
+      console.error("Nedostaje userId ili authToken u localStorage.");
+      return;
+    }
 
-        if (!response.ok) {
-          throw new Error("Greška pri dohvatanju podataka.");
+    try {
+      const response = await fetch(
+        `https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}/dashboard`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
         }
+      );
 
-        const data = await response.json();
-        const kombinovaniTermini = data.zakazano.flat();
-
-        kombinovaniTermini.sort((a, b) => b.id - a.id);
-
-        setSviTermini(kombinovaniTermini);
-      } catch (error) {
-        console.error("Greška:", error);
+      if (!response.ok) {
+        throw new Error("Greška pri dohvatanju podataka.");
       }
-    };
+
+      const data = await response.json();
+      const kombinovaniTermini = data.zakazano.flat();
+
+      kombinovaniTermini.sort((a, b) => b.id - a.id);
+
+      setSviTermini(kombinovaniTermini);
+    } catch (error) {
+      console.error("Greška:", error);
+    }
+  };
+  useEffect(() => {
 
     fetchDashboardData();
   }, []);
@@ -66,10 +66,9 @@ export default function DashboardPage() {
 
   return (
     <div style={{ width: "100%" }} className={styles.child}>
-      <div className="mojePreduzece">
+      <div >
         
       </div>
-
       <div className={styles.noviTermini}>
         <h2>Nova zakazivanja</h2>
         { sviTermini.length > 0 ? (
