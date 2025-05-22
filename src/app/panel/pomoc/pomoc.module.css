@@ -14,13 +14,14 @@
   padding: 10px 0;
   background-color: white;
   border-bottom: 1px solid #ddd;
-  position: fixed;
+  position: relative;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   background: url('/images/hero.webp');
   background-position-y: 20%;
+  transition: height 0.3s ease-in-out;
 }
 .zatamni{
   min-width: 100%;
@@ -30,24 +31,80 @@
   top: 0;
   z-index: 1;
 }
-.navbar a{
+.navbar div{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  align-self: center;
+  width: 700px;
+}
+.navbar div a{
   z-index: 3;
   display: flex;
+  flex-direction: column;
   align-items: center;
   color: white;
+  transition: all 0.3s ease-in-out;
 }
 .navbar a:hover {
   color: #0AADFF;
 }
+.navbar div a ul{
+  display: none;
+}
 
 .navbar.open{
-  color: rebeccapurple;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+.navbar.open div{
+  
 }
 .navbar.open a{
-  width: 200px;
-  height: 200px;
   z-index: 5;
+  background: #ffffffb0;
+  height: 150px;
+  width: 300px;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(11, 3, 46);
+  transition: transform 0.3s ease-in-out;
 }
+.navbar.open a:hover {
+  transform: scale(1.05);
+}
+.navbar.open div a ul{
+  display: flex;
+}
+.navbar.open .naslov{
+  font-size: 20px;
+  font-weight: 600;
+}
+.navbar i{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 28px;
+  right: 10px;
+  cursor: pointer;
+  z-index: 5;
+  color: white;
+  font-size: 27px;
+  transition: transform 0.3s ease-in-out;
+}
+.navbar.open i{
+  transform: translate(-50%, -50%) rotate(180deg);
+  top: 28px;
+}
+
+
+
+
 
 .sectionsContainer {
   display: flex;
@@ -63,12 +120,19 @@
   height: calc(100vh - 72px); /* prilagodi ako navbar nije 72px */
   scroll-snap-align: start;
   padding: 0 15px;
-  padding-top: 56px;
   box-sizing: border-box;
   overflow-y: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .section h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
+}
+.section p {
+  min-width: 320px;
+  width: 60%;
 }

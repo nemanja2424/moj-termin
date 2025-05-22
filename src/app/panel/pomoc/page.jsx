@@ -11,29 +11,99 @@ export default function PomocPage() {
       section.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
     }
   };
+  
 
-  const [openNav, setOpenNav] = useState(false)
+  const [openNav, setOpenNav] = useState(true)
 
   return (
     <div className={styles.PomocPage}>
-      {/* Navigacija po sekcijama */}
       <div className={`${styles.navbar} ${openNav ? (styles.open) : ''}`}>
         <div className={styles.zatamni}></div>
-        <a onClick={() => scrollToSection(0)}>Prvi koraci</a>
-        <a onClick={() => scrollToSection(1)}>Zakazivanje</a>
-        <a onClick={() => scrollToSection(2)}>Upravljanje podacima</a>
-        <a onClick={() => scrollToSection(3)}>Pretplata</a>
-        <a onClick={() => scrollToSection(4)}>Obaveštenja</a>
-        <i className='fa fa-angle-down' style={{fontSize:'27px',zIndex:'5',color:'white',cursor:'pointer'}}></i>
+        <div>
+          <a onClick={() => {scrollToSection(0); setOpenNav(false);}}>
+            <span className={styles.naslov}>Prvi koraci</span>
+            <ul>
+              <li>Saznajte kako postaviti </li>
+            </ul>
+          </a>
+          <a onClick={() => {scrollToSection(1); setOpenNav(false);}}>
+            <span className={styles.naslov}>Zakazivanje</span>
+          </a>
+          <a onClick={() => {scrollToSection(2); setOpenNav(false);}}>
+            <span className={styles.naslov}>Upravljanje podacima</span>
+          </a>
+          <a onClick={() => {scrollToSection(3); setOpenNav(false);}}>
+            <span className={styles.naslov}>Pretplata</span>
+          </a>
+          <a onClick={() => {scrollToSection(4); setOpenNav(false);}}>
+            <span className={styles.naslov}>Obaveštenja</span>
+          </a>
+        </div>
+        <i className='fa fa-angle-down' onClick={() => setOpenNav(prev => !prev)}></i>
       </div>
+      
 
       {/* Horizontalni scroll kontejner */}
       <div className={styles.sectionsContainer} ref={containerRef}>
-        <section className={styles.section}><h1>Prvi koraci</h1><p>Uputstvo za početak.</p></section>
-        <section className={styles.section}><h1>Zakazivanje</h1><p>Kako zakazati termine.</p></section>
-        <section className={styles.section}><h1>Upravljanje podacima</h1><p>Vaši lični podaci.</p></section>
-        <section className={styles.section}><h1>Pretplata</h1><p>Detalji o planovima.</p></section>
-        <section className={styles.section}><h1>Obaveštenja</h1><p>Notifikacije i podešavanja.</p></section>
+        <section className={styles.section}>
+          <h1>Prvi koraci</h1>
+          <p>
+            Dobrodošli u Moj Termin!<br /><br />
+            Nakon što ste uspešno kreirali nalog, preporučujemo da prvo podesite osnovne podatke o vašoj firmi. U sekciji <strong>Podešavanja</strong> možete uneti naziv preduzeća i postaviti svoj logo, što će vašim klijentima omogućiti da vas lakše prepoznaju.<br /><br />
+            Ako vaš paket podržava više lokacija, ovde možete dodati i sve poslovnice ili radna mesta vaše firme. Svaka lokacija može imati svoj naziv i adresu.<br /><br />
+            Sledeći korak je dodavanje zaposlenih. U sekciji <strong>Zaposleni</strong> možete kreirati naloge za svoje radnike, dodeliti im pristup određenim lokacijama i omogućiti im da upravljaju terminima. Svaki zaposleni dobija svoj pristupni nalog i može samostalno pratiti svoje termine.<br /><br />
+            Kada završite sa osnovnim podešavanjima, spremni ste da počnete sa zakazivanjem termina i korišćenjem svih funkcionalnosti sistema.
+          </p>
+        </section>
+        <section className={styles.section}>
+          <h1>Zakazivanje</h1>
+          <p>
+            Sistem Moj Termin omogućava jednostavno i brzo zakazivanje termina za vaše klijente.<br /><br />
+            <strong>Kako klijent zakazuje termin?</strong><br />
+            Klijent pristupa vašoj javnoj stranici za zakazivanje (link dobijate u podešavanjima ili putem QR koda). Na toj stranici bira željenu uslugu, lokaciju, datum i vreme, i ostavlja svoje podatke.<br /><br />
+            <strong>Kako vi upravljate terminima?</strong><br />
+            U kontrolnoj tabli (panelu) imate pregled svih zakazanih termina. Možete filtrirati termine po datumu, lokaciji ili zaposlenom. Svaki termin možete potvrditi, izmeniti ili otkazati. Klijent automatski dobija obaveštenje o svakoj promeni.<br /><br />
+            <strong>Dodavanje termina ručno</strong><br />
+            Ako želite, možete i sami ručno dodati termin za klijenta direktno iz panela, što je korisno za telefonska ili lična zakazivanja.<br /><br />
+            <strong>Napomena:</strong> Broj termina i mogućnosti zavise od paketa koji ste izabrali.
+          </p>
+        </section>
+        <section className={styles.section}>
+          <h1>Upravljanje podacima</h1>
+          <p>
+            U sekciji <strong>Podešavanja</strong> možete u svakom trenutku izmeniti svoje lične podatke (ime, email, broj telefona), kao i podatke o firmi i lokacijama.<br /><br />
+            <strong>Promena lozinke:</strong><br />
+            Lozinku možete promeniti klikom na dugme "Izmeni" pored polja za lozinku. Potrebno je da unesete trenutnu i novu lozinku, a sistem će vas obavestiti o uspešnoj promeni.<br /><br />
+            <strong>Upravljanje zaposlenima:</strong><br />
+            U sekciji <strong>Zaposleni</strong> možete dodavati, menjati ili brisati naloge zaposlenih. Svakom zaposlenom možete dodeliti određenu lokaciju i prava pristupa.<br /><br />
+            <strong>Bezbednost podataka:</strong><br />
+            Svi vaši podaci su zaštićeni i dostupni samo ovlašćenim korisnicima. Redovno ažurirajte svoje podatke radi tačnosti i sigurnosti.
+          </p>
+        </section>
+        <section className={styles.section}>
+          <h1>Pretplata</h1>
+          <p>
+            Moj Termin nudi više paketa prilagođenih različitim potrebama:<br /><br />
+            <strong>Personalni paket:</strong> Pogodan za pojedince ili male firme sa jednim nalogom i ograničenim brojem termina mesečno.<br /><br />
+            <strong>Pro paket:</strong> Omogućava više lokacija, više korisničkih naloga i napredne funkcije kao što su statistika i analitika.<br /><br />
+            <strong>Premium paket:</strong> Neograničen broj lokacija i korisnika, napredna podrška i sve funkcionalnosti sistema.<br /><br />
+            Status vaše pretplate, datum isteka i mogućnost obnove ili promene paketa nalaze se u sekciji <strong>Pretplata</strong> u panelu.<br /><br />
+            <strong>Napomena:</strong> Prilikom isteka pretplate, bićete obavešteni putem emaila i u samom panelu. Uvek možete produžiti ili promeniti paket prema potrebama vašeg poslovanja.
+          </p>
+        </section>
+        <section className={styles.section}>
+          <h1>Obaveštenja</h1>
+          <p>
+            Sistem automatski šalje obaveštenja putem emaila za sve važne događaje:<br /><br />
+            - Kada klijent zakaže termin, vi i klijent dobijate potvrdu na email.<br />
+            - Kada izmenite ili otkažete termin, klijent automatski dobija obaveštenje.<br />
+            - Zaposleni dobijaju obaveštenja o svojim terminima i promenama.<br /><br />
+            <strong>Podešavanje obaveštenja:</strong><br />
+            U podešavanjima možete izabrati koje vrste obaveštenja želite da primate i na koje email adrese.<br /><br />
+            <strong>Napomena:</strong> Proverite da li su vaši email podaci tačni kako biste uvek dobijali sve važne informacije. Ako ne dobijate obaveštenja, proverite spam folder ili kontaktirajte podršku.<br /><br />
+            Za sva dodatna pitanja ili pomoć, obratite se našem timu putem kontakt forme ili emaila navedenog u sekciji "Pomoć".
+          </p>
+        </section>
       </div>
     </div>
   );

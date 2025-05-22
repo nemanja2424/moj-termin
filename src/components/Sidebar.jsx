@@ -49,7 +49,7 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
           </Link>
           <Link href={'/panel/nalozi'}>
             <div className={styles.ikona}><FontAwesomeIcon icon={faUser} /></div>
-            <p>Nalozi</p>
+            <p>Zaposleni</p>
           </Link>
         <Link href={'/panel/podesavanja'}>
           <div className={styles.ikona}><FontAwesomeIcon icon={faGear} /></div>
