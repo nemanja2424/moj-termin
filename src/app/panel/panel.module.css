@@ -22,9 +22,9 @@
   color: #3b82f6;
 }
 .child{
-  padding: 20px;
+  padding: 0px;
   width: 100%;
-  max-width: calc(100% - 40px);
+  max-width: calc(100%);
 }
 .param{
     width: calc(100% - 60px);
@@ -239,7 +239,7 @@
 }
 @media (max-width: 600px) {
   .content{
-    padding: 5px;
+    padding: 0px;
     margin-left: 72px;
     max-width: calc(100% - 72px);
   }

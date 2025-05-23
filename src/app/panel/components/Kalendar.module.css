@@ -1,5 +1,6 @@
 .kalendarContent{
     height: 100%;
+    padding: 5px;
 }
 .kalendarWrapper {
     width: 100%;
