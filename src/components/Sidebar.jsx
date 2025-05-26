@@ -43,27 +43,27 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
         </Link>
         {vlasnik && (
           <>
-          <Link href={'/panel/zakazivanje'}>
-            <div className={styles.ikona}><FontAwesomeIcon icon={faBookmark} /></div>
-            <p>Zakazivanje</p>
-          </Link>
-          <Link href={'/panel/nalozi'}>
-            <div className={styles.ikona}><FontAwesomeIcon icon={faUser} /></div>
-            <p>Zaposleni</p>
-          </Link>
-        <Link href={'/panel/podesavanja'}>
-          <div className={styles.ikona}><FontAwesomeIcon icon={faGear} /></div>
-          <p>Podešavanja</p>
-        </Link>
-        <Link href={'/panel/pretplata'}>
-          <div className={styles.ikona}><FontAwesomeIcon icon={faCreditCard} /></div>
-          <p>Pretplata</p>
-        </Link>
+            <Link href={'/panel/zakazivanje'}>
+              <div className={styles.ikona}><FontAwesomeIcon icon={faBookmark} /></div>
+              <p>Zakazivanje</p>
+            </Link>
+            <Link href={'/panel/nalozi'}>
+              <div className={styles.ikona}><FontAwesomeIcon icon={faUser} /></div>
+              <p>Zaposleni</p>
+            </Link>
+            <Link href={'/panel/podesavanja'}>
+              <div className={styles.ikona}><FontAwesomeIcon icon={faGear} /></div>
+              <p>Podešavanja</p>
+            </Link>
+            <Link href={'/panel/pretplata'}>
+              <div className={styles.ikona}><FontAwesomeIcon icon={faCreditCard} /></div>
+              <p>Pretplata</p>
+            </Link>
         
 
           </>
         )}
-        <Link href={'/panel/pomoc'}>
+        <Link href={'/pomoc'} target="_blank">
           <div className={styles.ikona}><FontAwesomeIcon icon={faHeadset} /></div>
           <p>Pomoć</p>
         </Link>

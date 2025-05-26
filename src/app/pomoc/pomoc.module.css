@@ -1,8 +1,11 @@
 .PomocPage {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+  padding: 0;
+  margin: 0;
 }
 
 .navbar {
@@ -36,7 +39,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  gap: 35px;
   align-self: center;
   width: 700px;
 }
@@ -51,7 +54,7 @@
 .navbar a:hover {
   color: #0AADFF;
 }
-.navbar div a ul{
+.navbar div a p{
   display: none;
 }
 
@@ -66,7 +69,7 @@
 .navbar.open a{
   z-index: 5;
   background: #ffffffb0;
-  height: 150px;
+  height: 200px;
   width: 300px;
   border: 2px solid #fff;
   border-radius: 20px;
@@ -79,14 +82,17 @@
 .navbar.open a:hover {
   transform: scale(1.05);
 }
-.navbar.open div a ul{
+.navbar.open div a p{
   display: flex;
+  text-align: center;
+  font-weight: 500;
 }
 .navbar.open .naslov{
   font-size: 20px;
   font-weight: 600;
+  color: #2c0074;
 }
-.navbar i{
+.navbar .otvoriIkona{
   position: absolute;
   transform: translate(-50%, -50%);
   top: 28px;
@@ -97,11 +103,25 @@
   font-size: 27px;
   transition: transform 0.3s ease-in-out;
 }
-.navbar.open i{
+.navbar.open .otvoriIkona{
   transform: translate(-50%, -50%) rotate(180deg);
   top: 28px;
 }
-
+.navbar .ikonaKartice{
+  display: none;
+}
+.navbar.open .ikonaKartice{
+  display: flex;
+  position: relative;
+  color: #3b82f6;
+  font-size: 25px;
+  margin-bottom: 10px ;
+}
+@media (max-width: 768px) {
+  .navbar{
+    display: none;
+  }  
+}
 
 
 

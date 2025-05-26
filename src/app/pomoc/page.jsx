@@ -1,6 +1,16 @@
 'use client';
+export default function PomocPage() {
+  return (
+    <>
+    </>
+  )
+}
+
+
+{/*
 import React, { useRef, useState } from 'react';
 import styles from './pomoc.module.css';
+import Footer from '@/components/Footer';
 
 export default function PomocPage() {
   const containerRef = useRef();
@@ -21,29 +31,35 @@ export default function PomocPage() {
         <div className={styles.zatamni}></div>
         <div>
           <a onClick={() => {scrollToSection(0); setOpenNav(false);}}>
+            <i className={`fa-solid fa-rocket ${styles.ikonaKartice}`}></i>
             <span className={styles.naslov}>Prvi koraci</span>
-            <ul>
-              <li>Saznajte kako postaviti </li>
-            </ul>
-          </a>
-          <a onClick={() => {scrollToSection(1); setOpenNav(false);}}>
-            <span className={styles.naslov}>Zakazivanje</span>
+            <p>Saznajte kako da zapčnete sa korišćenjem i upoznate se sa osnovnim funkcijama.</p>
           </a>
           <a onClick={() => {scrollToSection(2); setOpenNav(false);}}>
+            <i className={`fa-solid fa-clipboard-list ${styles.ikonaKartice}`}></i>
             <span className={styles.naslov}>Upravljanje podacima</span>
+            <p>Saznajte kako upravljati terminima i svojim zaposlenima i upoznajte se sa svim funkcijama</p>
+          </a>
+          <a onClick={() => {scrollToSection(1); setOpenNav(false);}}>
+            <i className={`fa-solid fa-bookmark ${styles.ikonaKartice}`}></i>
+            <span className={styles.naslov}>Zakazivanje</span>
+            <p>Saznajte kako funkcioniše zakazivanje termina i kako dizajnirati svoju stranu za zakazivanje.</p>
           </a>
           <a onClick={() => {scrollToSection(3); setOpenNav(false);}}>
+            <i className={`fa-solid fa-credit-card ${styles.ikonaKartice}`}></i>
             <span className={styles.naslov}>Pretplata</span>
+            <p>Pročitajte neka od mogućih pitanja koja vam se vrte u mislima i saznajte više o pretplatama.</p>
           </a>
           <a onClick={() => {scrollToSection(4); setOpenNav(false);}}>
+            <i className={`fa-solid fa-bell ${styles.ikonaKartice}`}></i>
             <span className={styles.naslov}>Obaveštenja</span>
+            <p>Saznajte kako i kada se šalju obaveštenja i kako promeniti sadržaj obaveštenja.</p>
           </a>
         </div>
-        <i className='fa fa-angle-down' onClick={() => setOpenNav(prev => !prev)}></i>
+        <i className={`fa fa-angle-down ${styles.otvoriIkona}`} onClick={() => setOpenNav(prev => !prev)}></i>
       </div>
       
 
-      {/* Horizontalni scroll kontejner */}
       <div className={styles.sectionsContainer} ref={containerRef}>
         <section className={styles.section}>
           <h1>Prvi koraci</h1>
@@ -108,3 +124,4 @@ export default function PomocPage() {
     </div>
   );
 }
+*/}
