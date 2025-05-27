@@ -23,7 +23,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  background: url('/images/hero.webp');
+  background: url('/Images/hero.webp');
   background-position-y: 20%;
   transition: height 0.3s ease-in-out;
   position: absolute;
