@@ -194,8 +194,8 @@
   .phoneIkona{
     display: flex;
     position: absolute;
-    left: 10px;
-    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: 10px;
+    top: 20px;
     background-color: #2c0074;
     color: white;
     border-radius: 50%;
