@@ -21,6 +21,7 @@ const Footer = () => {
             <li><a onClick={() => {redirekt('/panel')}}>Korisnički panel</a></li>
             <li><a onClick={() => {redirekt('/usluge')}}>Usluge</a></li>
             <li><a onClick={() => {redirekt('/login')}}>Probaj besplatno</a></li>
+            <li><a href="/pomoc">Pomoć</a></li>
           </ul>
         </div>
 

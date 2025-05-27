@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import styles from './Header.module.css';
 import useRedirekt from '@/hooks/useRedirekt';
 import Image from 'next/image';
-import Button1 from './Button1';
+import Button1 from '@/components/Button1';
 
 export default function Header() {
   const redirekt = useRedirekt();
@@ -24,13 +25,14 @@ export default function Header() {
     <header className={`${styles.header} ${navOpen ? styles.open : ''}`}>
       <div className={styles.topRow}>
       <a href={"/"}><Image src="/Images/logo.webp" alt="logo" width={70} height={70} /></a>
-      <nav className={styles.nav}>
-          <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
-          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
-          <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
-          {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
+        <nav className={styles.nav}>
+          <Link href='/pomoc/prvi-koraci'>Prvi koraci</Link>
+          <Link href='/pomoc/upravljanje-podacima'>Upravljanje podacima</Link>
+          <Link href='/pomoc/zakazivanje'>Zakazivanje</Link>
+          <Link href='/pomoc/obavestenja'>Obaveštenja</Link>
+          <Link href='/pomoc/pretplata'>Pretplata</Link>
         </nav>
-        <a href='#footer' className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</a>
+        <a className={`${styles.button1} ${styles.forPC}`} onClick={() => redirekt('/panel')}>Korisnicki panel</a>
         <div
           className={`${styles.navIcon3} ${styles.forPh} ${navOpen ? styles.open : ''}`}
           onClick={toggleNav}
@@ -43,11 +45,12 @@ export default function Header() {
       </div>
 
       <div className={`${styles.phoneNav} ${navOpen ? styles.open : ''}`}>
-          <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
-          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
-          <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
-          {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
-        <button className={`${styles.button1} ${styles.forPh}`}>Kontaktirajte nas</button>
+        <Link href='/pomoc/prvi-koraci'>Prvi koraci</Link>
+        <Link href='/pomoc/upravljanje-podacima'>Upravljanje podacima</Link>
+        <Link href='/pomoc/zakazivanje'>Zakazivanje</Link>
+        <Link href='/pomoc/obavestenja'>Obaveštenja</Link>
+        <Link href='/pomoc/pretplata'>Pretplata</Link>
+        <a className={` ${styles.forPh}`} onClick={() => redirekt('/panel')}>Korisnicki panel</a>
       </div>
     </header>
   );

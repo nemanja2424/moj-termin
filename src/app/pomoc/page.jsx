@@ -1,16 +1,17 @@
 'use client';
+{/*
 export default function PomocPage() {
   return (
-    <>
-    </>
+    <div>
+      
+    </div>
   )
 }
+*/}
 
 
-{/*
 import React, { useRef, useState } from 'react';
 import styles from './pomoc.module.css';
-import Footer from '@/components/Footer';
 
 export default function PomocPage() {
   const containerRef = useRef();
@@ -121,7 +122,10 @@ export default function PomocPage() {
           </p>
         </section>
       </div>
+
+      <div className={styles.phoneIkona} onClick={() => setOpenNav(prev => !prev)}>
+        <i className={`fa-solid fa-bars`}></i>
+      </div>
     </div>
   );
 }
-*/}
