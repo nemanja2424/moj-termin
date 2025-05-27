@@ -195,7 +195,7 @@
     display: flex;
     position: absolute;
     left: 10px;
-    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
     background-color: #2c0074;
     color: white;
     border-radius: 50%;
@@ -206,7 +206,6 @@
     align-items: center;
   }
   .PomocPage{
-    height: calc(var(--vh, 1vh) * 100);
     padding: 0;
   }
 }
