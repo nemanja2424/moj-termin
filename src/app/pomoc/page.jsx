@@ -123,9 +123,6 @@ export default function PomocPage() {
         </section>
       </div>
 
-      <div className={styles.phoneIkona} onClick={() => setOpenNav(prev => !prev)}>
-        <i className={`fa-solid fa-bars`}></i>
-      </div>
     </div>
   );
 }

@@ -162,9 +162,8 @@
 
 @media (max-width: 768px) {
   .navbar {
-    max-height: 0;
+    max-height: 56px;
     overflow: hidden;
-    padding: 0;
     transition: max-height 0.3s ease-in-out, height 0.3s ease-in-out;
   }
   .navbar div {
@@ -176,6 +175,9 @@
     max-height: 1000px; /* dovoljno veliko da stane sve */
   }
   .navbar.open div {
+    opacity: 1;
+  }
+  .navbar .zatamni{
     opacity: 1;
   }
   .navbar.open a{
@@ -207,5 +209,6 @@
   }
   .PomocPage{
     padding: 0;
+    padding-top: 56px;
   }
 }
