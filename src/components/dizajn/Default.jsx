@@ -204,11 +204,14 @@ export default function DefaultDesign() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <div className={styles.logo}>LOGO</div>
+        <img className={styles.logo} src={preduzece.putanja_za_logo} />
+        {forma.nazivFirme === true && (
+          <h1>{preduzece.ime_preduzeca}</h1>
+        )}
         <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
-          <a href="#">Početna</a>
-          <a href="#">Usluge</a>
-          <a href="#">Kontakt</a>
+          {Array.isArray(forma?.link) && forma.link.map((link, index) => (
+            <a key={index} href={link.url}>{link.text}</a>
+          ))}
         </nav>
         <div className={styles.menuIcon} onClick={toggleMenu}>☰</div>
       </header>
