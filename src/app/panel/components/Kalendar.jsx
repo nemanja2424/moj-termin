@@ -15,15 +15,13 @@ const daysOfWeek = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
 
 const today = new Date();
 
-export default function Kalendar() {
-  const [desavanjaData, setDesavanjaData] = useState([]);
+export default function Kalendar({ desavanjaData, fetchData, loading }) {
   const [days, setDays] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(formatDate(today));
   const [selectedEvents, setSelectedEvents] = useState([]);
   const scrollRef = useRef(null);
-
 
   const generateCalendar = (month, year) => {
     const firstDay = new Date(year, month, 1);
@@ -68,6 +66,7 @@ export default function Kalendar() {
 
     setDays(daysArray);
   };
+
   const changeMonth = (dir) => {
     let newMonth = currentMonth + dir;
     let newYear = currentYear;
@@ -84,14 +83,17 @@ export default function Kalendar() {
     setCurrentYear(newYear);
     generateCalendar(newMonth, newYear);
   };
+
   const isHighlighted = (date) => {
     const formatted = formatDate(date);
     return desavanjaData.some((e) => e.datum === formatted);
   };
+
   const getEventCount = (date) => {
     const formatted = formatDate(date);
     return desavanjaData.filter((e) => e.datum === formatted).length;
   };
+
   const handleDateClick = (date) => {
     const formatted = formatDate(date);
     const events = desavanjaData.filter((e) => e.datum === formatted);
@@ -99,80 +101,32 @@ export default function Kalendar() {
     setSelectedEvents(events);
   };
 
-  const fetchData = async () => {
-    const userId = localStorage.getItem("userId");
-    const authToken = localStorage.getItem("authToken");
-
-    if (!userId || !authToken) {
-      console.error("Nedostaje userId ili authToken u localStorage.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Greška pri dohvatanju podataka.");
-      }
-
-      const data = await response.json();
-          
-    const allEvents = data.zakazano.flat().map((item) => ({
-      ...item,
-      datum: item.datum_rezervacije,
-      potvrdio_user: item.potvrdio_user || {},
-    })).sort((a, b) => a.vreme_rezervacije.localeCompare(b.vreme_rezervacije));
-
-      setDesavanjaData(allEvents);
-      console.log(allEvents);
-
-      const formatted = selectedDate || formatDate(today);
-      const currentEvents = allEvents.filter((e) => e.datum === formatted);
-      setSelectedEvents(currentEvents);
-
-
-    } catch (error) {
-      console.error("Greška:", error);
-    }
-  };
-
-  useEffect(() => {
-
-    fetchData();
-
-    const intervalId = setInterval(fetchData, 3600000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-  
-    const onWheel = (e) => {
-      if (e.deltaY !== 0) {
-        e.preventDefault();
-        const scrollSpeed = 3; 
-        el.scrollLeft += e.deltaY * scrollSpeed;
-      }
-    };
-  
-    el.addEventListener("wheel", onWheel, { passive: false });
-  
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [selectedEvents.length]);
-  
-
-
   useEffect(() => {
     generateCalendar(currentMonth, currentYear);
   }, [desavanjaData, currentMonth, currentYear]);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        const scrollSpeed = 3;
+        el.scrollLeft += e.deltaY * scrollSpeed;
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [selectedEvents.length]);
+
+  useEffect(() => {
+    // Update selectedEvents when desavanjaData or selectedDate changes
+    const currentEvents = desavanjaData.filter((e) => e.datum === selectedDate);
+    setSelectedEvents(currentEvents);
+  }, [desavanjaData, selectedDate]);
 
   const potvrdiTermin = async (termin) => {
     const authToken = localStorage.getItem('authToken');
@@ -191,7 +145,7 @@ export default function Kalendar() {
       toast.error(data.message);
       return;
     }
-    
+
     toast.success("Potvrdili ste termin.");
     fetchData();
   }
@@ -235,8 +189,10 @@ export default function Kalendar() {
         </div>
       </div>
 
-      <div style={{width:'100%'}}>
-        {selectedDate ? (
+      <div style={{width:'100%',marginTop:'5px'}}>
+        {loading ? (
+          <h2>Učitavanje...</h2>
+        ) : selectedDate ? (
           selectedEvents.length > 0 ? (
             <div className={styles.dayWrapper} ref={scrollRef}>
               {selectedEvents.map((event, index) => (

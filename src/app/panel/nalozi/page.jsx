@@ -156,6 +156,15 @@ export default function NaloziPage() {
         toast.success("Uspešno ste obrisali korisnika.");
         fetchData();
     }
+    useEffect(() => {
+        if (korisnikZaPotvrduBrisanja !== null) {
+            const timer = setTimeout(() => {
+                setKorisnikZaPotvrduBrisanja(null);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [korisnikZaPotvrduBrisanja]);
+
     
     const prikaziElZaNovuSifru = (korisnik) => {
         setPromeniLozinkuEl(true);

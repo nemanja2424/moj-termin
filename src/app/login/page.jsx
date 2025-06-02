@@ -102,6 +102,24 @@ const LoginPage = () => {
       return;
     }
     
+    const forma = {
+      "izgled": "default",
+      "ime": true,
+      "prezime": false,
+      "email": true,
+      "telefon": true,
+      "datum": true,
+      "vreme": true,
+      "trajanje": false,
+      "lokacija": true,
+      "opis": false,
+      "nazivFirme": true,
+      "logoFirme": true,
+      "customPolja": [],
+      "link": []
+    }
+
+    
   
     try {
       const res = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/auth/signup', {
@@ -109,7 +127,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ regEmail, regPass, ime, brTel })
+        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma })
       });
   
       const data = await res.json();
@@ -122,7 +140,7 @@ const LoginPage = () => {
       localStorage.setItem('authToken', data.authToken);
       localStorage.setItem('userId', data.id);
       localStorage.setItem('rola', 1);
-      window.location.href = '/panel/pomoc';  
+      window.location.href = '/panel';  
     } catch (error) {
       console.error(error);
       toast.error('Došlo je do greške. Pokušajte ponovo.');
