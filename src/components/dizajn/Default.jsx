@@ -1,29 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import styles from './Default.module.css';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
-export default function DefaultDesign() {
-  const { id } = useParams();
+export default function DefaultDesign({
+  forma, setForma,
+  preduzece, setPreduzece,
+  formData, setFormData,
+  id, token, handleSubmit
+}) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [preduzece, setPreduzece] = useState({});
-  const [forma, setForma] = useState({});
-
-  const [formData, setFormData] = useState({
-    ime: '',
-    prezime: '',
-    email: '',
-    telefon: '+381',
-    trajanje: '1h',
-    lokacija: '',
-    vreme: '',
-    dan: '',
-    mesec: today.getMonth(),
-    godina: today.getFullYear(),
-  });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -53,14 +41,31 @@ export default function DefaultDesign() {
     return days;
   };
 
+  const getAvailableDays = (year, month) => {
+    const days = [];
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // samo datum, bez vremena
+    const totalDays = new Date(year, month + 1, 0).getDate();
 
+    for (let day = 1; day <= totalDays; day++) {
+      const date = new Date(year, month, day);
+      date.setHours(0, 0, 0, 0);
+
+      // Prikazi samo danas ili u budućnosti
+      if (date < now) continue;
+
+      // Ako želiš da preskočiš vikende, otkomentariši sledeće dve linije:
+      // const dayOfWeek = date.getDay();
+      // if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+      days.push(day);
+    }
+    return days;
+  };
 
   const useFilteredDays = false; // ili true da uključiš
 
-  const days = useFilteredDays 
-    ? getDaysInMonthExcludingWeekends(formData.godina, formData.mesec) 
-    : Array.from({ length: new Date(formData.godina, formData.mesec + 1, 0).getDate() }, (_, i) => i + 1);
-
+  const days = getAvailableDays(formData.godina, formData.mesec);
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -76,25 +81,7 @@ export default function DefaultDesign() {
     setIsMenuOpen((prev) => !prev);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    console.log('Form data:', formData);
-  };
-
-  const fetchData = async () => {
-    const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazi/${id}/forma`);
-    if (!res.ok) {
-      toast.error('Greška prilikom učitavanja podataka');
-      console.log(res);
-    }
-    const data = await res.json();  
-    setForma(data.forma);
-    setPreduzece(data);
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
 
 
   // Kada stigne preduzece, postavi podrazumevanu lokaciju
@@ -155,9 +142,11 @@ export default function DefaultDesign() {
     return startA < endB && startB < endA;
   };
 
+  let odabranDatum;
   // Generisanje slobodnih termina na osnovu radnog vremena, trajanja i zauzetih termina
   const generateSlobodniTermini = (radnoVreme, trajanje, zauzetiTermini, selectedDate) => {
     console.log('IZABRAN DATUM:', `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`);
+    odabranDatum = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
     console.log(days)
     if (!radnoVreme || !trajanje) return [];
     const [start, end] = radnoVreme.split('-');
@@ -204,10 +193,14 @@ export default function DefaultDesign() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <img className={styles.logo} src={preduzece.putanja_za_logo} />
-        {forma.nazivFirme === true && (
-          <h1>{preduzece.ime_preduzeca}</h1>
-        )}
+        <div className={styles.brandFirme}>
+          {forma.logoFirme === true && 
+            <img className={styles.logo} src={preduzece.putanja_za_logo} />
+          }
+          {forma.nazivFirme === true && (
+            <h1>{preduzece.ime_preduzeca}</h1>
+          )}
+        </div>
         <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
           {Array.isArray(forma?.link) && forma.link.map((link, index) => (
             <a key={index} href={link.url}>{link.text}</a>
@@ -222,13 +215,6 @@ export default function DefaultDesign() {
             <div className={styles.inputGroup}>
               <label>Ime</label>
               <input type="text" name="ime" value={formData.ime} onChange={handleChange} required />
-            </div>
-          )}
-
-          {forma.prezime === true && (
-            <div className={styles.inputGroup}>
-              <label>Prezime</label>
-              <input type="text" name="prezime" value={formData.prezime} onChange={handleChange} required />
             </div>
           )}
 
@@ -371,9 +357,16 @@ export default function DefaultDesign() {
                   </div>
                 )
               )}
+
             </div>
           </div>
 
+          {forma.opis === true && (
+            <div className={styles.inputGroup}>
+              <label>Opis</label>
+              <textarea style={{height:'60px',resize:'none'}} name="opis" maxLength={200} value={formData.opis} onChange={handleChange} />
+            </div>
+          )}
           
 
           
@@ -381,6 +374,8 @@ export default function DefaultDesign() {
           <button type="submit" className={styles.submitBtn}>Zakaži</button>
         </form>
       </main>
+
+      <ToastContainer />
     </div>
   );
 }
