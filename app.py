@@ -256,7 +256,7 @@ def zakazi():
         poruka = f"""Poštovani,
             \nVaš termin je uspešno zakazan za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
             \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
-            \n https://mojtermin.site/zakazi/izmeni/{token}
+            \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
             \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin."""
 
         # HTML verzija poruke
@@ -268,7 +268,7 @@ def zakazi():
                 <h2>Poštovani,</h2>
                 <p>Vaš termin je <b>uspešno zakazan</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
                 <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
-                <a href="https://mojtermin.site/zakazi/izmeni/{token}" class="btn">Izmenite termin</a>
+                <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
                 <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
                 </div>
             </body>
@@ -317,7 +317,7 @@ def izmeniTermin():
         poruka = f"""Poštovani,
             \nVaš termin je uspešno izmenjen za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
             \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
-            \n https://mojtermin.site/zakazi/izmeni/{token}
+            \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
             \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin."""
 
         # HTML verzija poruke
@@ -329,7 +329,7 @@ def izmeniTermin():
                 <h2>Poštovani,</h2>
                 <p>Vaš termin je <b>uspešno izmenjen</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
                 <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
-                <a href="https://mojtermin.site/zakazi/izmeni/{token}" class="btn">Izmenite termin</a>
+                <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
                 <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
                 </div>
             </body>
