@@ -56,13 +56,14 @@ export default function PanelPage() {
   }, [fetchData]);
 
   const izmeniTermin = (event) => {
-    router.push(`/panel/termini/izmeni/${event.id}`)
+    const userId = localStorage.getItem("userId");
+    router.push(`/zakazi/${userId}/izmeni/${event.token}`)
   }
 
   return (
     <div className={styles.child}>
       <div className={stylesLocal.header}>
-        <h1>Termin</h1>
+        <h1>Termini</h1>
         <button className={stylesLocal.btn} onClick={() => setShowTabela(prev => !prev)}>{showTabela ? "Kalendar" : "Tabela" }</button>
       </div>
       {showTabela

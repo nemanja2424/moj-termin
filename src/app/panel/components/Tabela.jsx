@@ -76,7 +76,10 @@ export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin
                   {event.potvrdio === 0 ? (
                     <button
                       className={styles.btn}
-                      onClick={() => potvrdiTermin(event)}
+                      onClick={e => {
+                        e.stopPropagation();
+                        potvrdiTermin(event);
+                      }}
                     >
                       Potvrdi
                     </button>

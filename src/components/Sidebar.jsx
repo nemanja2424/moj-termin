@@ -43,9 +43,9 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
         </Link>
         {vlasnik && (
           <>
-            <Link href={'/panel/zakazivanje'}>
+            <Link href={'/panel/brend'}>
               <div className={styles.ikona}><FontAwesomeIcon icon={faBookmark} /></div>
-              <p>Zakazivanje</p>
+              <p>Brend</p>
             </Link>
             <Link href={'/panel/nalozi'}>
               <div className={styles.ikona}><FontAwesomeIcon icon={faUser} /></div>

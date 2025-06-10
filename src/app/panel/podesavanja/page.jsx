@@ -4,8 +4,6 @@ import { useEffect, useState, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import styles from './podesavanja.module.css';
 import stylesLogin from '@/app/login/login.module.css';
-import { QRCodeSVG } from 'qrcode.react';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 
 export default function PodesavanjaPage() {
     const [korisnik, setKorisnik] = useState({});
@@ -241,25 +239,6 @@ export default function PodesavanjaPage() {
     
         return delovi.join(", ");
     };
-    
-    const preuzmiQRCode = () => {
-        const svg = qrRef.current;
-        if (!svg) return;
-
-        const serializer = new XMLSerializer();
-        const svgStr = serializer.serializeToString(svg);
-
-        const blob = new Blob([svgStr], { type: "image/svg+xml" });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "qrcode.svg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
 
     
     
@@ -375,13 +354,6 @@ export default function PodesavanjaPage() {
                     <span>Paket traje još:</span>
                     <h4>{danaDoDatuma(korisnik.istek_pretplate)}</h4>
                 </div>
-            </div>
-            <div className={styles.stavka} style={{flexDirection:'column', alignItems:'center'}}>
-                <h3>QR kod za zakazivanje</h3>
-                <QRCodeSVG value={link} className={styles.qr} ref={qrRef} />
-                <button onClick={preuzmiQRCode} className={styles.btn}>
-                    Preuzmi QR kod
-                </button>
             </div>
         </div>
 

@@ -204,7 +204,7 @@ export default function NaloziPage() {
 
     return (
         <div style={{ width: '100%' }} className={panelStyles.child}>
-            <div style={{width:'100%',display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{width:'calc(100% - 20px)',display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:'10px',paddingBottom:'0'}}>
                 <h2>Lista zaposlenih</h2>
                 <button className={styles.btn} style={{margin:'0'}}
                 onClick={() => setShowDodajKorisnika(prev => !prev)}><i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika</button>

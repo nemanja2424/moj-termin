@@ -16,6 +16,50 @@ CORS(app)
 def hello():
     return jsonify({"message": "Zdravo iz Flask API-ja!"})
 
+
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'public', 'logos')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+@app.route('/api/novi_logo', methods=['POST'])
+def upload_logo():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    userId = request.form.get('id')
+    authToken = request.form.get('authToken')
+    logoName = f'/logos/{file.filename}'
+
+    if not userId or not authToken:
+        return jsonify({'error': 'Nedostaju podaci'}), 400
+
+    xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/logo/{userId}'
+    try:
+        response = requests.patch(
+            xano_url,
+            headers={
+                'Authorization': f'Bearer {authToken}',
+                'Content-Type': 'application/json'
+            },
+            json={
+                "putanja": logoName
+            }
+        )
+        if response.status_code != 200:
+            return jsonify({'error': 'Xano error', 'details': response.text}), response.status_code
+
+        return jsonify({'message': 'Logo uploaded successfully', 'filename': filename}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
 html_head = """
 <head>
     <!-- Google Fonts: Poppins -->
@@ -84,7 +128,7 @@ html_head = """
 </head>"""
 
 
-def send_confirmation_email(to_email, poruka, html_poruka, subject):
+def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = "nemanja@nemanja.website"
@@ -108,6 +152,8 @@ def send_confirmation_email(to_email, poruka, html_poruka, subject):
         server.starttls()
         server.login(smtp_user, smtp_password)
         server.send_message(msg)
+
+
 
 @app.route('/api/potvrdi_termin', methods=['POST'])
 def post_data():
@@ -136,14 +182,16 @@ def post_data():
             }
         )
 
-        # Pošalji email samo ako je potvrda uspešna
         if response.status_code == 200:
             try:
-                send_confirmation_email(
-                    termin.get('email'),
-                    termin.get('ime'),
-                    termin.get('vreme_rezervacije')
-                )
+                poruka = f"""
+                    Poštovani,
+                    \nVaš termin u {response.json().get("ime_preduzeca").get("ime")} je potvrdio {response.json().get("potvrdio_zaposlen").get("username")}.
+                """
+                naslov = f"Potvrda termina - {response.json().get("ime_preduzeca").get("ime")}"
+
+                send_confirmation_email(response.json().get("email"), poruka, naslov)
+
             except Exception as mail_err:
                 return jsonify({
                     'status': response.status_code,
@@ -158,85 +206,14 @@ def post_data():
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
-    data = request.json
-    termin = data.get('termin')
-    auth_token = data.get('authToken')
 
-    if not termin or not auth_token:
-        return jsonify({'error': 'Nedostaju podaci'}), 400
-
-    termin_id = termin.get('id')
-    potvrdio = termin.get('potvrdio')
-    if not termin_id:
-        return jsonify({'error': 'Nedostaje ID termina'}), 400
-    
-    xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/{termin_id}/potvrda'
-    try:
-        response = requests.patch(
-            xano_url,
-            headers={
-                'Authorization': f'Bearer {auth_token}',
-                'Content-Type': 'application/json'
-            },
-            json={
-                "potvrdio": potvrdio
-            }
-        )
-
-        return jsonify({
-            'status': response.status_code,
-            'xano_response': response.json()
-        }), response.status_code
-
-    except requests.exceptions.RequestException as e:
-        return jsonify({'error': str(e)}), 500
-
-
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'public', 'logos')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-@app.route('/api/novi_logo', methods=['POST'])
-def upload_logo():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-    userId = request.form.get('id')
-    authToken = request.form.get('authToken')
-    logoName = f'/logos/{file.filename}'
-
-    if not userId or not authToken:
-        return jsonify({'error': 'Nedostaju podaci'}), 400
-
-    xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/logo/{userId}'
-    try:
-        response = requests.patch(
-            xano_url,
-            headers={
-                'Authorization': f'Bearer {authToken}',
-                'Content-Type': 'application/json'
-            },
-            json={
-                "putanja": logoName
-            }
-        )
-        if response.status_code != 200:
-            return jsonify({'error': 'Xano error', 'details': response.text}), response.status_code
-
-        return jsonify({'message': 'Logo uploaded successfully', 'filename': filename}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/zakazi', methods=['POST'])
 def zakazi():
     data = request.json
     podaci = data.get('podaci')
+    odabrana_lokacija = podaci.get('lokacija')
     token = secrets.token_urlsafe(10)
     data['token'] = token
 
@@ -250,23 +227,32 @@ def zakazi():
         if response.status_code != 200:
             return jsonify({'error': 'Xano error', 'message': response.text}), response.status_code
         
-        datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
+        res_json = response.json()
+        # Ako je lista, uzmi prvi element, ako je dict koristi direktno
+        if isinstance(res_json, list):
+            res_json = res_json[0]
 
-        subject = f"Zakazivanje termina"
+        preduzece = res_json.get('ime_preduzeca')
+        lokacije = res_json.get('lokacije', [])
+        # Pronađi izabranu lokaciju po ID-u
+        izabrana_lokacija = next((l for l in lokacije if str(l.get('id')) == str(odabrana_lokacija)), None)
+        adresa = izabrana_lokacija.get('adresa') if izabrana_lokacija else ''
+
+        datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
+        subject = f"Zakazivanje termina - {preduzece}"
         poruka = f"""Poštovani,
-            \nVaš termin je uspešno zakazan za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
+            \nVaš termin u {preduzece} je uspešno zakazan za {datum_i_vreme}, na adresi {adresa}. Dobićete obaveštenje kada neko potvrdi vaš termin.
             \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
             \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
             \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin."""
 
-        # HTML verzija poruke
         html_poruka = f"""
         <html>
             {html_head}
             <body>
                 <div class="content">
                 <h2>Poštovani,</h2>
-                <p>Vaš termin je <b>uspešno zakazan</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
+                <p>Vaš termin u {preduzece} je <b>uspešno zakazan</b> za <b>{datum_i_vreme}</b> na adresi <b>{adresa}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
                 <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
                 <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
                 <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
@@ -274,7 +260,6 @@ def zakazi():
             </body>
         </html>
         """
-
 
         send_confirmation_email(
             podaci.get('email'),
@@ -291,6 +276,7 @@ def zakazi():
     
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 @app.route('/api/zakazi/izmena', methods=['POST'])

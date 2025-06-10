@@ -18,7 +18,7 @@
 }
 
 .brandFirme{
-  width: 60%;
+  gap: 15px;
   max-width: 60%;
   display: flex;
   align-items: center;
@@ -51,6 +51,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 2rem;
 }
 
@@ -64,6 +65,7 @@
 .inputGroup {
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 }
 
 .inputGroup label {
@@ -88,6 +90,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s;
+  max-width: 100%;
 }
 
 .submitBtn:hover {
@@ -143,6 +146,9 @@
 
 /* Responsive Header */
 @media (max-width: 768px) {
+  .formWrapper{
+    padding: 15px;
+  }
   .nav {
     opacity: 0;
     visibility: hidden;
@@ -179,4 +185,13 @@
     cursor: pointer;
   }
 
+
+}
+@media (max-width: 320px) {
+  .inputGroup{
+    max-width: 78%;
+  } 
+  .submitBtn{
+    max-width: 78%;
+  }
 }

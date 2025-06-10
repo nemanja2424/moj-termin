@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Default.module.css';
 import { toast, ToastContainer } from 'react-toastify';
 
-export default function DefaultDesign({
+export default function MinimalDesign({
   forma, setForma,
   preduzece, setPreduzece,
   formData, setFormData,
@@ -371,7 +371,7 @@ export default function DefaultDesign({
 
           
 
-          <button type="submit" className={styles.submitBtn}>Zakaži</button>
+          <button type="submit" className={styles.submitBtn} style={{background:'red'}}>Zakaži</button>
         </form>
       </main>
 

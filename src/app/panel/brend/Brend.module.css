@@ -1,0 +1,367 @@
+.BrendPage{
+    width: 100%;
+}
+
+.header{
+    padding: 5px 15px;
+    width: calc(100% - 30px);
+    height: 50px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.header a{
+    color: #000;
+    font-weight: 600;
+}
+.header a:hover{
+    color: #0088E5;
+}
+.header a.active{
+    color: #0088E5;
+}
+.header span{
+    color: #000;
+    cursor: pointer;
+}
+.header span:hover{
+    color: #0088E5;
+}
+.header .linkovi{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+
+
+.content{
+    width: 100%;
+    height: 100%;
+
+}
+
+.prikazDizajna{
+    width: calc(100% - 20px);
+    height: 75%;
+    padding: 40px 5px;
+    background: linear-gradient(60deg, #0aadff 6.25%, #0a7eb8 40.25%, #0088e5 50%, #123484 80.25%) 0 / 100% 100%;
+    border-radius: 20px;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+}
+
+.pcDizajn,
+.phDizajn{
+    border-radius: 8px;
+    position: relative;
+}
+.pcDizajn p,
+.phDizajn p{
+    color: white;
+    cursor: pointer;
+}
+.pcDizajn iframe,
+.phDizajn iframe{
+    border-radius: 8px;
+}
+.pcDizajn b,
+.phDizajn b{
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    position: absolute;
+    top: -25px;
+}
+
+
+.pcDizajn{
+    width: 70%;
+    max-height: 100%;
+    aspect-ratio: 16/9;
+}
+.pcDizajn.zoomed{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.phDizajn{
+    height: 100%;
+    aspect-ratio: 9/20;
+}
+.phDizajn iframe{
+    max-width: 430px;
+}
+.phDizajn.zoomed{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+}
+
+
+.blur {
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px); /* Pravilno zamućenje pozadine */
+  background-color: rgba(255, 255, 255, 0.1); /* Blaga providna pozadina */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.linkDiv {
+    z-index: 100;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.btn{  
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    max-width: 160px;
+    text-transform: uppercase;
+    -webkit-transition : all 200ms linear;
+    transition: all 200ms linear;
+    padding: 7px 10px;
+    letter-spacing: 1px;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    align-items: center;
+    background-color: #3b82f6;
+    color: #000000;
+    margin: 10px 0;
+    z-index: 10;
+}
+.btn:hover{  
+    background-color: #000000;
+    color: #3b82f6;
+    box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+.copyWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: #f3f4f6;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: inset 0 0 0 1px #d1d5db;
+  font-family: 'Poppins', sans-serif;
+}
+.linkText {
+  font-size: 14px;
+  color: #111827;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.copyBtn {
+  padding: 6px 14px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.copyBtn:hover {
+  background-color: #2563eb;
+}
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #3b82f6;
+    font-size: 20px;
+    cursor: pointer;
+}
+.phDizajn .closeButton,
+.pcDizajn .closeButton{
+    color: red;
+}
+
+.strukturaModal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px 24px 24px 24px;
+    min-width: 320px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    clip-path: inset(0 round 12px);
+}
+.strukturaForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.strukturaLabel {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+.strukturaDugmad {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.closeButton {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.closeButton:hover {
+    color: #d00;
+}
+
+
+.linkItem {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.linkInput {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.linkInput:focus {
+  border-color: #0070f3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.obrisi {
+    cursor: pointer;
+    font-size: 20px;
+}
+.obrisi:hover {
+    color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.none{
+    display: none;
+}
+
+
+
+.button1,
+.button2 {
+    font-family: 'Poppins', sans-serif;
+    width: 170px;
+    height: 50px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    transition: background-position 0.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.button1 {
+    background: linear-gradient(60deg, #0AADFF 6.25%, #0a7eb8 40.25%, #0088E5 50%, #123484 80.25%);
+    background-position: left center;
+    background-size: 200% 100%;
+    color: white;
+
+}
+.button1:hover {
+    background-position: right center;
+}
+.button2 {
+    background: linear-gradient(120deg, #0AADFF 6.25%, #0a7eb8 40.25%, #0088E5 50%, #123484 80.25%);
+    background-position: right center;
+    background-size: 200% 100%;
+    color: white;
+}
+.button2:hover {
+    background-position: left center;
+}
+
+.playBtn{
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    background-color: transparent;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 760px){
+    .button1,
+    .button2 {
+        width: 179px;
+        height: 50px;
+    }
+  }
