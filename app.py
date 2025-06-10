@@ -128,6 +128,7 @@ html_head = """
 </head>"""
 
 
+
 def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -152,6 +153,69 @@ def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
         server.starttls()
         server.login(smtp_user, smtp_password)
         server.send_message(msg)
+
+
+
+def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, preduzece, datum_i_vreme, zakazivac):
+    zaposleni = []
+    xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/{vlasnikId}/rxyctdufvyigubohinuvgycftdxrytcufyvgubh'
+    try:
+        res = requests.get(xano_url, headers={'Content-Type': 'application/json'})
+        if res.status_code != 200:
+            return jsonify({'error': 'Xano error', 'message': res.text}), res.status_code
+        
+        data = res.json()
+
+        # Dodaj vlasnika ako je vezan za ovu lokaciju
+        vlasnik = data.get('vlasnik', {})
+        if vlasnik.get('email') and vlasnik.get('zaposlen_u') == lokacija:
+            zaposleni.append(vlasnik.get('email'))
+
+        # Prođi kroz sve grupe korisnika (zaposleni po firmama)
+        korisnici = data.get('korisnici', [])
+        for osoba in grupa:
+            if osoba.get('zaposlen_u') == lokacija:
+                email = osoba.get('email')
+                id_korisnika = osoba.get('id')
+                if email:
+                    zaposleni.append({'email': email, 'id': id_korisnika})
+
+
+        print("Zaposleni za lokaciju", lokacija, "su:", zaposleni)
+
+        # Slanje mejlova svakom od njih
+        for z in zaposleni:
+        email = z['email']
+        korisnik_id = z['id']
+        send_confirmation_email(
+            to_email=email,
+            poruka=f"""
+                Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}.
+                \nNa linku ispod možete izmeniti vreme i datum termina, potvrditi ga ili otkazati.
+                \nhttps://mojtermin.site/zakazi/{vlasnikId}/izmena/{token}
+            """,
+            subject=f"{naslov} - {preduzece}",
+            html_poruka=f"""
+                <html>
+                    {html_head}
+                    <body>
+                        <div class="content">
+                            <p>Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}</p>
+                            <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}/potvrda/{korisnik_id}" class="btn">Potvrdi termin</a>
+                            <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}" class="btn">Izmenite termin</a>
+                        </div>
+                    </body>
+                </html>
+            """
+        )
+
+
+        return True
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': str(e)}), 500
+
+
 
 
 
@@ -266,6 +330,18 @@ def zakazi():
             poruka,
             html_poruka,
             subject
+        )
+        
+
+        send_email_to_workers(
+            data.get('id'),
+            odabrana_lokacija,
+            'Novo zakazivanje',
+            token,
+            odabrana_lokacija,
+            preduzece,
+            datum_i_vreme,
+            podaci.get('ime')
         )
 
         return jsonify({
