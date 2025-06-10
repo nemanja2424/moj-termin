@@ -1,5 +1,5 @@
 // app/panel/termini/izmeni/[id]/page.jsx
-"use client";
+'use client';
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 

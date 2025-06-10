@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import DefaultDesign from "@/components/dizajn/Default";
