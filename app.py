@@ -173,7 +173,7 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
 
         # Prođi kroz sve grupe korisnika (zaposleni po firmama)
         korisnici = data.get('korisnici', [])
-        for osoba in grupa:
+        for osoba in korisnici:
             if osoba.get('zaposlen_u') == lokacija:
                 email = osoba.get('email')
                 id_korisnika = osoba.get('id')
