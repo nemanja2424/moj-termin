@@ -1,12 +1,13 @@
 'use client';
 export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DefaultDesign from '@/components/dizajn/Default';
 import MinimalDesign from '@/components/dizajn/Minimal';
 import ModernDesign from '@/components/dizajn/Modern';
 
-export default function PreviewPage() {
+function PreviewPage() {
   const searchParams = useSearchParams();
   const design = searchParams.get('design') || 'default';
 
@@ -39,4 +40,12 @@ export default function PreviewPage() {
   if (design === 'minimal') return <MinimalDesign {...props} />;
   if (design === 'modern') return <ModernDesign {...props} />;
   return <DefaultDesign {...props} />;
+}
+
+export default function PreviewPageWrapper() {
+  return (
+    <Suspense>
+      <PreviewPage />
+    </Suspense>
+  );
 }
