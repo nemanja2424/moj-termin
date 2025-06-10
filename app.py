@@ -185,29 +185,29 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
 
         # Slanje mejlova svakom od njih
         for z in zaposleni:
-        email = z['email']
-        korisnik_id = z['id']
-        send_confirmation_email(
-            to_email=email,
-            poruka=f"""
-                Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}.
-                \nNa linku ispod možete izmeniti vreme i datum termina, potvrditi ga ili otkazati.
-                \nhttps://mojtermin.site/zakazi/{vlasnikId}/izmena/{token}
-            """,
-            subject=f"{naslov} - {preduzece}",
-            html_poruka=f"""
-                <html>
-                    {html_head}
-                    <body>
-                        <div class="content">
-                            <p>Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}</p>
-                            <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}/potvrda/{korisnik_id}" class="btn">Potvrdi termin</a>
-                            <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}" class="btn">Izmenite termin</a>
-                        </div>
-                    </body>
-                </html>
-            """
-        )
+            email = z['email']
+            korisnik_id = z['id']
+            send_confirmation_email(
+                to_email=email,
+                poruka=f"""
+                    Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}.
+                    \nNa linku ispod možete izmeniti vreme i datum termina, potvrditi ga ili otkazati.
+                    \nhttps://mojtermin.site/zakazi/{vlasnikId}/izmena/{token}
+                """,
+                subject=f"{naslov} - {preduzece}",
+                html_poruka=f"""
+                    <html>
+                        {html_head}
+                        <body>
+                            <div class="content">
+                                <p>Novi termin zakazan u {preduzece} za {datum_i_vreme}. Zakazao ga je {zakazivac}</p>
+                                <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}/potvrda/{korisnik_id}" class="btn">Potvrdi termin</a>
+                                <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}" class="btn">Izmenite termin</a>
+                            </div>
+                        </body>
+                    </html>
+                """
+            )
 
 
         return True
