@@ -39,7 +39,7 @@ export default function ZakaziPage() {
         fetchData();
     }, []);
 
-    const [localhost, setLocalHost] = useState(false);
+    const [localhost, setLocalHost] = useState(true);
     const handleSubmit = async (e) => {
         e.preventDefault();
 

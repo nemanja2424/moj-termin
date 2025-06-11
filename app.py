@@ -169,21 +169,19 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
         # Dodaj vlasnika ako je vezan za ovu lokaciju
         vlasnik = data.get('vlasnik', {})
         if vlasnik.get('email') and vlasnik.get('zaposlen_u') == lokacija:
-            zaposleni.append(vlasnik.get('email'))
+            zaposleni.append({'email': vlasnik.get('email'), 'id': vlasnik.get('id')})
 
         # Prođi kroz sve grupe korisnika (zaposleni po firmama)
         korisnici = data.get('korisnici', [])
         for grupa in korisnici:
             for osoba in grupa:
-                if osoba.get('zaposlen_u') == lokacija:
+                if str(osoba.get('zaposlen_u')) == str(lokacija):
                     email = osoba.get('email')
                     id_korisnika = osoba.get('id')
                     if email:
                         zaposleni.append({'email': email, 'id': id_korisnika})
 
 
-
-        print("Zaposleni za lokaciju", lokacija, "su:", zaposleni)
 
         # Slanje mejlova svakom od njih
         for z in zaposleni:
@@ -294,13 +292,14 @@ def zakazi():
             return jsonify({'error': 'Xano error', 'message': response.text}), response.status_code
         
         res_json = response.json()
-        # Ako je lista, uzmi prvi element, ako je dict koristi direktno
-        if isinstance(res_json, list):
-            res_json = res_json[0]
 
-        preduzece = res_json.get('ime_preduzeca')
-        lokacije = res_json.get('lokacije', [])
-        # Pronađi izabranu lokaciju po ID-u
+        print(res_json)
+
+        user = res_json.get('user', [{}])[0]
+        preduzece = user.get('ime_preduzeca')
+        lokacije = user.get('lokacije', [])
+
+
         izabrana_lokacija = next((l for l in lokacije if str(l.get('id')) == str(odabrana_lokacija)), None)
         adresa = izabrana_lokacija.get('adresa') if izabrana_lokacija else ''
 
@@ -336,7 +335,7 @@ def zakazi():
         
 
         send_email_to_workers(
-            data.get('id'),
+            data.get("id"),
             odabrana_lokacija,
             'Novo zakazivanje',
             token,
