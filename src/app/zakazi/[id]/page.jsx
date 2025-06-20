@@ -39,7 +39,7 @@ export default function ZakaziPage() {
         fetchData();
     }, []);
 
-    const [localhost, setLocalHost] = useState(true);
+    const [localhost, setLocalHost] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -81,6 +81,7 @@ export default function ZakaziPage() {
             setFormData={setFormData}
             id={id}
             handleSubmit={handleSubmit}
+            tipUlaska={1}
         />
         <Footer />
         <ToastContainer />

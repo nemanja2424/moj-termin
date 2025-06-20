@@ -141,7 +141,16 @@
 }
 
 .submitBtn{
+  width: 40%;
   max-height: 58px;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
 /* Responsive Header */

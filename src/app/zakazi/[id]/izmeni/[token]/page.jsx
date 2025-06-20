@@ -8,6 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 
 export default function IzmeniZakaziPage() {
     const { id, token } = useParams();
+    //Tip ulaska = 1 je za zakazivanje, 2 je za izmenu za korisnika, 3 je za izmenu za preduzece
+    const [tipUlaska, setTipUlaska] = useState(2); 
     const [forma, setForma] = useState({}); // froma = objekat u preduzece
     const [preduzece, setPreduzece] = useState({}); //preduzece = objekat koji ima {forma} i ostale podatke
     const today = new Date();
@@ -54,9 +56,11 @@ export default function IzmeniZakaziPage() {
 
     useEffect(() => {
         fetchData();
+        const authToken = localStorage.getItem('authToken');
+        if (authToken) {setTipUlaska(3)}
     }, []);
 
-    const [localhost, setLocalHost] = useState(false);
+    const [localhost, setLocalHost] = useState(true);
     const handleSubmit = async (e) => {
         e.preventDefault();
         const odabranDatum = `${formData.godina}-${String(Number(formData.mesec) + 1).padStart(2, '0')}-${String(formData.dan).padStart(2, '0')}`;
@@ -73,9 +77,9 @@ export default function IzmeniZakaziPage() {
 
         
         const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ podaci, id, token })
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ podaci, id, token })
         });
 
         if(!res.ok) {
@@ -83,9 +87,37 @@ export default function IzmeniZakaziPage() {
         return;
         }
 
-        toast.success(res.app_response);
-
+        toast.success("Uspešno ste izmenili termin.");
+        fetchData();
     };
+
+    const handleOtkazi = async (e) => {
+        e.preventDefault();
+        const odabranDatum = `${formData.godina}-${String(Number(formData.mesec) + 1).padStart(2, '0')}-${String(formData.dan).padStart(2, '0')}`;
+        const podaci = {
+            ...formData,
+            datum_rezervacije: odabranDatum,
+        };
+        const url = localhost
+        ? 'http://127.0.0.1:5000/api/zakazi/otkazi'
+        : 'https://mojtermin.site/api/zakazi/otkazi';
+
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ podaci, id, token, tipUlaska })
+        });
+
+
+        if (!res.ok) {
+            toast.error('Greška prilikom otkazivanja termina.');
+            return;
+        }
+
+        toast.success('Uspešno ste otkazali termin.')
+    }
 
 
     return (
@@ -100,6 +132,8 @@ export default function IzmeniZakaziPage() {
                 id={id}
                 token={token}
                 handleSubmit={handleSubmit}
+                tipUlaska={tipUlaska}
+                handleOtkazi={handleOtkazi}
             />
             <Footer />
             <ToastContainer />

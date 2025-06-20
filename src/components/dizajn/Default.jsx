@@ -7,7 +7,8 @@ export default function DefaultDesign({
   forma, setForma,
   preduzece, setPreduzece,
   formData, setFormData,
-  id, token, handleSubmit
+  id, token, handleSubmit, tipUlaska,
+  handleOtkazi
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -86,6 +87,7 @@ export default function DefaultDesign({
 
   // Kada stigne preduzece, postavi podrazumevanu lokaciju
   useEffect(() => {
+    console.log('Tip ulaska: ', tipUlaska)
     if (preduzece.lokacije && preduzece.lokacije.length > 0 && !formData.lokacija) {
       setFormData((prev) => ({
         ...prev,
@@ -369,9 +371,23 @@ export default function DefaultDesign({
           )}
           
 
-          
+          <div className={styles.buttons}>
+            <button type="submit" className={styles.submitBtn}>
+              {tipUlaska === 1 && 'Zakaži'}
+              {(tipUlaska === 2 || tipUlaska === 3) && 'Izmeni'}
+            </button>
+            {tipUlaska === 3 && (
+              <button className={styles.submitBtn}>
+                Potvrdi
+              </button>
+            )}
+            {(tipUlaska === 2 || tipUlaska === 3) && (
+              <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
+                Otkaži termin
+              </button>
+            )}
+          </div>
 
-          <button type="submit" className={styles.submitBtn}>Zakaži</button>
         </form>
       </main>
 
