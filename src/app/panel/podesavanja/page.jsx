@@ -30,6 +30,8 @@ export default function PodesavanjaPage() {
     const [editFirmaId, setEditFirmaId] = useState(null);
     const [editedFirmData, setEditedFirmData] = useState({});
     const fileInputRef = useRef();
+    const [loadingPotvrdi, setLoadingPotvrdi] = useState(false);
+    const [loadingLokacija, setLoadingLokacija] = useState(false);
 
 
 
@@ -47,6 +49,7 @@ export default function PodesavanjaPage() {
     };
     const handleImeEmailTel = async (e) => {
         e.preventDefault();
+        setLoadingPotvrdi(true);
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/user/${userId}`, {
@@ -59,6 +62,7 @@ export default function PodesavanjaPage() {
         });
         const data = await res.json();
 
+        setLoadingPotvrdi(false);
         if (!res.ok) {
             toast.error(data.message || 'Greška prilikom registracije.');
             return;
@@ -109,6 +113,7 @@ export default function PodesavanjaPage() {
     }
     const handleDodajLokaciju = async (e) => {
         e.preventDefault();
+        setLoadingLokacija(true);
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/dodaj-lokaciju/${userId}`, {
@@ -121,6 +126,7 @@ export default function PodesavanjaPage() {
         });
         const data = await res.json();
 
+        setLoadingLokacija(false);
         if (!res.ok){
             toast.error(data.message || 'Greška prilikom registracije.');
             return;
@@ -132,6 +138,7 @@ export default function PodesavanjaPage() {
         setAdresa('');
     }
     const handleConfirmEdit = async (firmaId) => {
+        setLoadingPotvrdi(true);
         const authToken = localStorage.getItem('authToken');
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/izmeni-lokaciju/${firmaId}`, {
         method:'PATCH',
@@ -144,6 +151,7 @@ export default function PodesavanjaPage() {
 
     const data = await res.json();
 
+    setLoadingPotvrdi(false);
     if (!res.ok) {
         toast.error(data.message);
         return;
@@ -291,8 +299,9 @@ export default function PodesavanjaPage() {
                 <button 
                     onClick={editingUsername ? handleImeEmailTel : handleEditUsernameClick} 
                     className={styles.btn}
+                    disabled={loadingPotvrdi}
                 >
-                    {editingUsername ? 'Potvrdi' : 'Izmeni'}
+                    {editingUsername && loadingPotvrdi ? <div className="spinnerMali"></div> : (editingUsername ? 'Potvrdi' : 'Izmeni')}
                 </button>
             </div>
             <div className={styles.stavka}>
@@ -310,8 +319,9 @@ export default function PodesavanjaPage() {
                 <button 
                     onClick={editingEmail ? handleImeEmailTel : handleEditEmailClick} 
                     className={styles.btn}
+                    disabled={loadingPotvrdi}
                 >
-                    {editingEmail ? 'Potvrdi' : 'Izmeni'}
+                    {editingEmail && loadingPotvrdi ? <div className="spinnerMali"></div> : (editingEmail ? 'Potvrdi' : 'Izmeni')}
                 </button>
             </div>
             <div className={styles.stavka}>
@@ -329,8 +339,9 @@ export default function PodesavanjaPage() {
                 <button 
                     onClick={editingBrTel ? handleImeEmailTel : handleEditBrTelClick} 
                     className={styles.btn}
+                    disabled={loadingPotvrdi}
                 >
-                    {editingBrTel ? 'Potvrdi' : 'Izmeni'}
+                    {editingBrTel && loadingPotvrdi ? <div className="spinnerMali"></div> : (editingBrTel ? 'Potvrdi' : 'Izmeni')}
                 </button>
             </div>
             <div className={styles.stavka}>
@@ -378,8 +389,9 @@ export default function PodesavanjaPage() {
                     onClick={editingPrIme ? handleImeEmailTel : handlePrIme} 
                     className={styles.btn}
                     style={{maxHeight:'35px'}}
+                    disabled={loadingPotvrdi}
                 >
-                    {editingPrIme ? 'Potvrdi' : 'Izmeni'}
+                    {editingPrIme && loadingPotvrdi ? <div className="spinnerMali"></div> : (editingPrIme ? 'Potvrdi' : 'Izmeni')}
                 </button>            
             </div>
             <div className={styles.stavka} style={{maxHeight:'150px'}}>
@@ -432,8 +444,9 @@ export default function PodesavanjaPage() {
                                         setEditedFirmData({ ime: firma.ime, adresa: firma.adresa });
                                     }
                                 }}
+                                disabled={isEditing && loadingPotvrdi}
                             >
-                                {isEditing ? 'Potvrdi' : 'Izmeni'}
+                                {isEditing && loadingPotvrdi ? <div className="spinnerMali"></div> : (isEditing ? 'Potvrdi' : 'Izmeni')}
                             </button>
                         </div>
                     );
@@ -492,7 +505,9 @@ export default function PodesavanjaPage() {
                                 className={stylesLogin.formStyle} placeholder='Adresa' />
                             <i className={`${stylesLogin.inputIcon} fa-solid fa-location-dot`} style={{ transform: 'translateY(-25%)' }}></i>
                         </div>
-                        <button type='submit' className={styles.btn}>Dodaj lokaciju</button>
+                        <button type='submit' className={styles.btn} disabled={loadingLokacija}>
+                            {loadingLokacija ? <div className="spinnerMali"></div> : 'Dodaj lokaciju'}
+                        </button>
                         <div className={styles.x} onClick={() => setShowDodajLokaciju(false)}>
                             <i className="fa-regular fa-circle-xmark"></i>
                         </div>

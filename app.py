@@ -156,7 +156,7 @@ def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
 
 
 
-def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, preduzece, datum_i_vreme, zakazivac):
+def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, preduzece, datum_i_vreme, zakazivac, stariPodaci=None):
     zaposleni = []
     xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/{vlasnikId}/rxyctdufvyigubohinuvgycftdxrytcufyvgubh'
     try:
@@ -164,11 +164,11 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
         if res.status_code != 200:
             return jsonify({'error': 'Xano error', 'message': res.text}), res.status_code
         
-        data = res.json()
+        data = res.json()        
 
-        # Dodaj vlasnika ako je vezan za ovu lokaciju
+        # Dodaj vlasnika
         vlasnik = data.get('vlasnik', {})
-        if vlasnik.get('email') and vlasnik.get('zaposlen_u') == lokacija:
+        if vlasnik.get('email'):
             zaposleni.append({'email': vlasnik.get('email'), 'id': vlasnik.get('id')})
 
         # Prođi kroz sve grupe korisnika (zaposleni po firmama)
@@ -217,28 +217,85 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
                         Izmenjen termin zakazan u {preduzece} za {datum_i_vreme}. Izmenio ga je {zakazivac}.
                         \nNa linku ispod možete izmeniti vreme i datum termina, potvrditi ga ili otkazati.
                         \nhttps://mojtermin.site/zakazi/{vlasnikId}/izmena/{token}
+                        \nStari podaci: 
+                        \nIme: {stariPodaci.get("ime", "N/A")},
+                        \nLokacija: {stariPodaci.get("lokacija", "N/A")},
+                        \nVreme: {stariPodaci.get('dan')}.{stariPodaci.get('mesec')}.{stariPodaci.get('godina')} u {stariPodaci.get('vreme')},
+                        \nTrajanje termina: {stariPodaci.get('trajanje', 'N/A')}
                     """,
-                    subject=f"{naslov} - {preduzece}",
+                    subject=f"{naslov}",
                     html_poruka=f"""
                         <html>
                             {html_head}
                             <body>
                                 <div class="content">
-                                    <p>Izmenjen termin zakazan u {preduzece} za {datum_i_vreme}.</p>
+                                    <p>Izmenjen termin zakazan u {preduzece} za {datum_i_vreme}. Izmenio ga je {zakazivac}</p>
                                     <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}/potvrda/{korisnik_id}" class="btn">Potvrdi termin</a>
                                     <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}" class="btn">Izmenite termin</a>
+                                    <p style="margin-top: 20px;">Stari podaci:</p>
+                                    <ul>
+                                        <li>Ime: {stariPodaci.get("ime", "N/A")}</li>
+                                        <li>Lokacija: {stariPodaci.get("lokacija", "N/A")}</li>
+                                        <li>Vreme: {stariPodaci.get('dan')}.{stariPodaci.get('mesec')}.{stariPodaci.get('godina')} u {stariPodaci.get('vreme')}</li>
+                                        <li>Trajanje termina: {stariPodaci.get('trajanje', 'N/A')}</li>
+                                    </ul>
+                                </div>
+                            </body>
+                        </html>
+                    """
+                )
+            
+            elif naslov == 'Izmena termina - nova lokacija':
+                send_confirmation_email(
+                    to_email=email,
+                    poruka=f"""Termin koji je bio zakazan na drugom radnom mestu je izmenjen i odabrano je novo radno mesto - {preduzece} za {datum_i_vreme}. Izmenio ga je {zakazivac}.
+                        \nNa linku ispod možete izmeniti vreme i datum termina, potvrditi ga ili otkazati.
+                        \nhttps://mojtermin.site/zakazi/{vlasnikId}/izmena/{token}
+                        \nStari podaci: 
+                        \nIme: {stariPodaci.get("ime", "N/A")},
+                        \nLokacija: {stariPodaci.get("lokacija", "N/A")} (id),
+                        \nVreme: {stariPodaci.get('dan')}.{stariPodaci.get('mesec')}.{stariPodaci.get('godina')} u {stariPodaci.get('vreme')},
+                        \nTrajanje termina: {stariPodaci.get('trajanje', 'N/A')}
+                    """,
+                    subject=f"{naslov}",
+                    html_poruka=f"""
+                        <html>
+                            {html_head}
+                            <body>
+                                <div class="content">
+                                    <p>Termin koji je bio zakazan na drugom radnom mestu je izmenjen i odabrano je novo radno mesto - {preduzece} za {datum_i_vreme}. Izmenio ga je {zakazivac}.</p>
+                                    <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}/potvrda/{korisnik_id}" class="btn">Potvrdi termin</a>
+                                    <a href="https://mojtermin.site/zakazi/{vlasnikId}/izmeni/{token}" class="btn">Izmenite termin</a>
+                                    <p style="margin-top: 20px;">Stari podaci:</p>
+                                    <ul>
+                                        <li>Ime: {stariPodaci.get("ime", "N/A")}</li>
+                                        <li>Lokacija: {stariPodaci.get("lokacija", "N/A")} (id)</li>
+                                        <li>Vreme: {stariPodaci.get('dan')}.{stariPodaci.get('mesec')}.{stariPodaci.get('godina')} u {stariPodaci.get('vreme')}</li>
+                                        <li>Trajanje termina: {stariPodaci.get('trajanje', 'N/A')}</li>
+                                    </ul>
                                 </div>
                             </body>
                         </html>
                     """
                 )
 
+            elif naslov == 'Izmena termina na novu lokaciju':
+                send_confirmation_email(
+                    to_email=email,
+                    poruka=f"""Termin koji je bio zakazan na vašem radnom mestu je izmenjen i odabrano je novo radno mesto -  {preduzece}. Izmenio ga je {zakazivac}.
+                        \nStari podaci: 
+                        \nIme: {stariPodaci.get("ime", "N/A")},
+                        \nLokacija: {stariPodaci.get("lokacija", "N/A")} (id),
+                        \nVreme: {stariPodaci.get('dan')}.{stariPodaci.get('mesec')}.{stariPodaci.get('godina')} u {stariPodaci.get('vreme')},
+                        \nTrajanje termina: {stariPodaci.get('trajanje', 'N/A')}
+                    """,
+                    subject=f"{naslov}"
+                )
+            
             elif naslov == 'Otkazivanje termina':
                 send_confirmation_email(
                     to_email=email,
-                    poruka=f"""
-                        Termin u {preduzece} za {datum_i_vreme} je otkazan od strane {zakazivac}.
-                    """,
+                    poruka=f"Termin u {preduzece} za {datum_i_vreme} je otkazan od strane {zakazivac}.",
                     subject=f"{naslov} - {preduzece}"
                 )
 
@@ -252,7 +309,7 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
 
 
 @app.route('/api/potvrdi_termin', methods=['POST'])
-def post_data():
+def potvrdiTermin():
     data = request.json
     termin = data.get('termin')
     auth_token = data.get('authToken')
@@ -280,8 +337,7 @@ def post_data():
 
         if response.status_code == 200:
             try:
-                poruka = f"""
-                    Poštovani,
+                poruka = f"""Poštovani,
                     \nVaš termin u {response.json().get("ime_preduzeca").get("ime")} je potvrdio {response.json().get("potvrdio_zaposlen").get("username")}.
                 """
                 naslov = f"Potvrda termina - {response.json().get("ime_preduzeca").get("ime")}"
@@ -392,6 +448,8 @@ def izmeniTermin():
     podaci = data.get('podaci')
     token = data.get('token')
     odabrana_lokacija = podaci.get('lokacija')
+    stariPodaci = data.get('stariPodaci', {})
+    tipUlaska = data.get('tipUlaska')
 
 
     if not podaci:
@@ -408,53 +466,164 @@ def izmeniTermin():
         
         res_json = response.json()
 
-        print(res_json)
+        #p rint(res_json)
         user = res_json.get('user', {})
         preduzece = user.get('ime_preduzeca')
         lokacije = user.get('lokacije', [])
         datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
 
-        subject = f"Izmena termina"
-        poruka = f"""Poštovani,
-            \nVaš termin je uspešno izmenjen za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
-            \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
-            \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
-            \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin."""
+        subject = f"Izmena termina - {preduzece}"
+        
+        if stariPodaci.get('lokacija') == odabrana_lokacija: #ista lokacjia
+            if tipUlaska == 2: #korisnik menja
+                poruka = f"""Poštovani,
+                    \nVaš termin je uspešno izmenjen za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
+                    \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
+                    \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
+                    \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin.
+                """
 
-        # HTML verzija poruke
-        html_poruka = f"""
-        <html>
-            {html_head}
-            <body>
-                <div class="content">
-                <h2>Poštovani,</h2>
-                <p>Vaš termin je <b>uspešno izmenjen</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
-                <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
-                <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
-                <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
-                </div>
-            </body>
-        </html>
-        """
+                html_poruka = f"""
+                    <html>
+                        {html_head}
+                        <body>
+                            <div class="content">
+                            <h2>Poštovani,</h2>
+                            <p>Vaš termin je <b>uspešno izmenjen</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
+                            <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
+                            <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
+                            <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
+                            </div>
+                        </body>
+                    </html>
+                    """
+                
+                send_confirmation_email(
+                    podaci.get('email'),
+                    poruka,
+                    subject,
+                    html_poruka
+                )
+                send_email_to_workers(
+                    data.get("id"),
+                    odabrana_lokacija,
+                    'Izmena termina',
+                    token,
+                    odabrana_lokacija,
+                    preduzece,
+                    datum_i_vreme,
+                    podaci.get('ime'),
+                    stariPodaci
+                )
+            
+            else: #zaposlen menja
+                poruka = f"""Poštovani,
+                    \nVaš termin u {preduzece} je izmenio zaposlenik za {datum_i_vreme}.
+                    \nUkoliko Vam novo vreme termina ne odgovara, možete da izmeniti ili otkazati na linku ispod.
+                    \nhttps://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
+                    \n Ukoliko menjate termin vreme termina, molimo Vas da ne zakazujete termin u vreme koje ste prvobitno odabrali.
+                    \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin.
+                """
+                html_poruka = f"""
+                    <html>
+                        {html_head}
+                        <body>
+                            <div class="content">
+                                <h2>Poštovani,</h2>
+                                <p>Vaš termin u {preduzece} je izmenio zaposlenik za <b>{datum_i_vreme}</b>.</p>
+                                <p>Ukoliko Vam novo vreme termina ne odgovara, možete da izmenite ili otkazati na linku ispod.</p>
+                                <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
+                                <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
+                            </div>
+                        </body>
+                    </html>
+                """
 
+                send_confirmation_email(
+                    podaci.get('email'),
+                    poruka,
+                    subject,
+                    html_poruka
+                )
+       
+        else: #promena lokacije
+            if tipUlaska == 2: #korisnik menja
+                poruka = f"""Poštovani,
+                    \nVaš termin je uspešno izmenjen za {datum_i_vreme}. Dobićete obaveštenje kada neko potvrdi vaš termin.
+                    \n Takođe možete izmeniti vreme i datum Vašeg termina na linku ispod. Nakon izmene očekujte ponovnu potvrdu.
+                    \n https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}
+                    \n\nHvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis Moj Termin.
+                """
 
-        send_confirmation_email(
-            podaci.get('email'),
-            poruka,
-            subject,
-            html_poruka
-        )
+                html_poruka = f"""
+                    <html>
+                        {html_head}
+                        <body>
+                            <div class="content">
+                            <h2>Poštovani,</h2>
+                            <p>Vaš termin je <b>uspešno izmenjen</b> za <b>{datum_i_vreme}</b>. Dobićete obaveštenje kada neko potvrdi vaš termin.</p>
+                            <p>Takođe možete izmeniti vreme i datum Vašeg termina. Nakon izmene očekujte ponovnu potvrdu.</p>
+                            <a href="https://mojtermin.site/zakazi/{data.get("id")}/izmeni/{token}" class="btn">Izmenite termin</a>
+                            <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
+                            </div>
+                        </body>
+                    </html>
+                    """
+                
+                send_confirmation_email(
+                    podaci.get('email'),
+                    poruka,
+                    subject,
+                    html_poruka
+                )
 
-        send_email_to_workers(
-            data.get("id"),
-            odabrana_lokacija,
-            'Izmena termina',
-            token,
-            odabrana_lokacija,
-            preduzece,
-            datum_i_vreme,
-            podaci.get('ime')
-        )
+                send_email_to_workers( #novoj lokaciji
+                    data.get("id"),
+                    odabrana_lokacija,
+                    'Izmena termina - nova lokacija',
+                    token,
+                    odabrana_lokacija,
+                    preduzece,
+                    datum_i_vreme,
+                    podaci.get('ime'),
+                    stariPodaci
+                )
+                send_email_to_workers( #staroj lokaciji
+                    data.get("id"),
+                    odabrana_lokacija,
+                    'Izmena termina na novu lokaciju',
+                    token,
+                    stariPodaci.get('lokacija'),
+                    preduzece,
+                    datum_i_vreme,
+                    podaci.get('ime'),
+                    stariPodaci
+                )
+            
+            else: #zaposlen menja
+                send_email_to_workers(
+                    data.get("id"),
+                    odabrana_lokacija,
+                    'Izmena termina - nova lokacija',
+                    token,
+                    odabrana_lokacija,
+                    preduzece,
+                    datum_i_vreme,
+                    podaci.get('ime'),
+                    stariPodaci
+                )
+                send_email_to_workers(
+                    data.get("id"),
+                    odabrana_lokacija,
+                    'Izmena termina na novu lokaciju',
+                    token,
+                    stariPodaci.get('lokacija'),
+                    preduzece,
+                    datum_i_vreme,
+                    podaci.get('ime'),
+                    stariPodaci
+                )
+
 
         return jsonify({
             'status': response.status_code,
@@ -485,7 +654,7 @@ def otkaziTermin():
     
     xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazivanja/{token}/otkazi'
     try:
-        response = requests.patch(xano_url, headers={'Content-Type': 'application/json'})
+        response = requests.patch(xano_url, json=data, headers={'Content-Type': 'application/json'})
         if response.status_code !=200:
             return jsonify({'error': 'Xano error', 'Xano message': response}), response.status_code
 
@@ -526,7 +695,6 @@ def otkaziTermin():
                             <div class="content">
                                 <h2>Poštovani,</h2>
                                 <p>Vaš termin u {preduzece} za <b>{datum_i_vreme}</b> je otkazan od strane zaposlenog radnika.</p>
-                                <p>Naravno možete ponovo zakazati termin na linku ispod.</p>
                                 <a href="https://mojtermin.site/zakazi/{data.get("id")}" class="btn">Ponovo zakazivanje</a>
                                 <p style="margin-top: 20px;">Hvala što ste izabrali našu uslugu! Ovu uslugu je omogućio servis <b><a href="https://mojtermin.site">Moj Termin</a></b>.</p>
                             </div>

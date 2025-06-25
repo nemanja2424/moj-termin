@@ -150,6 +150,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  margin-bottom: 15px;
   gap: 20px;
 }
 

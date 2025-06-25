@@ -71,7 +71,7 @@ export default function DashboardPage() {
       </div>
       <div className={styles.noviTermini}>
         <h2>Nova zakazivanja</h2>
-        { sviTermini.length > 0 ? (
+        {sviTermini.length > 0 ? (
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -86,7 +86,9 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {sviTermini.map((event, index) => (
+                {sviTermini
+                  .filter(event => event.otkazano !== true)
+                  .map((event, index) => (
                   <tr key={index}>
                     <td>{event.ime}</td>
                     <td>{event.datum_rezervacije}</td>

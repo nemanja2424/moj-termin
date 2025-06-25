@@ -86,12 +86,12 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
 
   const isHighlighted = (date) => {
     const formatted = formatDate(date);
-    return desavanjaData.some((e) => e.datum === formatted);
+    return desavanjaData.some((e) => e.datum === formatted && e.otkazano !== true);
   };
 
   const getEventCount = (date) => {
     const formatted = formatDate(date);
-    return desavanjaData.filter((e) => e.datum === formatted).length;
+    return desavanjaData.filter((e) => e.datum === formatted && e.otkazano !== true).length;
   };
 
   const handleDateClick = (date) => {
@@ -124,7 +124,7 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
 
   useEffect(() => {
     // Update selectedEvents when desavanjaData or selectedDate changes
-    const currentEvents = desavanjaData.filter((e) => e.datum === selectedDate);
+    const currentEvents = desavanjaData.filter((e) => e.datum === selectedDate && e.otkazano === false);
     setSelectedEvents(currentEvents);
   }, [desavanjaData, selectedDate]);
 

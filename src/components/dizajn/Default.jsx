@@ -8,7 +8,7 @@ export default function DefaultDesign({
   preduzece, setPreduzece,
   formData, setFormData,
   id, token, handleSubmit, tipUlaska,
-  handleOtkazi
+  handleOtkazi, potvrdiTermin, loadingSpin, loadingSpinOtkaz, loadingSpinPotvrda
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -370,26 +370,61 @@ export default function DefaultDesign({
             </div>
           )}
           
+          
+          {formData.otkazano === true ? (
+            <p style={{ textAlign:'center'}}>Termin je otkazan.</p>
 
-          <div className={styles.buttons}>
-            <button type="submit" className={styles.submitBtn}>
-              {tipUlaska === 1 && 'Zakaži'}
-              {(tipUlaska === 2 || tipUlaska === 3) && 'Izmeni'}
-            </button>
-            {tipUlaska === 3 && (
-              <button className={styles.submitBtn}>
-                Potvrdi
-              </button>
-            )}
-            {(tipUlaska === 2 || tipUlaska === 3) && (
-              <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
-                Otkaži termin
-              </button>
-            )}
-          </div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
+              <div className={styles.buttons}>
+                <button type="submit" className={styles.submitBtn}>
+                  {loadingSpin === true ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <>
+                        {tipUlaska === 1 && 'Zakaži'}
+                        {(tipUlaska === 2 || tipUlaska === 3) && 'Izmeni'}
+                      </>
+                    )}
+                </button>
+                {tipUlaska === 3 && formData.potvrdio === 0 && (
+                  <button onClick={(e) => {e.preventDefault; potvrdiTermin(formData);}} className={styles.submitBtn} type='button'>
+                    {loadingSpinPotvrda ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <p>
+                        Potvrdi
+                      </p>
+                    )}
+                  </button>
+                )}
+                {(tipUlaska === 2 || tipUlaska === 3) && (
+                  <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
+                    {loadingSpinOtkaz ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <p>
+                        Otkaži termin
+                      </p>
+                    )}
+                  </button>
+                )}
+              </div>
+              {Number(formData.potvrdio) !== 0 && formData.potvrdio_zaposlen && (
+                <p><b>Termin potvrdio:</b> {formData.potvrdio_zaposlen.username}</p>
+              )}
+            </div>
+          )}
 
         </form>
       </main>
+      
 
       <ToastContainer />
     </div>

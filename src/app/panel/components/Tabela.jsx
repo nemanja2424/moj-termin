@@ -73,7 +73,9 @@ export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin
                   </a>
                 </td>
                 <td>
-                  {event.potvrdio === 0 ? (
+                  {event.otkazano ? (
+                    <p style={{color: 'red'}}>Termin je otkazan.</p>
+                  ) : event.potvrdio === 0 ? (
                     <button
                       className={styles.btn}
                       onClick={e => {

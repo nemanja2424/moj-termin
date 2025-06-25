@@ -18,6 +18,7 @@ const LoginPage = () => {
   }, []);
 
   const [Login, setLogin] = useState(false);
+  const [loading, setLoading] = useState(false);
   const toggleLogin = () => setLogin(false);
   const toggleReg = () => setLogin(true);
   const toggle = () => setLogin(prev => !prev);
@@ -32,6 +33,13 @@ const LoginPage = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isValidEmail(email)) {
+      toast.error('Unesite ispravan email.');
+      return;
+    }
+    
+    setLoading(true);
     try {
       const res = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/auth/login', {
         method: 'POST',
@@ -64,6 +72,8 @@ const LoginPage = () => {
       window.location.href = '/panel';
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false)
     }
   };
   
@@ -119,7 +129,7 @@ const LoginPage = () => {
       "link": []
     }
 
-    
+    setLoading(true)
   
     try {
       const res = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/auth/signup', {
@@ -144,7 +154,7 @@ const LoginPage = () => {
     } catch (error) {
       console.error(error);
       toast.error('Došlo je do greške. Pokušajte ponovo.');
-    }
+    } finally { setLoading(false) }
   };
   const isValidEmail = (email) => {
     // Prosta regex provera formata email adrese
@@ -196,7 +206,9 @@ const LoginPage = () => {
                   <i className={`${styles.inputIcon} uil uil-lock`}></i>
                   <i className={`fa-solid ${showPassword ? 'fa-eye-slash' : 'fa-eye'} ${styles.oko}`} onClick={() => setShowPassword(prev => !prev)}></i>
                 </div>
-                <button type='submit' className={styles.btn}>Prijavi se</button>
+                <button type='submit' className={styles.btn} disabled={loading}>
+                  {loading ? <span className="spinner"></span> : 'Prijavi se'}
+                </button>
               </form>
             </div>
 
@@ -232,7 +244,9 @@ const LoginPage = () => {
                   type='text' className={styles.formStyle} placeholder='Broj telefona'/>
                   <i className={`${styles.inputIcon} uil uil-phone`}></i>
                 </div>
-                <button type='submit' className={styles.btn}>Registruj se</button>
+                <button type='submit' className={styles.btn}>
+                  {loading ? <span className="spinner"></span> : 'Registruj se'}
+                </button>
               </form>
             </div>
           </div>

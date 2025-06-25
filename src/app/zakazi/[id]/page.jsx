@@ -23,6 +23,7 @@ export default function ZakaziPage() {
         godina: today.getFullYear(),
         opis: ''
     });
+    const [loadingSpin, setLoadingSpin] = useState(false);
 
     const fetchData = async () => {
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazi/${id}/forma`);
@@ -39,9 +40,10 @@ export default function ZakaziPage() {
         fetchData();
     }, []);
 
-    const [localhost, setLocalHost] = useState(false);
+    const [localhost, setLocalHost] = useState(true);
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoadingSpin(true);
 
         // Izračunaj datum iz formData
         const odabranDatum = `${formData.godina}-${String(Number(formData.mesec) + 1).padStart(2, '0')}-${String(formData.dan).padStart(2, '0')}`;
@@ -54,20 +56,26 @@ export default function ZakaziPage() {
             ? 'http://127.0.0.1:5000/api/zakazi'
             : 'https://mojtermin.site/api/zakazi';
 
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ podaci, id })
-        });
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ podaci, id })
+            });
 
-        if(!res.ok) {
-            toast.error('Greška prilikom zakazivanja.');
-            return;
+            if(!res.ok) {
+                toast.error('Greška prilikom zakazivanja.');
+                return;
+            }
+
+            const data = await res.json();
+            toast.success(data.app_response || 'Uspešno zakazano!');
+            fetchData();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingSpin(false);
         }
-
-        const data = await res.json();
-        toast.success(data.app_response || 'Uspešno zakazano!');
-        fetchData();
     };
 
   return (
@@ -82,6 +90,7 @@ export default function ZakaziPage() {
             id={id}
             handleSubmit={handleSubmit}
             tipUlaska={1}
+            loadingSpin={loadingSpin}
         />
         <Footer />
         <ToastContainer />

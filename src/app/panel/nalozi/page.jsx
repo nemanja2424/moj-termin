@@ -15,7 +15,13 @@ export default function NaloziPage() {
     const [korisnikZaNovuSifru, setKorisnikZaNovuSifru] = useState();
     const [newPass, setNewPass] = useState('');
     const [newPassConf, setNewPassConf] = useState('');
+    const [izmenjeniKorisnici, setIzmenjeniKorisnici] = useState([]); // niz ID-jeva
 
+    const [loadingIzmeniId, setLoadingIzmeniId] = useState(null);
+    const [loadingObrisiId, setLoadingObrisiId] = useState(null);
+    const [loadingSpinPass, setLoadingSpinPass] = useState(false);
+    const [loadingSpinDodaj, setLoadingSpinDodaj] = useState(false);
+ 
     const [ime, setIme] = useState('');
     const [regEmail, setRegEmail] = useState('');
     const [regPass, setRegPass] = useState('');
@@ -55,6 +61,7 @@ export default function NaloziPage() {
             return;
         }
 
+        setLoadingSpinDodaj(true);
         try {
             const userId = localStorage.getItem("userId");
             const authToken = localStorage.getItem('authToken');
@@ -81,6 +88,8 @@ export default function NaloziPage() {
         } catch (error) {
             console.error(error);
             toast.error('Došlo je do greške. Pokušajte ponovo.');
+        } finally {
+            setLoadingSpinDodaj(false);
         }
     };
 
@@ -113,48 +122,68 @@ export default function NaloziPage() {
         }
     };
     useEffect(() => {
-
         fetchData();
     }, []);
 
     const izmeniKorisnika = async (korisnik) => {
-        const authToken = localStorage.getItem("authToken");
-        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/izmena/${korisnik.id}`, {
-            method:'PATCH',
-            headers:{
-                'Authorization': `Bearer ${authToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({username: korisnik.username, email:korisnik.email, brTel:korisnik.brTel,zaposlen_u:korisnik.zaposlen_u})
-        });
+        setLoadingIzmeniId(korisnik.id);
+        try {
+            const authToken = localStorage.getItem("authToken");
+            const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/izmena/${korisnik.id}`, {
+                method:'PATCH',
+                headers:{
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: korisnik.username,
+                    email: korisnik.email,
+                    brTel: korisnik.brTel,
+                    zaposlen_u: korisnik.zaposlen_u
+                })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (!res.ok) {
-            toast.error(data.message || 'Greška prilikom izmene.');
-            return;
+            if (!res.ok) {
+                toast.error(data.message || 'Greška prilikom izmene.');
+                return;
+            }
+            toast.success("Uspešno ste izmenili korisnika.");
+            setIzmenjeniKorisnici(prev => prev.filter(id => id !== korisnik.id));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingIzmeniId(null);
+            setPromena(false);
         }
-        toast.success("Uspešno ste izmenili korisnika.");
 
     }
 
     const obrisiKorisnika = async (id) => {
-        const authToken = localStorage.getItem('authToken');
-        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/${id}`, {
-            method:'DELETE',
-            headers:{
-                'Authorization': `Bearer ${authToken}`,
-                'Content-Type': 'application/json'
-            },
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-            toast.error(data.message || 'Greška prilikom brisanja.');
-            return;
+        setLoadingObrisiId(id);
+        try {
+            const authToken = localStorage.getItem('authToken');
+            const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/${id}`, {
+                method:'DELETE',
+                headers:{
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+            const data = await res.json();
+    
+            if (!res.ok) {
+                toast.error(data.message || 'Greška prilikom brisanja.');
+                return;
+            }
+            toast.success("Uspešno ste obrisali korisnika.");
+            fetchData();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingObrisiId(null);
         }
-        toast.success("Uspešno ste obrisali korisnika.");
-        fetchData();
     }
     useEffect(() => {
         if (korisnikZaPotvrduBrisanja !== null) {
@@ -181,25 +210,33 @@ export default function NaloziPage() {
             toast.error('Lozinke se ne podudaraju.');
             return;
         }
-        const authToken = localStorage.getItem('authToken');
-        const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/nova-lozinka/${korisnikZaNovuSifru.id}`, {
-            method:'PATCH',
-            headers:{
-                'Authorization': `Bearer ${authToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({newPass})
-        });
-        const data = await res.json();
 
-        if (!res.ok) {
-            toast.error(data.message || 'Greška prilikom izmene.');
-            return;
+        setLoadingSpinPass(true);
+        try {
+            const authToken = localStorage.getItem('authToken');
+            const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/nova-lozinka/${korisnikZaNovuSifru.id}`, {
+                method:'PATCH',
+                headers:{
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({newPass})
+            });
+            const data = await res.json();
+    
+            if (!res.ok) {
+                toast.error(data.message || 'Greška prilikom izmene.');
+                return;
+            }
+            toast.success("Uspešno ste promenili lozinku.");
+            setPromeniLozinkuEl(false);
+            setNewPass('');
+            setNewPassConf('');
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoadingSpinPass(false);
         }
-        toast.success("Uspešno ste promenili lozinku.");
-        setPromeniLozinkuEl(false);
-        setNewPass('');
-        setNewPassConf('');
     }
 
     return (
@@ -228,6 +265,9 @@ export default function NaloziPage() {
                                         <td>
                                             <input 
                                                 onChange={(e) => {
+                                                    if (!izmenjeniKorisnici.includes(korisnik.id)) {
+                                                        setIzmenjeniKorisnici(prev => [...prev, korisnik.id]);
+                                                    }
                                                     const updatedKorisnici = [...korisnici];
                                                     updatedKorisnici[index][subIndex].username = e.target.value;
                                                     setKorisnici(updatedKorisnici);
@@ -239,6 +279,9 @@ export default function NaloziPage() {
                                         <td>
                                             <input 
                                                 onChange={(e) => {
+                                                    if (!izmenjeniKorisnici.includes(korisnik.id)) {
+                                                        setIzmenjeniKorisnici(prev => [...prev, korisnik.id]);
+                                                    }
                                                     const updatedKorisnici = [...korisnici];
                                                     updatedKorisnici[index][subIndex].email = e.target.value;
                                                     setKorisnici(updatedKorisnici);
@@ -250,6 +293,9 @@ export default function NaloziPage() {
                                         <td>
                                             <input 
                                                 onChange={(e) => {
+                                                    if (!izmenjeniKorisnici.includes(korisnik.id)) {
+                                                        setIzmenjeniKorisnici(prev => [...prev, korisnik.id]);
+                                                    }
                                                     const updatedKorisnici = [...korisnici];
                                                     updatedKorisnici[index][subIndex].brTel = e.target.value;
                                                     setKorisnici(updatedKorisnici);
@@ -262,6 +308,9 @@ export default function NaloziPage() {
                                            <select 
                                                 value={korisnik.zaposlen_u} 
                                                 onChange={(e) => {
+                                                    if (!izmenjeniKorisnici.includes(korisnik.id)) {
+                                                        setIzmenjeniKorisnici(prev => [...prev, korisnik.id]);
+                                                    }
                                                     const updatedKorisnici = [...korisnici];
                                                     updatedKorisnici[index][subIndex].zaposlen_u = parseInt(e.target.value);
                                                     setKorisnici(updatedKorisnici);
@@ -275,21 +324,47 @@ export default function NaloziPage() {
                                             </select>
                                         </td>
                                         <td style={{maxWidth:'500px',gap:'10px',display:'flex'}}>
-                                            <button onClick={() => izmeniKorisnika(korisnik)} className={styles.btn} style={{margin:'0',height:'auto',padding:'5px 20px'}}>Izmeni</button>
+                                            <button
+                                              onClick={() => izmeniKorisnika(korisnik)}
+                                              className={styles.btn}
+                                              style={{
+                                                margin: '0',
+                                                height: 'auto',
+                                                padding: '5px 20px',
+                                                color: izmenjeniKorisnici.includes(korisnik.id) ? '#1d4ed8' : '#374151', // plavo ili sivo
+                                                backgroundColor: '#f3f4f6'
+                                              }}
+                                            >
+                                              {loadingIzmeniId === korisnik.id ? (
+                                                <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                                  <div className="spinnerMali" ></div>
+                                                </div>
+                                              ) : (
+                                                <p>Izmeni</p>
+                                              )}
+                                            </button>
                                             <button onClick={() => prikaziElZaNovuSifru(korisnik)} className={styles.btn} style={{margin:'0',height:'auto',padding:'5px 20px'}}>Nova lozinka</button>
                                             <button
                                             onClick={() => {
                                                 if (korisnikZaPotvrduBrisanja === korisnik.id) {
-                                                obrisiKorisnika(korisnik.id);
-                                                setKorisnikZaPotvrduBrisanja(null);
+                                                  obrisiKorisnika(korisnik.id);
+                                                  setKorisnikZaPotvrduBrisanja(null);
                                                 } else {
-                                                setKorisnikZaPotvrduBrisanja(korisnik.id);
+                                                  setKorisnikZaPotvrduBrisanja(korisnik.id);
                                                 }
                                             }}
                                             className={styles.btn}
                                             style={{ margin: '0', height: 'auto', padding: '5px 20px',  backgroundColor: korisnikZaPotvrduBrisanja === korisnik.id ? 'red' : '',color: korisnikZaPotvrduBrisanja === korisnik.id ? 'white' : 'red', }}
                                             >
-                                            {korisnikZaPotvrduBrisanja === korisnik.id ? 'Potvrdi' : 'Obriši'}
+                                              {loadingObrisiId === korisnik.id ? (
+                                                <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                                  <div className="spinnerMali" ></div>
+                                                </div>
+                                              ) : (
+                                                <>
+                                                  {korisnikZaPotvrduBrisanja === korisnik.id ? 'Potvrdi' : 'Obriši'}
+                                                </>
+                                              )}
                                             </button>
                                         </td>
                                     </tr>
@@ -324,7 +399,17 @@ export default function NaloziPage() {
                                 <i className={`${styles.inputIcon} uil uil-lock`}></i>
                                 <i className={`fa-solid ${showRegPassConf ? 'fa-eye-slash' : 'fa-eye'} ${styles.oko}`} onClick={() => setShowRegPassConf(prev => !prev)}></i>
                             </div>
-                            <button type='submit' className={styles.btn}>Promeni lozinku</button>
+                            <button type='submit' className={styles.btn}>
+                                {loadingSpinPass ? (
+                                    <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                        <div className="spinnerMali" ></div>
+                                    </div>
+                                ) : (
+                                    <p>
+                                        Promeni lozinku
+                                    </p>
+                                )}
+                            </button>
                             <div className={localStyles.x} onClick={() => setPromeniLozinkuEl(false)}>
                                 <i className="fa-regular fa-circle-xmark"></i>
                             </div>
@@ -382,7 +467,17 @@ export default function NaloziPage() {
                                 </select>
                                 <i className={`${styles.inputIcon2} fa-solid fa-building`}></i>
                             </div>
-                            <button type='submit' className={styles.btn}>Dodaj korisnika</button>
+                            <button type='submit' className={styles.btn}>
+                                    {loadingSpinDodaj ? (
+                                        <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                                        <div className="spinnerMali" ></div>
+                                    </div>
+                                    ) : (
+                                        <p>
+                                            Dodaj korisnika
+                                        </p>
+                                    )}
+                            </button>
                             <div className={localStyles.x} onClick={() => setShowDodajKorisnika(false)}>
                                 <i className="fa-regular fa-circle-xmark"></i>
                             </div>
