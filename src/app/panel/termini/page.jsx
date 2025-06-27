@@ -11,6 +11,7 @@ export default function PanelPage() {
   const [showTabela, setShowTabela] = useState(false);
   const [desavanjaData, setDesavanjaData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [canRefresh, setCanRefresh] = useState(true);
 
   const fetchData = useCallback(async () => {
     const userId = localStorage.getItem("userId");
@@ -60,11 +61,28 @@ export default function PanelPage() {
     router.push(`/zakazi/${userId}/izmeni/${event.token}`)
   }
 
+  const handleRefreshClick = () => {
+    if (!canRefresh || loading) return;
+    setCanRefresh(false);
+    fetchData();
+    setTimeout(() => setCanRefresh(true), 5000); // 2 sekunde cooldown
+  };
+
   return (
     <div className={styles.child}>
       <div className={stylesLocal.header}>
         <h1>Termini</h1>
-        <button className={stylesLocal.btn} onClick={() => setShowTabela(prev => !prev)}>{showTabela ? "Kalendar" : "Tabela" }</button>
+        <div style={{display:'flex',alignItems:'center',gap:'15px'}}>
+            <i
+              className={`fa-solid fa-arrows-rotate refreshSpin${loading ? ' loading' : ''}`}
+              onClick={handleRefreshClick}
+              style={{
+                cursor: canRefresh && !loading ? 'pointer' : 'not-allowed',
+                opacity: canRefresh && !loading ? 1 : 0.5,
+              }}
+            />
+          <button className={stylesLocal.btn} onClick={() => setShowTabela(prev => !prev)}>{showTabela ? "Kalendar" : "Tabela" }</button>
+        </div>
       </div>
       {showTabela
         ? <Tabela desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} />

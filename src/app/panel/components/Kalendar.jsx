@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Kalendar.module.css";
 import { toast, ToastContainer } from "react-toastify";
+import Link from "next/link";
 
 const formatDate = (date) => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -218,7 +219,11 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
                     {event.potvrdio === 0 ? (
                         <button onClick={() => potvrdiTermin(event)} className={styles.btn}>Potvrdi termin</button>
                       ) : null}
-                    <button className={styles.btn}>Izmeni termin</button>
+                    <Link href={`/zakazi/${localStorage.getItem('userId')}/izmeni/${event.token}`}>
+                      <button className={styles.btn}>
+                        Izmeni termin
+                      </button>
+                    </Link>
                   </div>
                 </div>
               ))}
