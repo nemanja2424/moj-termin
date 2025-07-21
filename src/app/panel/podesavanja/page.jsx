@@ -8,8 +8,6 @@ import stylesLogin from '@/app/login/login.module.css';
 export default function PodesavanjaPage() {
     const [korisnik, setKorisnik] = useState({});
     const [preduzeca, setPreduzeca] = useState([]);
-    const [link, setLink] = useState('');
-    const qrRef = useRef(null);
     const [brRadnika, setBrRadnika] = useState(0);
 
     /*promene vrednosti */
@@ -32,6 +30,52 @@ export default function PodesavanjaPage() {
     const fileInputRef = useRef();
     const [loadingPotvrdi, setLoadingPotvrdi] = useState(false);
     const [loadingLokacija, setLoadingLokacija] = useState(false);
+    const [showRadnoVreme, setShowRadnoVreme] = useState("");
+
+    const sati = [
+        "00:00", "00:30",
+        "01:00", "01:30",
+        "02:00", "02:30",
+        "03:00", "03:30",
+        "04:00", "04:30",
+        "05:00", "05:30",
+        "06:00", "06:30",
+        "07:00", "07:30",
+        "08:00", "08:30",
+        "09:00", "09:30",
+        "10:00", "10:30",
+        "11:00", "11:30",
+        "12:00", "12:30",
+        "13:00", "13:30",
+        "14:00", "14:30",
+        "15:00", "15:30",
+        "16:00", "16:30",
+        "17:00", "17:30",
+        "18:00", "18:30",
+        "19:00", "19:30",
+        "20:00", "20:30",
+        "21:00", "21:30",
+        "22:00", "22:30",
+        "23:00", "23:30",
+        "24:00"
+    ];
+    const [daniRV, setDaniVR] = useState(["Ponedeljak", "Utorak", "Sreda", "Četvrtak", "Petak", "Subota", "Nedelja"]);
+    const [izabranaVremena, setIzabranaVremena] = useState(
+        daniRV.map(() => ({ od: "", do: "" }))
+    );
+    const danMap = {
+        "Ponedeljak": "mon",
+        "Utorak": "tue",
+        "Sreda": "wen",
+        "Četvrtak": "thu",
+        "Petak": "fri",
+        "Subota": "sat",
+        "Nedelja": "sun",
+    };
+    const [odabranaFirma, setOdabranaFirma] = useState({});
+    const [showTT, setShowTT] = useState("");
+    const trajanja = ["30 min", "1 h", "1 h 30 min", "2 h", "3 h"];
+    const [izabranaTrajanja, setIzabranaTrajanja] = useState([]);
 
 
 
@@ -214,7 +258,7 @@ export default function PodesavanjaPage() {
             return "Nepoznat datum";
         }
     
-        const [godina, mesec, dan] = parts;
+    const [godina, mesec, dan] = parts;
         return `${dan}.${mesec}.${godina}`;
     };
     const danaDoDatuma = (datum) => {
@@ -248,9 +292,6 @@ export default function PodesavanjaPage() {
         return delovi.join(", ");
     };
 
-    
-    
-
     const fetchData = async () => {
         const authToken = localStorage.getItem('authToken');
         const res = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/auth/me', {
@@ -273,12 +314,160 @@ export default function PodesavanjaPage() {
         }, 0);
         setBrRadnika(ukupno);
     }
-    
-
     useEffect(() => {
         fetchData();
-        setLink(`https://arbitrawin.com/dashboard.html`);
     }, []);
+
+    const prikaziRadnoVreme = (tip) => {
+        if (tip === 'default') {
+            setShowRadnoVreme('Podrazumevano radno vreme');
+
+            const radnoVreme = korisnik?.radnoVreme || {};
+
+            const novaVremena = daniRV.map(dan => {
+                const key = danMap[dan];
+                const vreme = radnoVreme[key];
+
+                if (vreme && vreme.includes('-')) {
+                    const [od, doVreme] = vreme.split('-');
+                    return { od, do: doVreme };
+                }
+
+                return { od: "", do: "" };
+            });
+
+            setIzabranaVremena(novaVremena);
+        } else {
+            console.log(tip)
+            setShowRadnoVreme(`Radno vreme za ${tip.ime}`);4
+            const radnoVreme = tip?.radno_vreme || korisnik?.radnoVreme || {};
+            const novaVremena = daniRV.map(dan => {
+                const key = danMap[dan];
+                const vreme = radnoVreme[key];
+
+                if (vreme && vreme.includes('-')) {
+                    const [od, doVreme] = vreme.split('-');
+                    return { od, do: doVreme };
+                }
+
+                return { od: "", do: "" };
+            });
+            setIzabranaVremena(novaVremena);
+            setOdabranaFirma(tip);
+        }
+    };
+    const patchDanMap = ["mon", "tue", "wen", "thu", "fri", "sat", "sun"];
+    const formiranoRadnoVreme = izabranaVremena.reduce((acc, vreme, index) => {
+        const dan = patchDanMap[index];
+        let od = vreme.od;
+        let doVreme = vreme.do;
+
+        // Ako je oba prazno, šalji prazan string
+        if (!od && !doVreme) {
+            acc[dan] = "";
+            return acc;
+        }
+
+        // Ako je uneto samo zatvaranje, otvaranje je 00:00
+        if (!od && doVreme) {
+            od = "00:00";
+        }
+
+        // Ako je uneto samo otvaranje, zatvaranje je 00:00
+        if (od && !doVreme) {
+            doVreme = "00:00";
+        }
+
+        // Ako je od 00:00 do 00:00, šalji prazan string
+        if (od === "00:00" && doVreme === "00:00") {
+            acc[dan] = "";
+            return acc;
+        }
+
+        acc[dan] = `${od}-${doVreme}`;
+        return acc;
+    }, {});
+
+    const handlePromeniVR = async(e) => {
+        e.preventDefault();
+        const tip = showRadnoVreme === 'Podrazumevano radno vreme' ? 'default' : odabranaFirma.id;
+        console.log('Tip',tip);
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+
+        try{
+            const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/radno-vreme`, {
+                method: 'PATCH',
+                headers:{
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tip,
+                    vremena: formiranoRadnoVreme,
+                    userId
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                toast.error(data.message || 'Greška prilikom izmene.');
+                return;
+            }
+            toast.success("Uspešno ste promenili radno vreme.");
+            setKorisnik(data.korisnik);
+            setPreduzeca(data.preduzeca);
+            setShowRadnoVreme("");
+
+        } catch (error) {
+            console.error("Greška:", error);
+            toast.error("Došlo je do greške.");
+        }
+
+    }
+
+    const prikaziTT = (tip) => {
+        if (tip === 'default') {
+            setShowTT("Podrazumevano trajanje termina");
+            setIzabranaTrajanja(korisnik.trajanje);
+        } else {
+            setShowTT(`Trajanje termina za ${tip.ime}`);
+            setIzabranaTrajanja(tip.duzina_termina);
+            setOdabranaFirma(tip);
+        }
+    }
+    const handlePromeniTT = async(e) => {
+        e.preventDefault();
+        const tip = showTT === 'Podrazumevano trajanje termina' ? 'default' : odabranaFirma.id;
+        const userId = localStorage.getItem('userId');
+        const authToken = localStorage.getItem('authToken');
+        try{
+            const response = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/duzina-termina`, {
+                method: 'PATCH',
+                headers:{
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tip,
+                    termini: izabranaTrajanja,
+                    userId
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                toast.error(data.message || 'Greška prilikom izmene.');
+                return;
+            }
+            toast.success("Uspešno ste promenili radno vreme.");
+            setKorisnik(data.korisnik);
+            setPreduzeca(data.preduzeca);
+            setShowTT("");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
 
   return (
     <div className={styles.content}>
@@ -368,7 +557,6 @@ export default function PodesavanjaPage() {
             </div>
         </div>
 
-        
         <div className={styles.section}>
             <h2>Moje preduzeće</h2>
             <div className={styles.stavka}>
@@ -405,7 +593,15 @@ export default function PodesavanjaPage() {
             </div>
             <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column', alignItems:'center'}}>
                 <h2>Moje lokacije</h2>
-                <button className={styles.btn} onClick={() => setShowDodajLokaciju(true)}>Nova lokacija</button>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center',gap:'20px'}}>
+                    <button className={styles.btn} onClick={() => setShowDodajLokaciju(true)}>Nova lokacija</button>
+                    <button className={styles.btn} onClick={() => prikaziRadnoVreme("default")}>
+                        Radno vreme
+                    </button>
+                    <button className={styles.btn} onClick={() => prikaziTT("default")}>
+                        Termini
+                    </button>
+                </div>
 
                 {preduzeca.map((firma) => {
                     const isEditing = editFirmaId === firma.id;
@@ -433,21 +629,28 @@ export default function PodesavanjaPage() {
 
                                 <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
                             </div>
-
-                            <button 
-                                className={styles.btn} 
-                                onClick={() => {
-                                    if (isEditing) {
-                                        handleConfirmEdit(firma.id);
-                                    } else {
-                                        setEditFirmaId(firma.id);
-                                        setEditedFirmData({ ime: firma.ime, adresa: firma.adresa });
-                                    }
-                                }}
-                                disabled={isEditing && loadingPotvrdi}
-                            >
-                                {isEditing && loadingPotvrdi ? <div className="spinnerMali"></div> : (isEditing ? 'Potvrdi' : 'Izmeni')}
-                            </button>
+                            <div style={{display:'flax',flexDirection:'row',gap:'15px'}}>
+                                <button 
+                                    className={styles.btn} 
+                                    onClick={() => {
+                                        if (isEditing) {
+                                            handleConfirmEdit(firma.id);
+                                        } else {
+                                            setEditFirmaId(firma.id);
+                                            setEditedFirmData({ ime: firma.ime, adresa: firma.adresa });
+                                        }
+                                    }}
+                                    disabled={isEditing && loadingPotvrdi}
+                                >
+                                    {isEditing && loadingPotvrdi ? <div className="spinnerMali"></div> : (isEditing ? 'Potvrdi' : 'Izmeni')}
+                                </button>
+                                <button className={styles.btn} onClick={(e) => prikaziRadnoVreme(firma)}>
+                                    Radno vreme
+                                </button>
+                                <button className={styles.btn} onClick={() => prikaziTT(firma)}>
+                                    Termini
+                                </button>
+                            </div>
                         </div>
                     );
                 })}
@@ -509,6 +712,95 @@ export default function PodesavanjaPage() {
                             {loadingLokacija ? <div className="spinnerMali"></div> : 'Dodaj lokaciju'}
                         </button>
                         <div className={styles.x} onClick={() => setShowDodajLokaciju(false)}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+
+        {showRadnoVreme !== '' && (
+             <div>
+                <div className={styles.blur}></div>
+                <div className={styles.dodajKorisnika} style={{height:'280px'}}>
+                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
+                    <form onSubmit={handlePromeniVR} className={styles.forma} style={{alignItems:'flex-start'}}>
+                        <h2 style={{marginBottom:'30px'}}>{showRadnoVreme}</h2>
+                        {daniRV.map((dan, idx) => (
+                          <div className={styles.dan} key={dan} style={{display:'flex',flexDirection:'row', gap:'5px'}}>
+                            <h3>{dan}</h3>
+                            <select
+                              value={izabranaVremena[idx].od}
+                              onChange={e => {
+                                const nova = [...izabranaVremena];
+                                nova[idx].od = e.target.value;
+                                setIzabranaVremena(nova);
+                              }}
+                              className={styles.formStyle}
+                            >
+                              {sati.map((sat) => (
+                                <option value={sat} key={sat}>{sat}</option>
+                              ))}
+                            </select>
+                            &nbsp;-&nbsp;
+                            <select
+                              value={izabranaVremena[idx].do}
+                              onChange={e => {
+                                const nova = [...izabranaVremena];
+                                nova[idx].do = e.target.value;
+                                setIzabranaVremena(nova);
+                              }}
+                            >
+                              {sati.map((sat) => (
+                                <option value={sat} key={sat}>{sat}</option>
+                              ))}
+                            </select>
+                          </div>
+                        ))}
+                        <button className={styles.btn} type='submit'>
+                            Potvrdi izmene
+                        </button>
+                        
+
+                        <div className={styles.x} onClick={() => setShowRadnoVreme("")}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
+
+        {showTT !== '' && (
+             <div>
+                <div className={styles.blur}></div>
+                <div className={styles.dodajKorisnika} style={{height:'280px'}}>
+                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
+                    <form onSubmit={handlePromeniTT} className={styles.forma} style={{alignItems:'flex-start'}}>
+                        <h2 style={{marginBottom:'30px'}}>{showTT}</h2>
+                        {trajanja.map((trajanje, index) => (
+                            <label key={index}>
+                                <input
+                                    type="checkbox"
+                                    checked={Array.isArray(izabranaTrajanja) && izabranaTrajanja.includes(trajanje)}
+                                    onChange={() => {
+                                        setIzabranaTrajanja(prev =>
+                                        Array.isArray(prev)
+                                            ? (prev.includes(trajanje)
+                                                ? prev.filter(t => t !== trajanje)
+                                                : [...prev, trajanje])
+                                            : [trajanje]
+                                        );
+                                    }}
+                                />
+                                {trajanje}
+                         </label>
+                        ))}
+                        <button className={styles.btn} type='submit'>
+                            Potvrdi izmene
+                        </button>
+                        
+
+                        <div className={styles.x} onClick={() => setShowTT("")}>
                             <i className="fa-regular fa-circle-xmark"></i>
                         </div>
                     </form>

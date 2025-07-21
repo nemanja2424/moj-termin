@@ -12,6 +12,8 @@ export default function PanelPage() {
   const [desavanjaData, setDesavanjaData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [canRefresh, setCanRefresh] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [resetFiltersKey, setResetFiltersKey] = useState(0);
 
   const fetchData = useCallback(async () => {
     const userId = localStorage.getItem("userId");
@@ -68,24 +70,49 @@ export default function PanelPage() {
     setTimeout(() => setCanRefresh(true), 5000); // 2 sekunde cooldown
   };
 
+  const handleFilterToggle = () => {
+    setShowFilters(prev => {
+      if (prev) setResetFiltersKey(k => k + 1); // resetuj filtere kad se zatvara
+      return !prev;
+    });
+  };
+
   return (
     <div className={styles.child}>
       <div className={stylesLocal.header}>
         <h1>Termini</h1>
         <div style={{display:'flex',alignItems:'center',gap:'15px'}}>
-            <i
-              className={`fa-solid fa-arrows-rotate refreshSpin${loading ? ' loading' : ''}`}
-              onClick={handleRefreshClick}
-              style={{
-                cursor: canRefresh && !loading ? 'pointer' : 'not-allowed',
-                opacity: canRefresh && !loading ? 1 : 0.5,
-              }}
-            />
+          {showTabela && (
+            <>
+            {!showFilters ? (
+              <i
+              className="fa-solid fa-filter" 
+              onClick={handleFilterToggle}
+              style={{cursor:'pointer'}}
+              />
+            ) : (
+              <i
+              className="fa-solid fa-filter-circle-xmark"
+               onClick={handleFilterToggle}
+              style={{cursor:'pointer'}}
+              />
+            )}
+            
+            </>
+          )}
+          <i
+            className={`fa-solid fa-arrows-rotate refreshSpin${loading ? ' loading' : ''}`}
+            onClick={handleRefreshClick}
+            style={{
+              cursor: canRefresh && !loading ? 'pointer' : 'not-allowed',
+              opacity: canRefresh && !loading ? 1 : 0.5,
+            }}
+          />
           <button className={stylesLocal.btn} onClick={() => setShowTabela(prev => !prev)}>{showTabela ? "Kalendar" : "Tabela" }</button>
         </div>
       </div>
       {showTabela
-        ? <Tabela desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} />
+        ? <Tabela desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} showFilters={showFilters} resetFiltersKey={resetFiltersKey}/>
         : <Kalendar desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} />
       }
     </div>

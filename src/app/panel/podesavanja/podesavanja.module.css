@@ -31,7 +31,7 @@
 }
 .stavka:hover{
     box-shadow: 5px 5px 10px rgba(16,39,112,.2);
-    transform: scale(1.01);
+    transform: scale(1.00);
 }
 .stavka div{
     display: flex;

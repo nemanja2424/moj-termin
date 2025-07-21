@@ -1,7 +1,30 @@
 .tabelaWrapper {
-    max-height: calc(100vh - 50px);
-    overflow: scroll;
+  max-height: calc(100vh - 50px);
+  overflow: scroll;
 }
+.filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  min-width: calc(100% - 40px);
+  height: 1000px;
+  max-height: 0px;
+  padding: 0px 20px;
+  background-color: white;
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  opacity: 0;
+  transition: max-height 0.2s ease-in, opacity 0.2s ease-in;
+}
+.filters.open {
+  max-height: 100px;
+  overflow: visible;
+  opacity: 1;
+}
+
 .tabela {
     max-height: 100%;
     min-width: 800px;
@@ -27,6 +50,11 @@
   position: sticky;
   top: 0;
   z-index: 2;
+  cursor: pointer;
+  transition: top 0.2s ease-in;
+}
+.tabela.open th{
+  top: 100px;
 }
 
 .tabela tr:last-child td {
@@ -70,16 +98,34 @@
 
 @media (max-width: 600px) {
   .tabelaWrapper {
-    padding: 4px;
+    padding: 0px;
     border-radius: 6px;
   }
   .tabela {
-    min-width: 600px;
-    font-size: 0.93rem;
+    min-width: 0;
   }
   .tabela th, .tabela td {
     padding: 8px 4px;
+    min-width: 100%;
+    white-space: nowrap
   }
+  .tabela.open th{
+    top: 0;
+  }
+
+  .filters {
+    padding: 0 5px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: scroll;
+    position: static;
+  }
+  .filters.open{
+    max-height: 60px;
+  }
+ 
+
 }
 
 /* Scrollbar styling for horizontal scroll */
@@ -92,4 +138,76 @@
 }
 .tabelaWrapper::-webkit-scrollbar-track {
   background: transparent;
+}
+
+
+/*  Filter dizajn || .filters se nalazi i na pocetku  */
+.filters {
+  gap: 15px;
+}
+.filters label{
+  display: flex;
+  flex-direction: column;
+
+}
+.filters strong{
+  margin-bottom: 10px;
+}
+
+.filters input,
+.filters select {
+  padding: 6px 12px;
+  height: auto;
+  min-width: 120px;
+  font-weight: 500;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.3px;
+  outline: none;
+  color: #333;
+  background-color: whitesmoke;
+  border: 1px solid #333;
+  transition: all 200ms linear;
+  box-shadow: 0 2px 4px rgba(21, 21, 21, 0.2);
+  z-index: 5;
+}
+
+.filters input:focus,
+.filters input:active
+.filters select:focus,
+.filters select:active {
+    border-color: #3b82f6; /* plavi akcenat na focus */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Vrati wrapper na normalnu visinu */
+.filters .react-datepicker-wrapper {
+  height: auto;
+}
+
+/* Povećaj popup kalendar */
+.react-datepicker {
+  width: 340px !important;
+  height: 340px !important;
+  min-width: 340px !important;
+  min-height: 340px !important;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+@media (max-width:600px) {
+
+  .filters input,
+  .filters select{
+    padding: 3px 6px;
+    height: auto;
+    min-width: 80px;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .filters label {
+    font-size: 13px;
+  }
 }
