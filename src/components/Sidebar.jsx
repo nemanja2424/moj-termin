@@ -5,11 +5,12 @@ import styles from './Sidebar.module.css';
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faChartPie, faBookmark, faUser, faGear, faCreditCard, faHeadset, faRightFromBracket, faChalkboard } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
   const redirekt = useRedirekt();
   const [vlasnik, setVlasnik] = useState(false);
+  const toggleRef = useRef(null);
 
   const toggleSidebar = () => {
     setRasirenSidebar(prev => !prev);
@@ -22,6 +23,27 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
       }
     }
   }, []);
+  useEffect(() => {
+    const adjustTogglePosition = () => {
+      if (!toggleRef.current) return;
+      const vh = window.innerHeight;
+      const docHeight = document.documentElement.clientHeight;
+      const bottomOffset = vh - docHeight;
+
+      toggleRef.current.style.bottom = `${Math.max(16, bottomOffset + 16)}px`;
+    };
+
+    // Pozovi jednom kada se komponenta mount-uje
+    adjustTogglePosition();
+
+    // Ažuriraj na resize (Chrome UI se menja na skrol, resize se triggeruje)
+    window.addEventListener('resize', adjustTogglePosition);
+
+    return () => {
+      window.removeEventListener('resize', adjustTogglePosition);
+    };
+  }, []);
+
 
   return (
     <div className={`${styles.sidebar} ${rasirenSidebar ? '' : styles.skupljen}`}>
@@ -75,7 +97,11 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
           <p>Odjava</p>
         </Link>
       </nav>
-      <i onClick={toggleSidebar} className={`fa-regular fa-square-caret-left ${styles.toggle} ${rasirenSidebar ? '' : styles.skupljen}`}></i>
+      <i 
+        onClick={toggleSidebar} 
+        ref={toggleRef} 
+        className={`fa-regular fa-square-caret-left ${styles.toggle} ${rasirenSidebar ? '' : styles.skupljen}`}
+      ></i>
     </div>
   );
 }
