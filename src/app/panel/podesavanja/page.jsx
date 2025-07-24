@@ -593,9 +593,11 @@ export default function PodesavanjaPage() {
                 </button>            
             </div>
             <div className={styles.stavka} style={{maxHeight:'150px'}}>
-                <div>
-                    <h4>Logo:</h4>
-                    <span style={{fontSize:'14px'}}>Maksimalno do 2MB <br /></span>
+                <div className={styles.logoDiv}>
+                    <div>
+                        <h4>Logo:</h4>
+                        <span style={{fontSize:'14px'}}>Maksimalno do 2MB <br /></span>
+                    </div>
                     <button onClick={handleButtonClickLogo} className={styles.btn} style={{width:'120px', textAlign:'center'}}>Izmeni logo</button>
                     <input type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef} onChange={handleFileChange} />
                 </div>

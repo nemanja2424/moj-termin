@@ -278,6 +278,7 @@
     box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
 }
 
+
 @media (max-width: 750px) {
     .content {
         flex-direction: column;
@@ -289,6 +290,8 @@
         max-width: 100%;
         align-items: center;
         margin-bottom: 24px;
+        height: auto;
+        max-height: none;
     }
     .stavka {
         width: 95%;
@@ -298,5 +301,14 @@
     }
     .stavka.firme{
         max-height: none;
+    }
+    .logoDiv{
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .logoDiv div{
+        max-width: 40%;
     }
 }
