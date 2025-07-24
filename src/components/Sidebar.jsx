@@ -26,20 +26,12 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
   useEffect(() => {
     const adjustTogglePosition = () => {
       if (!toggleRef.current) return;
-
       const vh = window.innerHeight;
       const docHeight = document.documentElement.clientHeight;
-      const diff = vh - docHeight;
+      const bottomOffset = vh - docHeight;
 
-      // Ako je velika razlika (Chrome UI je prisutan) → podigni dugme
-      if (diff > 80) {
-        toggleRef.current.style.bottom = '80px';
-      } else {
-        // Inače normalno pri dnu
-        toggleRef.current.style.bottom = '20px';
-      }
+      toggleRef.current.style.bottom = `${Math.max(16, bottomOffset - 16)}px`;
     };
-
 
     // Pozovi jednom kada se komponenta mount-uje
     adjustTogglePosition();
