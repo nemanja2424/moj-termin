@@ -24,30 +24,7 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
     }
   }, []);
 
-  useEffect(() => {
-    const adjustBottom = () => {
-      if (!toggleRef.current) return;
-      // total viewport height including browser UI
-      const totalH = window.innerHeight;
-      // visible height when UI is hidden/shown
-      const visH = window.visualViewport?.height ?? window.innerHeight;
-      // ako je razlika > 0, to je visina browser UI
-      const uiHeight = totalH - visH;
-      // ako UI jeste vidljiv (uiHeight > 0), smanji bottom za 20px
-      // ako nije, vrati na 0px
-      toggleRef.current.style.bottom = uiHeight > 0
-        ? `calc(20px + ${uiHeight}px)`
-        : `0px`;
-    };
 
-    adjustBottom();
-    window.visualViewport?.addEventListener('resize', adjustBottom);
-    window.addEventListener('resize', adjustBottom);
-    return () => {
-      window.visualViewport?.removeEventListener('resize', adjustBottom);
-      window.removeEventListener('resize', adjustBottom);
-    };
-  }, []);
 
 
   return (
