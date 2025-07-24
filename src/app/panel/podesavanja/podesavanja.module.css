@@ -298,6 +298,8 @@
         max-width: calc(100% - 55px);
         flex-direction: column;
         align-items: flex-start;
+        max-height: none;
+        height: auto;
     }
     .stavka.firme{
         max-height: none;
