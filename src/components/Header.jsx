@@ -13,6 +13,7 @@ export default function Header() {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (authToken) {setUlogovan(true)}
+    console.log("aas",ulogovan);
   })
   const toggleNav = () => {
     setNavOpen(!navOpen);
@@ -21,7 +22,7 @@ export default function Header() {
 
 
   return (
-    <header className={`${styles.header} ${navOpen ? styles.open : ''}`}>
+    <header className={`${styles.header} ${navOpen ? styles.open : ''}  ${ulogovan ? styles.ulogovan : ''}`}>
       <div className={styles.topRow}>
       <a href={"/"}><Image src="/Images/logo.webp" alt="logo" width={70} height={70} /></a>
       <nav className={styles.nav}>

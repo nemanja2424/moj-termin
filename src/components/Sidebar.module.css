@@ -134,3 +134,18 @@
         bottom: 80px;
     }
 }
+
+/*BREND PRIKAZ*/
+@media (max-width: 1250px) {
+    .brend{
+        display: none;
+    }
+}
+
+/*RESENJE ZA TOGGLE DUGME ZA TEL*/
+
+@media (max-width: 600px) {
+    .toggle {
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+}

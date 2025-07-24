@@ -43,10 +43,13 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
         </Link>
         {vlasnik && (
           <>
-            <Link href={'/panel/brend'}>
-              <div className={styles.ikona}><FontAwesomeIcon icon={faBookmark} /></div>
-              <p>Brend</p>
-            </Link>
+            <span className={styles.brend}>
+              <Link href={'/panel/brend'} >
+                <div className={styles.ikona}><FontAwesomeIcon icon={faBookmark} /></div>
+                <p>Brend</p>
+              </Link>
+            
+            </span>
             <Link href={'/panel/nalozi'}>
               <div className={styles.ikona}><FontAwesomeIcon icon={faUser} /></div>
               <p>Zaposleni</p>
@@ -55,10 +58,10 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
               <div className={styles.ikona}><FontAwesomeIcon icon={faGear} /></div>
               <p>Podešavanja</p>
             </Link>
-            <Link href={'/panel/pretplata'}>
+            {/*<Link href={'/panel/pretplata'}>
               <div className={styles.ikona}><FontAwesomeIcon icon={faCreditCard} /></div>
               <p>Pretplata</p>
-            </Link>
+            </Link>*/}
         
 
           </>

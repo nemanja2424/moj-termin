@@ -152,6 +152,10 @@
 .section h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  color: #0f0657;
+}
+.section strong{
+  color: #0f0657;
 }
 .section p {
   min-width: 320px;

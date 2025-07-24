@@ -190,51 +190,48 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
         </div>
       </div>
 
-      <div style={{width:'100%',marginTop:'5px'}}>
-        {loading ? (
-          <h2>Učitavanje...</h2>
-        ) : selectedDate ? (
-          selectedEvents.length > 0 ? (
-            <div className={styles.dayWrapper} ref={scrollRef}>
-              {selectedEvents.map((event, index) => (
-                <div key={index} className={styles.eventCard}>
-                  <div>
-                    <h3>{event.ime}</h3>
-                    <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
-                    <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
-                    <p><strong>Opis:</strong> {event.opis}</p>
-                    <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{color:'#3b82f6'}}>{event.telefon}</a></p>
-                    <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{color:'#3b82f6'}}>{event.email}</a></p>
-                    <p>
-                      {event.potvrdio !== 0 ? (
-                        <>
-                          <strong>Potvrdio: </strong>{event.potvrdio_user.username}
-                        </>
-                      ) : (
-                        <strong>Nije potvrđeno</strong>
-                      )}
-                    </p>
-                  </div>
-                  <div style={{display:'flex',flexDirection:'row',gap:'10px'}}>
-                    {event.potvrdio === 0 ? (
-                        <button onClick={() => potvrdiTermin(event)} className={styles.btn}>Potvrdi termin</button>
-                      ) : null}
-                    <Link href={`/zakazi/${localStorage.getItem('userId')}/izmeni/${event.token}`}>
-                      <button className={styles.btn}>
-                        Izmeni termin
-                      </button>
-                    </Link>
-                  </div>
+      {loading ? (<h2>Učitavanje...</h2>) : selectedDate ? (
+        selectedEvents.length > 0 ? (
+          <div className={styles.dayWrapper} ref={scrollRef}>
+            {selectedEvents.map((event, index) => (
+              <div key={index} className={styles.eventCard}>
+                <div>
+                  <h3>{event.ime}</h3>
+                  <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
+                  <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
+                  <p><strong>Opis:</strong> {event.opis}</p>
+                  <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{ color: '#3b82f6' }}>{event.telefon}</a></p>
+                  <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{ color: '#3b82f6' }}>{event.email}</a></p>
+                  <p>
+                    {event.potvrdio !== 0 ? (
+                      <>
+                        <strong>Potvrdio: </strong>{event.potvrdio_user.username}
+                      </>
+                    ) : (
+                      <strong>Nije potvrđeno</strong>
+                    )}
+                  </p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <h2>Nema zakazanih termina</h2>
-          )
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+                  {event.potvrdio === 0 ? (
+                    <button onClick={() => potvrdiTermin(event)} className={styles.btn}>Potvrdi termin</button>
+                  ) : null}
+                  <Link href={`/zakazi/${localStorage.getItem('userId')}/izmeni/${event.token}`}>
+                    <button className={styles.btn}>
+                      Izmeni termin
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <h2>Izaberite datum</h2>
-        )}
-      </div>
+          <h2>Nema zakazanih termina</h2>
+        )
+      ) : (
+        <h2>Izaberite datum</h2>
+      )
+      }
 
       <ToastContainer />
     </div>

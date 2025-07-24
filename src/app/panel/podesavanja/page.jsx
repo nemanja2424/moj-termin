@@ -30,6 +30,8 @@ export default function PodesavanjaPage() {
     const fileInputRef = useRef();
     const [loadingPotvrdi, setLoadingPotvrdi] = useState(false);
     const [loadingLokacija, setLoadingLokacija] = useState(false);
+    const [loadingRadnoVreme, setLoadingRadnoVreme] = useState(false);
+    const [loadingTT, setLoadingTT] = useState(false);
     const [showRadnoVreme, setShowRadnoVreme] = useState("");
 
     const sati = [
@@ -390,6 +392,7 @@ export default function PodesavanjaPage() {
 
     const handlePromeniVR = async(e) => {
         e.preventDefault();
+        setLoadingRadnoVreme(true);
         const tip = showRadnoVreme === 'Podrazumevano radno vreme' ? 'default' : odabranaFirma.id;
         console.log('Tip',tip);
         const userId = localStorage.getItem('userId');
@@ -422,6 +425,7 @@ export default function PodesavanjaPage() {
             console.error("Greška:", error);
             toast.error("Došlo je do greške.");
         }
+        setLoadingRadnoVreme(false);
 
     }
 
@@ -437,6 +441,7 @@ export default function PodesavanjaPage() {
     }
     const handlePromeniTT = async(e) => {
         e.preventDefault();
+        setLoadingTT(true);
         const tip = showTT === 'Podrazumevano trajanje termina' ? 'default' : odabranaFirma.id;
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');
@@ -465,6 +470,7 @@ export default function PodesavanjaPage() {
         } catch (error) {
             console.log(error);
         }
+        setLoadingTT(false);
     }
 
 
@@ -540,15 +546,19 @@ export default function PodesavanjaPage() {
                 </div>
                 <button onClick={() => setShowChangePass(true)} className={styles.btn}>Izmeni</button>
             </div>
-            <div className={styles.stavka}>
+            {/*<div className={styles.stavka}>
                 <div>
                     <span>Odabran paket:</span>
                     <h4>{korisnik.paket}</h4>
                 </div>
                 <a href="/panel/pretplata"><button className={styles.btn}>Izmeni</button></a>
-            </div>
+            </div>*/}
             <div className={styles.stavka}>
                 <div>
+                    <div>
+                        <span>Odabran paket:</span>
+                        <h4>{korisnik.paket}</h4>
+                    </div>
                     <span>Datum isteka:</span>
                     <h4>{formatirajDatum(korisnik.istek_pretplate)}</h4>
                     <span>Paket traje još:</span>
@@ -683,7 +693,7 @@ export default function PodesavanjaPage() {
                             <i className={`${stylesLogin.inputIcon} uil uil-lock`}></i>
                             <i className={`fa-solid ${showRegPassConf ? 'fa-eye-slash' : 'fa-eye'} ${stylesLogin.oko}`} onClick={() => setShowRegPassConf(prev => !prev)}></i>
                         </div>
-                        <button type='submit' className={styles.btn}>Promeni lozinku</button>
+                        <button type='submit' className={styles.btn2}>Promeni lozinku</button>
                         <div className={styles.x} onClick={() => setShowChangePass(false)}>
                             <i className="fa-regular fa-circle-xmark"></i>
                         </div>
@@ -708,7 +718,7 @@ export default function PodesavanjaPage() {
                                 className={stylesLogin.formStyle} placeholder='Adresa' />
                             <i className={`${stylesLogin.inputIcon} fa-solid fa-location-dot`} style={{ transform: 'translateY(-25%)' }}></i>
                         </div>
-                        <button type='submit' className={styles.btn} disabled={loadingLokacija}>
+                        <button type='submit' className={styles.btn2} disabled={loadingLokacija}>
                             {loadingLokacija ? <div className="spinnerMali"></div> : 'Dodaj lokaciju'}
                         </button>
                         <div className={styles.x} onClick={() => setShowDodajLokaciju(false)}>
@@ -757,8 +767,8 @@ export default function PodesavanjaPage() {
                             </select>
                           </div>
                         ))}
-                        <button className={styles.btn} type='submit'>
-                            Potvrdi izmene
+                        <button className={styles.btn2} type='submit'>
+                            {loadingRadnoVreme ? <div className="spinnerMali"></div> : 'Potvrdi izmene'}
                         </button>
                         
 
@@ -795,8 +805,8 @@ export default function PodesavanjaPage() {
                                 {trajanje}
                          </label>
                         ))}
-                        <button className={styles.btn} type='submit'>
-                            Potvrdi izmene
+                        <button className={styles.btn2} type='submit'>
+                            {loadingTT ? <div className="spinnerMali"></div> : 'Potvrdi izmene'}
                         </button>
                         
 
