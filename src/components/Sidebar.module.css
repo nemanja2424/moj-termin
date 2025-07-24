@@ -146,6 +146,11 @@
 
 @media (max-width: 600px) {
     .toggle {
-        top: calc(100dvh - 40px);
+        position: fixed;
+        left: 25px;
+        bottom: env(safe-area-inset-bottom, 80px);
+        z-index: 1100;
+        background-color: black;
+        top: auto;
     }
 }
