@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100dvh;
+    height: 100%;
     width: 300px;
     max-width: 200px;
     background-color: lightgray;
