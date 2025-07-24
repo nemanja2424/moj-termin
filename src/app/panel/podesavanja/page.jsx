@@ -732,7 +732,7 @@ export default function PodesavanjaPage() {
         {showRadnoVreme !== '' && (
              <div>
                 <div className={styles.blur}></div>
-                <div className={styles.dodajKorisnika} style={{height:'280px'}}>
+                <div className={styles.radnoVreme}>
                     <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
                     <form onSubmit={handlePromeniVR} className={styles.forma} style={{alignItems:'flex-start'}}>
                         <h2 style={{marginBottom:'30px'}}>{showRadnoVreme}</h2>
@@ -791,6 +791,7 @@ export default function PodesavanjaPage() {
                             <label key={index}>
                                 <input
                                     type="checkbox"
+                                    className={styles['checkbox-custom']}
                                     checked={Array.isArray(izabranaTrajanja) && izabranaTrajanja.includes(trajanje)}
                                     onChange={() => {
                                         setIzabranaTrajanja(prev =>

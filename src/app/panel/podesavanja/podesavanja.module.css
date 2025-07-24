@@ -122,6 +122,84 @@
     flex-direction: column;
     align-items: center;
 }
+
+.radnoVreme {
+    padding: 32px 24px;
+    width: 400px;
+    height: auto;
+    max-width: calc(100% - 80px);
+    text-align: left;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url('/Images/login2.webp');
+    border-radius: 18px;
+    background-size: cover;
+    color: whitesmoke;
+    opacity: 0;
+    animation: zoomFadeIn 0.4s ease-out forwards;
+    box-shadow: 0 8px 32px 0 rgba(16,39,112,.18);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.radnoVreme form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radnoVreme .dan {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.radnoVreme select {
+    padding: 6px 12px;
+    max-height: 250px;
+    border-radius: 6px;
+    border: 1.5px solid #3b82f6;
+    background: rgba(255,255,255,0.85);
+    color: #1d4ed8;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+    min-width: 90px;
+    box-shadow: 0 2px 8px rgba(16,39,112,.07);
+}
+
+.radnoVreme select:focus {
+    border-color: #1d4ed8;
+    background: #e0eaff;
+}
+
+.radnoVreme select:hover {
+    border-color: #2563eb;
+}
+
+.radnoVreme h2{
+    align-self: center;
+    text-align: center;
+}
+
+.radnoVreme label {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.radnoVreme button{
+    align-self: center;
+}
+
 .blur{
     min-width: 100%;
     min-height: 100%;
@@ -132,6 +210,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+@media (max-width: 600px){
+    .blur{
+        z-index: 1000;
+    }
 }
 .x{
     position: absolute;
@@ -193,4 +276,27 @@
     background-color: #000000;
     color: #3b82f6;
     box-shadow: 0 8px 24px 0 rgba(16,39,112,.2);
+}
+
+@media (max-width: 750px) {
+    .content {
+        flex-direction: column;
+        min-width: 100%;
+        overflow-y: scroll;;
+    }
+    .section {
+        width: 100%;
+        max-width: 100%;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .stavka {
+        width: 95%;
+        max-width: calc(100% - 55px);
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .stavka.firme{
+        max-height: none;
+    }
 }
