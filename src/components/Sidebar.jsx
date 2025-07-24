@@ -23,27 +23,6 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
       }
     }
   }, []);
-  useEffect(() => {
-    const adjustTogglePosition = () => {
-      if (!toggleRef.current) return;
-      const vh = window.innerHeight;
-      const docHeight = document.documentElement.clientHeight;
-      const bottomOffset = vh - docHeight;
-
-      toggleRef.current.style.bottom = `${Math.max(16, bottomOffset - 16)}px`;
-    };
-
-    // Pozovi jednom kada se komponenta mount-uje
-    adjustTogglePosition();
-
-    // Ažuriraj na resize (Chrome UI se menja na skrol, resize se triggeruje)
-    window.addEventListener('resize', adjustTogglePosition);
-
-    return () => {
-      window.removeEventListener('resize', adjustTogglePosition);
-    };
-  }, []);
-
 
   return (
     <div className={`${styles.sidebar} ${rasirenSidebar ? '' : styles.skupljen}`}>
