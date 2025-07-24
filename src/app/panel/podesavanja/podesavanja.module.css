@@ -298,11 +298,8 @@
         max-width: calc(100% - 55px);
         flex-direction: column;
         align-items: flex-start;
-        max-height: none;
+        max-height: none !important;
         height: auto;
-    }
-    .stavka img{
-        margin-bottom: 5px;
     }
     .stavka.firme{
         max-height: none;
