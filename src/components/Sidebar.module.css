@@ -146,6 +146,6 @@
 
 @media (max-width: 600px) {
     .toggle {
-        bottom: calc(100dvh - 40px);
+        top: calc(100dvh - 40px);
     }
 }
