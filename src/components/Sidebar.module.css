@@ -146,6 +146,5 @@
 
 @media (max-width: 600px) {
     .toggle {
-        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     }
 }
