@@ -301,6 +301,9 @@
         max-height: none;
         height: auto;
     }
+    .stavka img{
+        margin-bottom: 5px;
+    }
     .stavka.firme{
         max-height: none;
     }
