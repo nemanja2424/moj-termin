@@ -148,7 +148,7 @@
     .toggle {
         position: fixed;
         left: 25px;
-        bottom: env(safe-area-inset-bottom, 80px);
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
         z-index: 1100;
         background-color: black;
         top: auto;
