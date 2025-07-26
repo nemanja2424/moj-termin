@@ -319,8 +319,9 @@
   align-items: center;
   gap: 15px;
   opacity: 1;
-  transition: opacity 400ms ease-out;
+  transition: opacity 400ms ease-out, z-index 1s ease-out;
 }
 .loadingScreen.ucitano{
   opacity: 0;
+  z-index: -5;
 }
