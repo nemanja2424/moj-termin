@@ -247,10 +247,10 @@
   height: calc(20% - 20px);
   flex-direction: row;
 }
-.logo{
-  max-height: 68px;
+.logoDiv{
+  max-height: 100%;
   overflow: hidden;
 }
-.logo img{
+.logoDiv img{
   max-height: 100%;
 }
