@@ -281,7 +281,7 @@ export default function DashboardPage() {
         <div className={styles.sekcija30}>
           <div className={`${styles.stavka2}`}>
             <div className={styles.logoDiv}>
-              <img src={'/logos/login2.webp'} alt="Logo" />
+              <img src={vlasnik.putanja_za_logo} alt="Logo" />
             </div>
             <div>
               <h2>{vlasnik?.ime_preduzeca || "Preduzece"}</h2>
