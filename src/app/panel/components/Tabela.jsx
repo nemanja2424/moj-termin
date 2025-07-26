@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { reactMaxHeadersLength } from "../../../../next.config";
 
 
-export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin, showFilters, resetFiltersKey }) {
+export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin, showFilters, resetFiltersKey, dashboard }) {
   const [desavanja, setDesavanja] = useState([]);
   const [rola, setRola] = useState(null); //1 = vlasnik; 2 = korisnik; Eventualno 3 = admin
   const [sortKey, setSortKey] = useState(null);
@@ -174,7 +174,7 @@ export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin
   }, [resetFiltersKey]);
 
   return (
-    <div className={styles.tabelaWrapper}>
+    <div className={`${styles.tabelaWrapper} ${dashboard && styles.dashboard}`}>
       <ToastContainer />
       <div className={`${styles.filters} ${showFilters ? styles.open : ''}`}>
         <label>

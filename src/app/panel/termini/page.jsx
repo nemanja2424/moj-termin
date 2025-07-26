@@ -60,8 +60,9 @@ export default function PanelPage() {
 
   const izmeniTermin = (event) => {
     const userId = localStorage.getItem("userId");
-    router.push(`/zakazi/${userId}/izmeni/${event.token}`)
-  }
+    const url = `/zakazi/${userId}/izmeni/${event.token}`;
+    window.open(url, "_blank");
+  };
 
   const handleRefreshClick = () => {
     if (!canRefresh || loading) return;

@@ -216,11 +216,16 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
                   {event.potvrdio === 0 ? (
                     <button onClick={() => potvrdiTermin(event)} className={styles.btn}>Potvrdi termin</button>
                   ) : null}
-                  <Link href={`/zakazi/${localStorage.getItem('userId')}/izmeni/${event.token}`}>
+                  <a
+                    href={`/zakazi/${localStorage.getItem('userId')}/izmeni/${event.token}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <button className={styles.btn}>
                       Izmeni termin
                     </button>
-                  </Link>
+                  </a>
+
                 </div>
               </div>
             ))}

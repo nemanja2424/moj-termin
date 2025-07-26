@@ -1,6 +1,10 @@
 .tabelaWrapper {
   max-height: calc(100vh - 50px);
+  height: 100%;
   overflow: scroll;
+}
+.tabelaWrapper.dashboard{
+  height: calc(100% - 45px) !important;
 }
 .filters {
   display: flex;
