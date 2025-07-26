@@ -277,7 +277,7 @@ export default function DashboardPage() {
     <div style={{ width: "100%" }} className={styles.child}>
       <div className={styles.prvaSekcija}>
         <div className={styles.sekcija30}>
-          <div className={`${styles.stavka} ${szatyles.stavka2}`}>
+          <div className={`${styles.stavka} ${styles.stavka2}`}>
             <div className={styles.logoDiv}>
               <img src={vlasnik.putanja_za_logo} alt="Logo" />
             </div>
