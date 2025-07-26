@@ -22,6 +22,7 @@ export default function DashboardPage() {
 
   const [sviTermini, setSviTermini] = useState([]);
   const [vlasnik, setVlasnik] = useState({});
+  const [korisnik, setKorisnik] = useState({});
   const scrollRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [canRefresh, setCanRefresh] = useState(true);
@@ -65,6 +66,7 @@ export default function DashboardPage() {
 
       setSviTermini(kombinovaniTermini);
       setVlasnik(data.vlasnik);
+      setKorisnik(data.korisnik)
     } catch (error) {
       console.error("Greška:", error);
     } finally {
@@ -277,11 +279,14 @@ export default function DashboardPage() {
     <div style={{ width: "100%" }} className={styles.child}>
       <div className={styles.prvaSekcija}>
         <div className={styles.sekcija30}>
-          <div className={`${styles.stavka} ${styles.stavka2}`}>
+          <div className={`${styles.stavka2}`}>
             <div className={styles.logoDiv}>
-              <img src={vlasnik.putanja_za_logo} alt="Logo" />
+              <img src={'/logos/login2.webp'} alt="Logo" />
             </div>
-            <h2>{vlasnik?.ime_preduzeca || "Preduzece"}</h2>
+            <div>
+              <h2>{vlasnik?.ime_preduzeca || "Preduzece"}</h2>
+              <p>{korisnik.username}</p>
+            </div>
           </div>
           <div className={styles.stavka}>
             <div>
