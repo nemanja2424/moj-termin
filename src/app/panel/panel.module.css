@@ -206,7 +206,7 @@
 }
 
 .chartbar{
-  width: 70%;
+  flex: 1; 
   height: calc(100% - 20px);
   border: 2px solid black;
   overflow: hidden;
@@ -217,7 +217,7 @@
   min-height: 320px;
 }
 .sekcija30{
-  width: 30%;
+  width: 375px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -227,7 +227,9 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  column-gap: 20px;
   width: calc(100% - 40px);
+  min-width: 295px;
   height: calc(80% - 20px);
   background-color: #f8fafc;
   border: 1px solid rgb(168, 168, 168);
@@ -236,6 +238,9 @@
   transition: all 200ms ease;
   clip-path: inset(0 round 10px);
   overflow: hidden;
+}
+.stavka div{
+  max-width: 50%;
 }
 .stavka div h2{
   font-weight: 300;
@@ -247,6 +252,7 @@
   display: flex;
   flex-wrap: wrap;
   width: calc(100% - 40px);
+  min-width: 295px;
   background-color: #f8fafc;
   border: 1px solid rgb(168, 168, 168);
   border-radius: 15px;
@@ -269,4 +275,32 @@
   max-height: 70px;
   object-fit: contain;
 
+}
+
+@media (max-width: 770px) {
+  .child{
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .prvaSekcija{
+    flex-direction: column;
+    height: auto;
+  }
+  .sekcija30{
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    min-width: 0;
+  }
+  .stavka{
+    flex-direction: row;
+    height: auto;
+    min-width: 0;
+  }
+  .stavka div{
+    width: 45%;
+  }
+  .stavka2{
+    min-width: 0;
+  }
 }

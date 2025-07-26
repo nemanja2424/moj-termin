@@ -305,11 +305,11 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <strong>Prosečno termina dnevno</strong>
+              <strong>Dnevni prosek</strong>
               <h2>{prosecnoTerminaDnevno}</h2>
             </div>
             <div>
-              <strong>Prosečno termina mesečno</strong>
+              <strong>Mesečni prosek</strong>
               <h2>{prosecnoTerminaPoMesecu}</h2>
             </div>
             <div>
