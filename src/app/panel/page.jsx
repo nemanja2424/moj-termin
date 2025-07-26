@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [korisnik, setKorisnik] = useState({});
   const scrollRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [loadingScreen, setLoadingScreen] = useState(true);
   const [canRefresh, setCanRefresh] = useState(true);
   const [resetFiltersKey, setResetFiltersKey] = useState(0); // za reset filtera
   const danas = new Date();
@@ -66,7 +67,8 @@ export default function DashboardPage() {
 
       setSviTermini(kombinovaniTermini);
       setVlasnik(data.vlasnik);
-      setKorisnik(data.korisnik)
+      setKorisnik(data.korisnik);
+      setLoadingScreen(false)
     } catch (error) {
       console.error("Greška:", error);
     } finally {
@@ -388,6 +390,9 @@ export default function DashboardPage() {
           resetFiltersKey={resetFiltersKey}
           dashboard={true}
         />
+      </div>
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
       </div>
     </div>
   );

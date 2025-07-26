@@ -304,3 +304,23 @@
     min-width: 0;
   }
 }
+
+.loadingScreen{
+  min-width: calc(100% - 22px);
+  min-height: 100%;
+  background-color: #123484;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  opacity: 1;
+  transition: opacity 400ms ease-out;
+}
+.loadingScreen.ucitano{
+  opacity: 0;
+}
