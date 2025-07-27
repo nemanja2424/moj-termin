@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import styles from './Default.module.css';
+import styles from './Minimal.module.css';
 import { toast, ToastContainer } from 'react-toastify';
 
 export default function ModernDesign({
@@ -251,6 +251,7 @@ export default function ModernDesign({
                     flex: 1,
                     borderTopLeftRadius: 0,
                     borderBottomLeftRadius: 0,
+                    maxWidth:'calc(100% - 73px - 30px)'
                   }}
                 />
               </div>

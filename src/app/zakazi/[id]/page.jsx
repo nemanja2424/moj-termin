@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import DefaultDesign from "@/components/dizajn/Default";
 import { useParams } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
+import ModernDesign from "@/components/dizajn/Modern";
+import MinimalDesign from "@/components/dizajn/Minimal";
 
 export default function ZakaziPage() {
     const { id } = useParams();
@@ -81,18 +83,48 @@ export default function ZakaziPage() {
 
   return (
     <>
-        <DefaultDesign
-            forma={forma}
-            setForma={setForma}
-            preduzece={preduzece}
-            setPreduzece={setPreduzece}
-            formData={formData}
-            setFormData={setFormData}
-            id={id}
-            handleSubmit={handleSubmit}
-            tipUlaska={1}
-            loadingSpin={loadingSpin}
-        />
+        {forma.izgled === "default" && (
+            <DefaultDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                handleSubmit={handleSubmit}
+                tipUlaska={1}
+                loadingSpin={loadingSpin}
+            />
+        )}
+        {forma.izgled === "modern" && (
+            <ModernDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                handleSubmit={handleSubmit}
+                tipUlaska={1}
+                loadingSpin={loadingSpin}
+            />
+        )}
+        {forma.izgled === "minimal" && (
+            <MinimalDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                handleSubmit={handleSubmit}
+                tipUlaska={1}
+                loadingSpin={loadingSpin}
+            />
+        )}
         <Footer />
         <ToastContainer />
     </>
