@@ -28,8 +28,8 @@ export default function ZakaziPage() {
     const fetchData = async () => {
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazi/${id}/forma`);
         if (!res.ok) {
-        toast.error('Greška prilikom učitavanja podataka');
-        console.log(res);
+            toast.error('Greška prilikom učitavanja podataka');
+            console.log(res);
         }
         const data = await res.json();
         setForma(data.forma);
@@ -40,7 +40,7 @@ export default function ZakaziPage() {
         fetchData();
     }, []);
 
-    const [localhost, setLocalHost] = useState(true);
+    const [localhost, setLocalHost] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoadingSpin(true);

@@ -4,8 +4,11 @@ import { useEffect, useState, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import styles from './podesavanja.module.css';
 import stylesLogin from '@/app/login/login.module.css';
+import useLogout from '@/hooks/useLogout';
 
 export default function PodesavanjaPage() {
+    const logout = useLogout();
+
     const [korisnik, setKorisnik] = useState({});
     const [preduzeca, setPreduzeca] = useState([]);
     const [brRadnika, setBrRadnika] = useState(0);
@@ -305,6 +308,10 @@ export default function PodesavanjaPage() {
         });
         const data = await res.json();
         if (!res.ok) {
+            if (data && data.code === "ERROR_CODE_UNAUTHORIZED") {
+                logout();
+                return;
+            }
             toast.error(data.message || 'Greška prilikom preuzimanja podataka.');
             return;
         }

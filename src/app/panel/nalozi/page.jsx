@@ -4,8 +4,10 @@ import styles from '../../login/login.module.css';
 import localStyles from './nalozi.module.css';
 import panelStyles from '../panel.module.css';
 import { toast, ToastContainer } from 'react-toastify';
+import useLogout from '@/hooks/useLogout';
 
 export default function NaloziPage() {
+    const logout = useLogout();
     const [korisnici, setKorisnici] = useState([]);
     const [preduzeca, setPreduzeca] = useState([]);
     const [vlasnik, setVlasnik] = useState([]);
@@ -108,11 +110,15 @@ export default function NaloziPage() {
                     Authorization: `Bearer ${authToken}`,
                 },
             });
+            const data = await res.json();
             if (!res.ok) {
+                if (data && data.code === "ERROR_CODE_UNAUTHORIZED") {
+                    logout();
+                    return;
+                }
                 throw new Error("Greška pri dohvatanju podataka.");
             }
 
-            const data = await res.json();
             setKorisnici(data.korisnici);
             setPreduzeca(data.preduzeca);
             setVlasnik(data.vlasnik);

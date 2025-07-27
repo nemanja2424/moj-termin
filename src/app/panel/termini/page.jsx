@@ -4,10 +4,10 @@ import stylesLocal from "./Termini.module.css"
 import Kalendar from "../components/Kalendar";
 import Tabela from "../components/Tabela";
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import useLogout from "@/hooks/useLogout";
 
 export default function PanelPage() {
-  const router = useRouter();
+  const logout = useLogout();
   const [showTabela, setShowTabela] = useState(false);
   const [desavanjaData, setDesavanjaData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -31,12 +31,16 @@ export default function PanelPage() {
           Authorization: `Bearer ${authToken}`,
         },
       });
+      const data = await response.json();
 
       if (!response.ok) {
+        if (data && data.code === "ERROR_CODE_UNAUTHORIZED") {
+          logout();
+          return;
+        }
         throw new Error("Greška pri dohvatanju podataka.");
       }
 
-      const data = await response.json();
 
       const allEvents = data.zakazano.flat().map((item) => ({
         ...item,

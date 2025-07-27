@@ -67,7 +67,7 @@ export default function IzmeniZakaziPage() {
         if (authToken) {setTipUlaska(3)}
     }, []);
 
-    const [localhost, setLocalHost] = useState(true);
+    const [localhost, setLocalHost] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
         const odabranDatum = `${formData.godina}-${String(Number(formData.mesec) + 1).padStart(2, '0')}-${String(formData.dan).padStart(2, '0')}`;

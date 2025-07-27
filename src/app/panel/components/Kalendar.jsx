@@ -32,7 +32,7 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
 
     const daysArray = [];
 
-    const prevMonthLastDay = new Date(year, month, 0).getDate();
+  const prevMonthLastDay = new Date(year, month, 0).getDate();
     for (let i = firstDayIndex - 1; i >= 0; i--) {
       daysArray.push({
         day: prevMonthLastDay - i,
