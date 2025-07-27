@@ -419,17 +419,17 @@ def zakazi():
             subject,
             html_poruka
         ) 
-
-        send_email_to_workers(
-            data.get("id"),
-            odabrana_lokacija,
-            'Novo zakazivanje',
-            token,
-            odabrana_lokacija,
-            preduzece,
-            datum_i_vreme,
-            podaci.get('ime')
-        )
+        if data.get("userId") == 0:
+            send_email_to_workers(
+                data.get("id"),
+                odabrana_lokacija,
+                'Novo zakazivanje',
+                token,
+                odabrana_lokacija,
+                preduzece,
+                datum_i_vreme,
+                podaci.get('ime')
+            )
 
         return jsonify({
             'status': response.status_code,

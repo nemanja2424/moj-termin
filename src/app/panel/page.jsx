@@ -370,16 +370,19 @@ export default function DashboardPage() {
           }}
         >
           <h2>Nova zakazivanja</h2>
-          <i
-            className={`fa-solid fa-arrows-rotate refreshSpin${
-              loading ? " loading" : ""
-            }`}
-            onClick={handleRefreshClick}
-            style={{
-              cursor: canRefresh && !loading ? "pointer" : "not-allowed",
-              opacity: canRefresh && !loading ? 1 : 0.5,
-            }}
-          />
+          <div style={{display:'flex', gap:'15px', alignItems:'center'}}>
+            <a href={`/zakazi/${vlasnik.id}`}>Dodaj termin</a>
+            <i
+              className={`fa-solid fa-arrows-rotate refreshSpin${
+                loading ? " loading" : ""
+              }`}
+              onClick={handleRefreshClick}
+              style={{
+                cursor: canRefresh && !loading ? "pointer" : "not-allowed",
+                opacity: canRefresh && !loading ? 1 : 0.5,
+              }}
+            />
+          </div>
         </div>
         <Tabela
           desavanjaData={sviTermini.slice(0, 20)}

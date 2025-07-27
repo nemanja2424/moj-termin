@@ -42,6 +42,7 @@ export default function ZakaziPage() {
 
     const [localhost, setLocalHost] = useState(false);
     const handleSubmit = async (e) => {
+        let userId = localStorage.getItem('userId') || "0"; // za potvrdio, ako postoji
         e.preventDefault();
         setLoadingSpin(true);
 
@@ -60,7 +61,7 @@ export default function ZakaziPage() {
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ podaci, id })
+                body: JSON.stringify({ podaci, id, userId })
             });
 
             if(!res.ok) {
