@@ -107,8 +107,9 @@
   border-radius: 15px;
   overflow: hidden;
   border: 1px solid #ddd;
-  height: 45%;
   margin: 0px 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .noviTermini p {

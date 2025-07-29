@@ -1,5 +1,5 @@
 .PomocPage {
-  min-height: calc(100vh - 56px);
+  height: calc(100vh - 56px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -68,9 +68,7 @@
   display: flex;
   flex-direction: row;
 }
-.navbar.open div{
-  
-}
+
 .navbar.open a{
   z-index: 5;
   background: #ffffffb0;

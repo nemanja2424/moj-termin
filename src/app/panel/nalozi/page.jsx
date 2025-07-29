@@ -247,9 +247,9 @@ export default function NaloziPage() {
 
     return (
         <div style={{ width: '100%' }} className={panelStyles.child}>
-            <div style={{width:'calc(100% - 20px)',display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:'10px',paddingBottom:'0'}}>
+            <div className={localStyles.header}>
                 <h2>Lista zaposlenih</h2>
-                <button className={styles.btn} style={{margin:'0'}}
+                <button className={localStyles.btn} style={{margin:'0'}}
                 onClick={() => setShowDodajKorisnika(prev => !prev)}><i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika</button>
             </div>
             {korisnici.length > 0 ? (
@@ -332,7 +332,7 @@ export default function NaloziPage() {
                                         <td style={{maxWidth:'500px',gap:'10px',display:'flex'}}>
                                             <button
                                               onClick={() => izmeniKorisnika(korisnik)}
-                                              className={styles.btn}
+                                              className={localStyles.btn}
                                               style={{
                                                 margin: '0',
                                                 height: 'auto',
@@ -349,7 +349,7 @@ export default function NaloziPage() {
                                                 <p>Izmeni</p>
                                               )}
                                             </button>
-                                            <button onClick={() => prikaziElZaNovuSifru(korisnik)} className={styles.btn} style={{margin:'0',height:'auto',padding:'5px 20px'}}>Nova lozinka</button>
+                                            <button onClick={() => prikaziElZaNovuSifru(korisnik)} className={localStyles.btn} style={{margin:'0',height:'auto',padding:'5px 20px'}}>Nova lozinka</button>
                                             <button
                                             onClick={() => {
                                                 if (korisnikZaPotvrduBrisanja === korisnik.id) {
@@ -359,7 +359,7 @@ export default function NaloziPage() {
                                                   setKorisnikZaPotvrduBrisanja(korisnik.id);
                                                 }
                                             }}
-                                            className={styles.btn}
+                                            className={localStyles.btn}
                                             style={{ margin: '0', height: 'auto', padding: '5px 20px',  backgroundColor: korisnikZaPotvrduBrisanja === korisnik.id ? 'red' : '',color: korisnikZaPotvrduBrisanja === korisnik.id ? 'white' : 'red', }}
                                             >
                                               {loadingObrisiId === korisnik.id ? (
@@ -405,7 +405,7 @@ export default function NaloziPage() {
                                 <i className={`${styles.inputIcon} uil uil-lock`}></i>
                                 <i className={`fa-solid ${showRegPassConf ? 'fa-eye-slash' : 'fa-eye'} ${styles.oko}`} onClick={() => setShowRegPassConf(prev => !prev)}></i>
                             </div>
-                            <button type='submit' className={styles.btn}>
+                            <button type='submit' className={localStyles.btn}>
                                 {loadingSpinPass ? (
                                     <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <div className="spinnerMali" ></div>
@@ -473,7 +473,7 @@ export default function NaloziPage() {
                                 </select>
                                 <i className={`${styles.inputIcon2} fa-solid fa-building`}></i>
                             </div>
-                            <button type='submit' className={styles.btn}>
+                            <button type='submit' className={localStyles.btn}>
                                     {loadingSpinDodaj ? (
                                         <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <div className="spinnerMali" ></div>
