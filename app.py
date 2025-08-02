@@ -132,7 +132,7 @@ html_head = """
 def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"] = "nemanja@nemanja.website"
+    msg["From"] = "notifications@mojtermin.site"
     msg["To"] = to_email
 
     # Dodaj tekstualni deo (plain text)
