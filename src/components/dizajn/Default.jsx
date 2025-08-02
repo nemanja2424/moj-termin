@@ -375,7 +375,7 @@ export default function DefaultDesign({
             <p style={{ textAlign:'center'}}>Termin je otkazan.</p>
 
           ) : (
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
+            <>
               <div className={styles.buttons}>
                 <button type="submit" className={styles.submitBtn}>
                   {loadingSpin === true ? (
@@ -419,7 +419,7 @@ export default function DefaultDesign({
               {Number(formData.potvrdio) !== 0 && formData.potvrdio_zaposlen && (
                 <p><b>Termin potvrdio:</b> {formData.potvrdio_zaposlen.username}</p>
               )}
-            </div>
+            </>
           )}
 
         </form>

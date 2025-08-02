@@ -372,7 +372,56 @@ export default function MinimalDesign({
 
           
 
-          <button type="submit" className={styles.submitBtn} style={{background:'green'}}>Zakaži</button>
+          {formData.otkazano === true ? (
+            <p style={{ textAlign:'center'}}>Termin je otkazan.</p>
+
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
+              <div className={styles.buttons}>
+                <button type="submit" className={styles.submitBtn}>
+                  {loadingSpin === true ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <>
+                        {tipUlaska === 1 && 'Zakaži'}
+                        {(tipUlaska === 2 || tipUlaska === 3) && 'Izmeni'}
+                      </>
+                    )}
+                </button>
+                {tipUlaska === 3 && formData.potvrdio === 0 && (
+                  <button onClick={(e) => {e.preventDefault; potvrdiTermin(formData);}} className={styles.submitBtn} type='button'>
+                    {loadingSpinPotvrda ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <p>
+                        Potvrdi
+                      </p>
+                    )}
+                  </button>
+                )}
+                {(tipUlaska === 2 || tipUlaska === 3) && (
+                  <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
+                    {loadingSpinOtkaz ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <p>
+                        Otkaži termin
+                      </p>
+                    )}
+                  </button>
+                )}
+              </div>
+              {Number(formData.potvrdio) !== 0 && formData.potvrdio_zaposlen && (
+                <p><b>Termin potvrdio:</b> {formData.potvrdio_zaposlen.username}</p>
+              )}
+            </div>
+          )}          
         </form>
       </main>
 

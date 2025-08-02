@@ -10,6 +10,7 @@ import ModernDesign from '@/components/dizajn/Modern';
 function PreviewPage() {
   const searchParams = useSearchParams();
   const design = searchParams.get('design') || 'default';
+  const tipUlaska = 1;
 
   const [formData, setFormData] = useState({
     ime: '',
@@ -35,7 +36,7 @@ function PreviewPage() {
     setPreduzece(preduzece);
   }, []);
 
-  const props = { forma, setForma, preduzece, setPreduzece, formData, setFormData, id };
+  const props = { forma, setForma, preduzece, setPreduzece, formData, setFormData, id, tipUlaska };
 
   if (design === 'minimal') return <MinimalDesign {...props} />;
   if (design === 'modern') return <ModernDesign {...props} />;

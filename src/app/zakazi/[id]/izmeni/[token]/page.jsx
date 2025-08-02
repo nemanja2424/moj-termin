@@ -4,6 +4,8 @@ import DefaultDesign from "@/components/dizajn/Default";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import ModernDesign from "@/components/dizajn/Modern";
+import MinimalDesign from "@/components/dizajn/Minimal";
 
 
 export default function IzmeniZakaziPage() {
@@ -169,23 +171,63 @@ export default function IzmeniZakaziPage() {
 
     return (
         <>
-            <DefaultDesign
-                forma={forma}
-                setForma={setForma}
-                preduzece={preduzece}
-                setPreduzece={setPreduzece}
-                formData={formData}
-                setFormData={setFormData}
-                id={id}
-                token={token}
-                handleSubmit={handleSubmit}
-                tipUlaska={tipUlaska}
-                handleOtkazi={handleOtkazi}
-                potvrdiTermin={potvrdiTermin}
-                loadingSpin={loadingSpin}
-                loadingSpinOtkaz={loadingSpinOtkaz}
-                loadingSpinPotvrda={loadingSpinPotvrda}
-            />
+            {forma.izgled === "default" && (
+                        <DefaultDesign
+                            forma={forma}
+                            setForma={setForma}
+                            preduzece={preduzece}
+                            setPreduzece={setPreduzece}
+                            formData={formData}
+                            setFormData={setFormData}
+                            id={id}
+                            token={token}
+                            handleSubmit={handleSubmit}
+                            tipUlaska={tipUlaska}
+                            handleOtkazi={handleOtkazi}
+                            potvrdiTermin={potvrdiTermin}
+                            loadingSpin={loadingSpin}
+                            loadingSpinOtkaz={loadingSpinOtkaz}
+                            loadingSpinPotvrda={loadingSpinPotvrda}
+                        />
+                    )}
+                    {forma.izgled === "modern" && (
+                        <ModernDesign
+                            forma={forma}
+                            setForma={setForma}
+                            preduzece={preduzece}
+                            setPreduzece={setPreduzece}
+                            formData={formData}
+                            setFormData={setFormData}
+                            id={id}
+                            token={token}
+                            handleSubmit={handleSubmit}
+                            tipUlaska={tipUlaska}
+                            handleOtkazi={handleOtkazi}
+                            potvrdiTermin={potvrdiTermin}
+                            loadingSpin={loadingSpin}
+                            loadingSpinOtkaz={loadingSpinOtkaz}
+                            loadingSpinPotvrda={loadingSpinPotvrda}
+                        />
+                    )}
+                    {forma.izgled === "minimal" && (
+                        <MinimalDesign
+                            forma={forma}
+                            setForma={setForma}
+                            preduzece={preduzece}
+                            setPreduzece={setPreduzece}
+                            formData={formData}
+                            setFormData={setFormData}
+                            id={id}
+                            token={token}
+                            handleSubmit={handleSubmit}
+                            tipUlaska={tipUlaska}
+                            handleOtkazi={handleOtkazi}
+                            potvrdiTermin={potvrdiTermin}
+                            loadingSpin={loadingSpin}
+                            loadingSpinOtkaz={loadingSpinOtkaz}
+                            loadingSpinPotvrda={loadingSpinPotvrda}
+                        />
+                    )}
             <Footer />
             <ToastContainer />
         </>

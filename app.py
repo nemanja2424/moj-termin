@@ -146,7 +146,7 @@ def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
 
     smtp_server = "smtp.zoho.eu"
     smtp_port = 587
-    smtp_user = "nemanja@nemanja.website"
+    smtp_user = "notifications@mojtermin.site"
     smtp_password = "n3m4nj41M4K4*"
 
     with smtplib.SMTP(smtp_server, smtp_port) as server:

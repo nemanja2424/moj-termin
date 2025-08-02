@@ -115,7 +115,6 @@ const LoginPage = () => {
     const forma = {
       "izgled": "default",
       "ime": true,
-      "prezime": false,
       "email": true,
       "telefon": true,
       "datum": true,

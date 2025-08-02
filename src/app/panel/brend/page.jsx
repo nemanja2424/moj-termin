@@ -165,9 +165,8 @@ export default function BrendPage() {
             {dizajnObavestenja ? (
                 <>
                     <div style={{ display: 'flex', gap: '10px', padding: '10px' }}>
-                        <button onClick={() => {setSelectedDesign('default')}} className={styles.button2}>Default</button>
-                        <button onClick={() => setSelectedDesign('minimal')} className={styles.button2}>Minimal</button>
-                        <button onClick={() => setSelectedDesign('modern')} className={styles.button2}>Modern</button>
+                        <button onClick={() => {setSelectedDesign('default'); console.log(selectedDesign)}} className={styles.button2}>Default</button>
+                        {/* <button onClick={() => setSelectedDesign('minimal')} className={styles.button2}>Minimal</button> */}
                     </div>
                     <div className={styles.content}>
                         <div className={styles.prikazDizajna}>
