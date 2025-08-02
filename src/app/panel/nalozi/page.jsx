@@ -23,6 +23,7 @@ export default function NaloziPage() {
     const [loadingObrisiId, setLoadingObrisiId] = useState(null);
     const [loadingSpinPass, setLoadingSpinPass] = useState(false);
     const [loadingSpinDodaj, setLoadingSpinDodaj] = useState(false);
+    const [isLocked, setIsLocked] = useState(true);
  
     const [ime, setIme] = useState('');
     const [regEmail, setRegEmail] = useState('');
@@ -122,6 +123,18 @@ export default function NaloziPage() {
             setKorisnici(data.korisnici);
             setPreduzeca(data.preduzeca);
             setVlasnik(data.vlasnik);
+
+            const paket = data.vlasnik.paket;
+            const brZaposlenih = data.korisnici.flat().length;
+
+            if (paket === "Osnovni" && brZaposlenih < 3) {
+                setIsLocked(false);
+            } else if (paket === "Pro" && brZaposlenih < 9){
+                setIsLocked(false);
+            } else if (paket === "Premium") {
+                setIsLocked(false);
+            }
+
         } catch (error) {
             console.error(error);
             toast.error('Došlo je do greške pri učitavanju korisnika.');
@@ -249,8 +262,48 @@ export default function NaloziPage() {
         <div style={{ width: '100%' }} className={panelStyles.child}>
             <div className={localStyles.header}>
                 <h2>Lista zaposlenih</h2>
-                <button className={localStyles.btn} style={{margin:'0'}}
-                onClick={() => setShowDodajKorisnika(prev => !prev)}><i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika</button>
+                {isLocked ? (
+                    <>
+                        <div style={{position:'relative'}}>
+                            <button 
+                                className={localStyles.btn} style={{margin:'0'}}
+                                onClick={() => setShowDodajKorisnika(prev => !prev)}
+                            >
+                                <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika
+                            </button>
+                            <div
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: 0,
+                                    transform: 'translateY(-50%)',
+                                    backgroundColor: '#f0f0f08a',
+                                    zIndex: 10
+                                }}
+                            ></div>
+                            <i className="fa-solid fa-lock" 
+                                style={{ 
+                                    color: '#ff4d4f',
+                                    position:'absolute',
+                                    zIndex:'15',
+                                    top:'-2px',
+                                    right:'-5px',
+                                    transform:'rotate(20deg)'
+                                }} 
+                            />
+
+                        </div>
+                    </>
+                ) : (
+                    <button 
+                        className={localStyles.btn} style={{margin:'0'}}
+                        onClick={() => setShowDodajKorisnika(prev => !prev)}
+                    >
+                        <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika
+                    </button>
+                )}
             </div>
             {korisnici.length > 0 ? (
                 <div className={localStyles.tableContainer}>

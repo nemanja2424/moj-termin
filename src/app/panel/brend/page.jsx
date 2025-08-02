@@ -10,6 +10,7 @@ export default function BrendPage() {
     const [showLink, setShowLink] = useState(false);
     const [showStruktura, setShowStruktura] = useState(false);
     const [formaStruktura, setFormaStruktura] = useState(null);
+    const [paket, setPaket] = useState('')
 
     const qrRef = useRef(null);
     const preuzmiQRCode = () => {
@@ -41,6 +42,7 @@ export default function BrendPage() {
 
             localStorage.setItem('zakaziForma', JSON.stringify(data.forma));
             localStorage.setItem('zakaziPreduzece', JSON.stringify(data));
+            setPaket(data.paket)
         };
 
         init();
@@ -235,17 +237,28 @@ export default function BrendPage() {
                         <form className={styles.strukturaForm}>
                             <h3>Izaberi polja za formu</h3>
                             {Object.entries(formaStruktura)
-                                .filter(([k, v]) => typeof v === 'boolean' && k !== 'logoFirme' && k!== 'nazivFirme')
-                                .map(([field, value]) => (
-                                    <label key={field} className={styles.strukturaLabel}>
+                                .filter(([k, v]) => typeof v === 'boolean' && k !== 'logoFirme' && k !== 'nazivFirme' && k !== 'email')
+                                .map(([field, value]) => {
+                                    const isLokacijaLocked = (paket === 'Personalni' || paket === 'Osnovni') && field === 'lokacija';
+
+                                    return (
+                                    <label
+                                        key={field}
+                                        className={`${styles.strukturaLabel} ${isLokacijaLocked ? styles.lockedField : ''}`}
+                                    >
                                         <input
-                                            type="checkbox"
-                                            checked={!!value}
-                                            onChange={() => handleCheckboxChange(field)}
+                                        type="checkbox"
+                                        checked={!!value}
+                                        onChange={() => handleCheckboxChange(field)}
+                                        disabled={isLokacijaLocked}
                                         />
                                         {labelMap[field] || field}
+                                        {isLokacijaLocked && (
+                                        <i className="fa-solid fa-lock" style={{ marginLeft: '6px', color: '#ff4d4f' }} />
+                                        )}
                                     </label>
-                            ))}
+                                    );
+                                })}
                             <h3>Header</h3>
                             <label className={styles.strukturaLabel}>
                                 <input

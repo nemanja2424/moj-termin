@@ -27,6 +27,7 @@ const Footer = () => {
 
         <div className={styles['footer-section']}>
           <h4>Kontakt</h4>
+          <a href="mailto:info@mojtermin.site" className={styles.contacta}>info@mojtermin.site</a>
           <a href="mailto:jakovljevic.nemanja@outlook.com" className={styles.contacta}>jakovljevic.nemanja@outlook.com</a>
           <a href="tel:+381604339800" className={styles.contacta}>+381 60 433 9800</a>
         </div>

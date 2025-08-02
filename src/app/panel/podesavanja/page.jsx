@@ -36,6 +36,7 @@ export default function PodesavanjaPage() {
     const [loadingRadnoVreme, setLoadingRadnoVreme] = useState(false);
     const [loadingTT, setLoadingTT] = useState(false);
     const [showRadnoVreme, setShowRadnoVreme] = useState("");
+    const [isLocked, setIsLocked] = useState(true);
 
     const sati = [
         "00:00", "00:30",
@@ -181,7 +182,7 @@ export default function PodesavanjaPage() {
             return;
         }
         fetchData();
-        toast.success('Uspešno ste dodali lokaciju.');
+        toast.success('Uspešno ste dodali lokaciju. Omogućite biranje lokacija na strani brend, ukoliko niste.');
         setShowDodajLokaciju(false);
         setImeLokacije('');
         setAdresa('');
@@ -322,6 +323,19 @@ export default function PodesavanjaPage() {
             return suma + (firma.zaposleni?.length || 0);
         }, 0);
         setBrRadnika(ukupno);
+
+        const { paket } = data.korisnik;
+        const brojPreduzeca = data.preduzeca.length;
+
+        if (paket === "Personalni" || paket === "Osnovni") {
+            setIsLocked(true);
+        } else if (paket === "Pro") {
+            setIsLocked(brojPreduzeca >= 3);
+        } else if (paket === "Premium") {
+            setIsLocked(false);
+        } else {
+            setIsLocked(true);
+        }
     }
     useEffect(() => {
         fetchData();
@@ -613,7 +627,37 @@ export default function PodesavanjaPage() {
             <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column', alignItems:'center'}}>
                 <h2>Moje lokacije</h2>
                 <div style={{display:'flex',flexDirection:'row',alignItems:'center',gap:'20px'}}>
-                    <button className={styles.btn} onClick={() => setShowDodajLokaciju(true)}>Nova lokacija</button>
+                    {isLocked ? (
+                        <div style={{position:'relative'}}>
+                            <button className={styles.btn}>Nova lokacija</button>
+                            <div
+                                style={{
+                                    width: '100%',
+                                    height: 'calc(100% - 20px)',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: 0,
+                                    transform: 'translateY(-50%)',
+                                    backgroundColor: '#f0f0f08a',
+                                    zIndex: 10
+                                }}
+                            ></div>
+                            <i className="fa-solid fa-lock" 
+                                style={{ 
+                                    color: '#ff4d4f',
+                                    position:'absolute',
+                                    zIndex:'15',
+                                    top:'2px',
+                                    right:'-5px',
+                                    transform:'rotate(20deg)'
+                                }} 
+                            />
+
+                        </div>
+                        
+                    ) : (
+                        <button className={styles.btn} onClick={() => setShowDodajLokaciju(true)}>Nova lokacija</button>
+                    )}
                     <button className={styles.btn} onClick={() => prikaziRadnoVreme("default")}>
                         Radno vreme
                     </button>

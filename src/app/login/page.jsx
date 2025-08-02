@@ -120,7 +120,7 @@ const LoginPage = () => {
       "datum": true,
       "vreme": true,
       "trajanje": false,
-      "lokacija": true,
+      "lokacija": false,
       "opis": false,
       "nazivFirme": true,
       "logoFirme": true,
