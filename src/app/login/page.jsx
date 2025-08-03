@@ -28,6 +28,8 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState(false);
   const [passError, setPassError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [terms, setTerms] = useState(false);
+
 
 
 
@@ -111,6 +113,12 @@ const LoginPage = () => {
       toast.error('Unesite validan broj telefona (dozvoljen samo jedan + na početku, ostatak brojevi).');
       return;
     }
+
+    if (!terms) {
+      toast.error('Morate prihvatiti uslove korišćenja.');
+      return;
+    }
+
     
     const forma = {
       "izgled": "default",
@@ -257,6 +265,17 @@ const LoginPage = () => {
                   <input value={brTel} onChange={(e) => setBrTel(e.target.value)}
                   type='text' className={styles.formStyle} placeholder='Broj telefona'/>
                   <i className={`${styles.inputIcon} uil uil-phone`}></i>
+                </div>
+                <div style={{ color: '#fff' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={terms} 
+                    onChange={(e) => setTerms(e.target.checked)} 
+                    id="terms" 
+                  />{' '}
+                  <label htmlFor="terms">
+                    Prihvatam <a href="/terms" style={{ textDecoration: 'underline' }}>uslove korišćenja</a>
+                  </label>
                 </div>
                 <button type='submit' className={styles.btn}>
                   {loading ? <span className="spinner"></span> : 'Registruj se'}

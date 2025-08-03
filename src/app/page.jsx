@@ -178,12 +178,11 @@ export default function HomePage() {
           {/* Osnovni paket */}
           <div className={`${styles.paket} anim2`}>
             <h2>Osnovni paket</h2>
-            <p>1 organizacija</p>
-            <p>Do 3 korisnička naloga</p>
+            <p>1 radno mesto</p>
+            <p>Do 3 zaposlenih</p>
             <p>Online kalendar</p>
             <p>Email obaveštenja</p>
             <p>Korisnička podrška</p>
-            <p>Integracija na vaš sajt - 1.600 RSD</p>
             <div className={styles.cena}>
               {!monthly ? (
                 <h3>2.500 RSD</h3>
@@ -196,13 +195,12 @@ export default function HomePage() {
           </div>
           <div className={`${styles.paket} anim2`}>
             <h2>Pro paket</h2>
-            <p>3 organizacija</p>
-            <p>Do 9 korisničkih naloga</p>
+            <p>3 radna mesta</p>
+            <p>Do 9 zaposlenih</p>
             <p>Online kalendar</p>
             <p>Statistika</p>
             <p>Email obaveštenja</p>
             <p>Korisnička podrška</p>
-            <p>Integracija na vaš sajt - 1.600 RSD</p>
             <div className={styles.cena}>
               {!monthly ? (
                 <h3>5.000 RSD</h3>
@@ -215,13 +213,12 @@ export default function HomePage() {
           </div>
           <div className={`${styles.paket} anim2`}>
             <h2>Premium paket</h2>
-            <p>Neograničen broj organizacija</p>
-            <p>Neograničen broj korisničkih naloga</p>
+            <p>Neograničen broj radnih mesta</p>
+            <p>Neograničen broj zaposlenih</p>
             <p>Online kalendar</p>
             <p>Statistika</p>
             <p>Email obaveštenja</p>
             <p>Korisnička podrška</p>
-            <p>Besplatna integracija na vaš sajt</p>
             <div className={styles.cena}>
               {!monthly ? (
                 <h3>10.000 RSD</h3>
@@ -252,10 +249,11 @@ export default function HomePage() {
       <section className={styles['cta-section']}>
         <div className={styles['zatamni-cta']}></div>
         <div className={`${styles['cta-content']} anim4`}>
-          <h2>Zainteresovani? Prijavite se za besplatan probni period od 14 dana!</h2>
-          <p>Isprobajte sve funkcionalnosti našeg sistema bez obaveza i odlučite da li je pravo rešenje za vas.</p>
-          <button className={styles['cta-button']}>Zatraži probni period</button>
-          <p className={styles['cta-note']}>Bez obaveza, bez automatske naplate. Javićemo vam se u najkraćem roku.</p>
+          <h2>Zainteresovani? Javite se i počnite da zakazujete lako!</h2>
+          <p>Moj Termin prima rezervacije umesto vas – dok vi radite, odmarate ili spavate. <br />
+          Sve funkcioniše automatski: klijenti sami biraju slobodan termin, a vi dobijate obaveštenje. Jednostavno, zar ne?</p>
+          <a href='mailto:info@mojtermin.site'><button className={styles['cta-button']}>Kontaktirajte nas</button></a><br/><br/>
+          <span>Ili isprobajte besplatnu verziju <a href='/login' style={{color:"#0aadff"}}>kreiranjem naloga</a>.</span>
         </div>
       </section>
 
@@ -263,16 +261,13 @@ export default function HomePage() {
         <div className="container anim3">
           <h2>Dodatne usluge</h2>
           <p>
-            Pored osnovne ponude, naša firma nudi i <strong>redizajn postojećih web sajtova</strong>,
+            Pored osnovne ponude takođe možemo implementirati plugin za zakazivanje termina na Vaš sajt ukoliko ga imate. 
+            Takođe nudimo i <strong>redizajn postojećih web sajtova</strong>,
             kao i <strong>izradu novih sajtova</strong> u potpunosti prilagođenih vašim poslovnim ciljevima.
-          </p>
-          <p>
-            Cena usluge redizajna počinje od <strong>10.000 RSD</strong>, dok kompletna izrada novog sajta,
-            uključujući dizajn, razvoj i postavljanje, iznosi već od <strong>18.000 RSD</strong>.
           </p>
           <p style={{fontSize:'18px'}}>
             <br/>
-            Za više informacija i individualnu ponudu, slobodno nas <strong>kontaktirajte</strong>.
+            Za više informacija i individualnu ponudu, slobodno se javite na <a href='mailto:jakovljevic.nemanja@outlook.com' style={{color:"#0aadff"}}>jakovljevic.nemanja@outlook.com</a>.
           </p>
         </div>
       </section>

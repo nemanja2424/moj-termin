@@ -88,23 +88,24 @@
     color: #0AADFF;
   }
   
-  .footer-section a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 100%;
-    height: 2px;
-    background-color: #0AADFF;
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.2s ease;
-  }
-  
-  .footer-section a:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
+.footer-section a:not(.noAnim)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 2px;
+  background-color: #0AADFF;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.2s ease;
+}
+
+.footer-section a:not(.noAnim):hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
   
   .contactLink {
     font-size: 19px;

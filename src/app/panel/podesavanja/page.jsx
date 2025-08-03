@@ -465,6 +465,11 @@ export default function PodesavanjaPage() {
     const handlePromeniTT = async(e) => {
         e.preventDefault();
         setLoadingTT(true);
+        if (izabranaTrajanja.length === 0) {
+            toast.error("Morate odabrati makar jednu stavku.");
+            setLoadingTT(false);
+            return;
+        }
         const tip = showTT === 'Podrazumevano trajanje termina' ? 'default' : odabranaFirma.id;
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');

@@ -8,10 +8,12 @@ const Footer = () => {
     <footer id='footer' className={styles.footer}>
       <div className={styles['footer-container']}>
         <div className={styles['footer-section']}>
-          <div className={styles.logo} style={{display:'flex',alignItems:'center',marginBottom:'20px'}}>
-           <Image src={'/Images/logo.webp'} alt='logo' width={45} height={45} />
-            <h3>Moj Termin</h3>
-          </div>
+          <a href="/" className={styles.noAnim}>
+            <div className={styles.logo} style={{display:'flex',alignItems:'center',marginBottom:'20px'}}>
+            <Image src={'/Images/logo.webp'} alt='logo' width={45} height={45} />
+              <h3>Moj Termin</h3>
+            </div>
+          </a>
           <p>Jednostavno digitalno zakazivanje termina – za svaki biznis.</p>
         </div>
 
