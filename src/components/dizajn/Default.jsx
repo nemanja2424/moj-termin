@@ -272,7 +272,7 @@ export default function DefaultDesign({
             </div>
           )}
 
-          {forma.trajanje === true && selectedLokacija && (
+          {selectedLokacija && (
             <div className={styles.inputGroup}>
               <label>Trajanje</label>
               <select
@@ -281,7 +281,6 @@ export default function DefaultDesign({
                 onChange={handleChange}
                 required
               >
-                <option value="">Izaberi trajanje</option>
                 {selectedLokacija.duzina_termina?.map((dt, idx) => (
                   <option key={idx} value={dt}>{dt}</option>
                 ))}

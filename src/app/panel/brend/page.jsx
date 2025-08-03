@@ -237,7 +237,7 @@ export default function BrendPage() {
                         <form className={styles.strukturaForm}>
                             <h3>Izaberi polja za formu</h3>
                             {Object.entries(formaStruktura)
-                                .filter(([k, v]) => typeof v === 'boolean' && k !== 'logoFirme' && k !== 'nazivFirme' && k !== 'email')
+                                .filter(([k, v]) => typeof v === 'boolean' && k !== 'logoFirme' && k !== 'nazivFirme' && k !== 'email' && k !== 'vreme' && k !== 'datum' && k !== 'trajanje' && k!== 'lokacija')
                                 .map(([field, value]) => {
                                     const isLokacijaLocked = (paket === 'Personalni' || paket === 'Osnovni') && field === 'lokacija';
 

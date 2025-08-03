@@ -166,13 +166,15 @@ export default function PodesavanjaPage() {
         setLoadingLokacija(true);
         const userId = localStorage.getItem('userId');
         const authToken = localStorage.getItem('authToken');
+        const trajanje = korisnik.trajanje; 
+        const radnoVreme = korisnik.radnoVreme;
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/podesavanja/dodaj-lokaciju/${userId}`, {
             method:'POST',
             headers:{
                 'Authorization': `Bearer ${authToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({imeLokacije, adresa})
+            body: JSON.stringify({imeLokacije, adresa, trajanje, radnoVreme })
         });
         const data = await res.json();
 
@@ -182,7 +184,7 @@ export default function PodesavanjaPage() {
             return;
         }
         fetchData();
-        toast.success('Uspešno ste dodali lokaciju. Omogućite biranje lokacija na strani brend, ukoliko niste.');
+        toast.success('Uspešno ste dodali lokaciju.');
         setShowDodajLokaciju(false);
         setImeLokacije('');
         setAdresa('');
@@ -327,10 +329,10 @@ export default function PodesavanjaPage() {
         const { paket } = data.korisnik;
         const brojPreduzeca = data.preduzeca.length;
 
-        if (paket === "Personalni" || paket === "Osnovni") {
-            setIsLocked(true);
-        } else if (paket === "Pro") {
-            setIsLocked(brojPreduzeca >= 3);
+        if (brojPreduzeca < 1) {
+            setIsLocked(false);
+        } else if (paket === "Pro" && brojPreduzeca < 3) {
+            setIsLocked(false);
         } else if (paket === "Premium") {
             setIsLocked(false);
         } else {
@@ -581,9 +583,21 @@ export default function PodesavanjaPage() {
                         <h4>{korisnik.paket}</h4>
                     </div>
                     <span>Datum isteka:</span>
-                    <h4>{formatirajDatum(korisnik.istek_pretplate)}</h4>
-                    <span>Paket traje još:</span>
-                    <h4>{danaDoDatuma(korisnik.istek_pretplate)}</h4>
+                    {korisnik.paket === 'Personalni' ? (
+                        <h4>Ne postoji</h4>
+                    ) : (
+                        <h4>{formatirajDatum(korisnik.istek_pretplate)}</h4>
+                    )}
+                    
+                    
+                    {korisnik.paket === 'Personalni' ? (
+                        <></>
+                    ) : (
+                        <>
+                            <span>Paket traje još:</span>
+                            <h4>{danaDoDatuma(korisnik.istek_pretplate)}</h4>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

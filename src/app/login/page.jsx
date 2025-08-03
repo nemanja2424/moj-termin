@@ -119,14 +119,29 @@ const LoginPage = () => {
       "telefon": true,
       "datum": true,
       "vreme": true,
-      "trajanje": false,
-      "lokacija": false,
-      "opis": false,
+      "trajanje": true,
+      "lokacija": true,
+      "opis": true,
       "nazivFirme": true,
       "logoFirme": true,
       "customPolja": [],
       "link": []
     }
+
+    const radnoVreme = {
+      "fri": "08:00-16:00",
+      "mon": "08:00-16:00",
+      "sat": "",
+      "sun": "",
+      "thu": "08:00-16:00",
+      "tue": "08:00-16:00",
+      "wen": "08:00-16:00"
+    }
+
+    const trajanje = [
+      "30 min",
+      "1 h"
+    ]
 
     setLoading(true)
   
@@ -136,7 +151,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma })
+        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma, radnoVreme, trajanje })
       });
   
       const data = await res.json();
