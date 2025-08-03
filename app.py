@@ -8,6 +8,10 @@ from email.mime.text import MIMEText
 import os
 from werkzeug.utils import secure_filename
 import secrets
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime
+import time
+
 
 app = Flask(__name__)
 CORS(app)
@@ -715,5 +719,59 @@ def otkaziTermin():
 
 
 
+
+def proveri_istek_pretplate():
+    print(f"[{time.strftime('%X')}] Izvršavam upit... PID={os.getpid()}")
+
+    # 1. Dohvatanje podataka
+    response = requests.get("https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/alati/proveri-istek-pretplata")
+
+    if response.status_code != 200:
+        print("Greška pri dohvatanju podataka:", response.status_code)
+        return
+
+    podaci = response.json()
+    danas = datetime.now().date()
+    lista_izmenjenih = []
+
+    # 2. Obrada svakog korisnika
+    for korisnik in podaci:
+        istek = korisnik.get("istek_pretplate")
+        paket = korisnik.get("paket")
+        korisnik_id = korisnik.get("id")
+
+        if istek:
+            try:
+                datum_isteka = datetime.strptime(istek, "%Y-%m-%d").date()
+                if datum_isteka < danas and paket.lower() != "personalni":
+                    print(f"Korisnik {korisnik_id} -> pretplata istekla ({istek}), menjam paket...")
+                    # 3. Dodavanje u listu
+                    lista_izmenjenih.append(korisnik_id)
+                    
+            except Exception as e:
+                print(f"✘ Greška u parsiranju datuma za korisnika {korisnik_id}: {e}")
+        
+    
+    if lista_izmenjenih:
+        izmena_res = requests.patch(
+            "https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/alati/izmeni-istek-pretplata",
+            json={"lista": lista_izmenjenih}
+        )
+        if izmena_res.status_code == 200:
+            print(f"✔ Paket je uspešno izmenjen za korisnike: {lista_izmenjenih}")
+        else:
+            print(f"✘ Greška pri izmeni paketa, status: {izmena_res.status_code}")
+    else:
+        print("Nema korisnika kojima je istekao paket za izmenu.")
+
+
+# Inicijalizacija i startovanje scheduler-a
+scheduler = BackgroundScheduler()
+
+
+
 if __name__ == '__main__':
+    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        scheduler.add_job(proveri_istek_pretplate, 'interval', hours=24)
+        scheduler.start()
     app.run(debug=True)
