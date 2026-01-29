@@ -24,23 +24,23 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${navOpen ? styles.open : ''}  ${ulogovan ? styles.ulogovan : ''}`}>
       <div className={styles.topRow}>
-      <a href={"/"}><Image src="/Images/logo.webp" alt="logo" width={70} height={70} /></a>
-      <nav className={styles.nav}>
-          <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
-          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
-          <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
-          {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
-        </nav>
-        <a href='#footer' className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</a>
-        <div
-          className={`${styles.navIcon3} ${styles.forPh} ${navOpen ? styles.open : ''}`}
-          onClick={toggleNav}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        <a href={"/"}><Image src="/Images/logo.webp" alt="logo" width={70} height={70} /></a>
+        <nav className={styles.nav}>
+            <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
+            <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
+            <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
+            {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
+          </nav>
+          <a href='#footer' className={`${styles.button1} ${styles.forPC}`}>Kontaktirajte nas</a>
+          <div
+            className={`${styles.navIcon3} ${styles.forPh} ${navOpen ? styles.open : ''}`}
+            onClick={toggleNav}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
       </div>
 
       <div className={`${styles.phoneNav} ${navOpen ? styles.open : ''}`}>
