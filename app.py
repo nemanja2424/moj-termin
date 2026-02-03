@@ -161,12 +161,17 @@ def send_confirmation_email(to_email, poruka, subject, html_poruka=None ):
 
 
 def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, preduzece, datum_i_vreme, zakazivac, stariPodaci=None):
+    print(f"\n=== SLANJE MEJLOVA ZAPOSLENIMA ===")
+    print(f"vlasnikId: {vlasnikId}, naslov: {naslov}, lokacija: {lokacija}")
     zaposleni = []
     xano_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zaposleni/{vlasnikId}/rxyctdufvyigubohinuvgycftdxrytcufyvgubh'
     try:
+        print(f"Učitavanje zaposlenih sa Xano API-ja...")
         res = requests.get(xano_url, headers={'Content-Type': 'application/json'})
+        print(f"Xano status: {res.status_code}")
         if res.status_code != 200:
-            return jsonify({'error': 'Xano error', 'message': res.text}), res.status_code
+            print(f"ERROR: Xano error pri učitavanju zaposlenih: {res.status_code} - {res.text}")
+            return False
         
         data = res.json()        
 
@@ -174,9 +179,11 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
         vlasnik = data.get('vlasnik', {})
         if vlasnik.get('email'):
             zaposleni.append({'email': vlasnik.get('email'), 'id': vlasnik.get('id')})
+            print(f"Dodat vlasnik: {vlasnik.get('email')}")
 
         # Prođi kroz sve grupe korisnika (zaposleni po firmama)
         korisnici = data.get('korisnici', [])
+        print(f"Broj grupa korisnika: {len(korisnici)}")
         for grupa in korisnici:
             for osoba in grupa:
                 if str(osoba.get('zaposlen_u')) == str(lokacija):
@@ -184,9 +191,10 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
                     id_korisnika = osoba.get('id')
                     if email:
                         zaposleni.append({'email': email, 'id': id_korisnika})
+                        print(f"Dodan zaposlenik: {email}")
 
 
-
+        print(f"Ukupno zaposlenih za obaveštavanja: {len(zaposleni)}")
         # Slanje mejlova svakom od njih
         for z in zaposleni:
             email = z['email']
@@ -306,7 +314,11 @@ def send_email_to_workers(vlasnikId, preduzeceId, naslov, token, lokacija, predu
         return True
 
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"ERROR u send_email_to_workers: {str(e)}")
+        return False
+    except Exception as e:
+        print(f"NEOČEKIVANA GREŠKA u send_email_to_workers: {str(e)}")
+        return False
 
 
 
@@ -422,8 +434,11 @@ def zakazi():
             poruka,
             subject,
             html_poruka
-        ) 
-        if data.get("userId") == 0:
+        )
+        print(f"\nUsulov userId == '0': {data.get('userId') == '0'}")
+        print(f"Vrednost userId: {data.get('userId')} (tip: {type(data.get('userId'))})")
+        if data.get("userId") == "0":
+            print(f"Slanje mejla zaposlenima...")
             send_email_to_workers(
                 data.get("id"),
                 odabrana_lokacija,
@@ -434,6 +449,8 @@ def zakazi():
                 datum_i_vreme,
                 podaci.get('ime')
             )
+        else:
+            print(f"UserId je {data.get('userId')}, mejl zaposlenima se ne šalje")
 
         return jsonify({
             'status': response.status_code,
