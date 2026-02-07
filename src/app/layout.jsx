@@ -12,16 +12,66 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Moj Termin",
-  description: "Digitalno zakazivanje termina za moderan biznis",
-  icons:{
-    icon: "/Images/logo.png"
-  }
+  metadataBase: new URL("https://mojtermin.site"),
+
+  title: {
+    default: "MojTermin – Online zakazivanje termina i pregleda u Srbiji",
+    template: "%s | MojTermin",
+  },
+
+  description:
+    "Zakazujte lekarske preglede, salone i usluge online. Brzo, jednostavno i bez čekanja. MojTermin je moderan sistem za digitalno zakazivanje termina.",
+
+  applicationName: "MojTermin",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+
+  alternates: {
+    canonical: "https://mojtermin.site",
+  },
+
+  icons: {
+    icon: "/Images/logo.png",
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "sr_RS",
+    url: "https://mojtermin.site",
+    siteName: "MojTermin",
+    title: "MojTermin – Online zakazivanje termina",
+    description:
+      "Jednostavno zakazivanje lekarskih pregleda i usluga online. Bez čekanja, bez poziva.",
+    images: [
+      {
+        url: "/Images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "MojTermin – Online zakazivanje termina",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "MojTermin – Online zakazivanje termina",
+    description:
+      "Zakazivanje pregleda i usluga online. Brzo, jednostavno i moderno.",
+    images: ["/Images/og-image.jpg"],
+  },
 };
+
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="sr">
       <head>
         <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css"/>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;550;600;700;800&display=swap" rel="stylesheet"/>
