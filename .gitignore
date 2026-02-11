@@ -1,6 +1,11 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 /public/logos
+/backend_tools/__pycache__
+/backend_tools/chats
+/CHAT_SYSTEM.md
+/CHAT_IMPLEMENTACIJA_SUMMARY.md
+/CHAT_KORISNIK_VODICG.md
 
 # dependencies
 /node_modules

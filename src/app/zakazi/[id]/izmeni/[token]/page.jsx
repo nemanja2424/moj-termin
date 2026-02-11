@@ -78,7 +78,7 @@ export default function IzmeniZakaziPage() {
         datum_rezervacije: odabranDatum,
         };
         const url = localhost
-        ? 'http://127.0.0.1:5000/api/zakazi/izmena'
+        ? 'https://mojtermin.site/api/zakazi/izmena'
         : 'https://mojtermin.site/api/zakazi/izmena';
 
         console.log('Form data:', podaci, id, token, stariPodaci);
@@ -113,7 +113,7 @@ export default function IzmeniZakaziPage() {
             datum_rezervacije: odabranDatum,
         };
         const url = localhost
-        ? 'http://127.0.0.1:5000/api/zakazi/otkazi'
+        ? 'https://mojtermin.site/api/zakazi/otkazi'
         : 'https://mojtermin.site/api/zakazi/otkazi';
 
         setLoadingSpinOtkaz(true);

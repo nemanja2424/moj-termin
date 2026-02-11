@@ -4,7 +4,7 @@ import useRedirekt from "@/hooks/useRedirekt";
 import styles from './Sidebar.module.css';
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays, faChartPie, faBookmark, faUser, faGear, faCreditCard, faHeadset, faRightFromBracket, faChalkboard } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faChartPie, faBookmark, faUser, faGear, faCreditCard, faHeadset, faRightFromBracket, faChalkboard, faRobot } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from "react";
 
 export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
@@ -41,9 +41,9 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
           <div className={styles.ikona}><FontAwesomeIcon icon={faCalendarDays} /></div>
           <p>Termini</p>
         </Link>
-        <Link href={'/panel/statistika'}>
-          <div className={styles.ikona}><FontAwesomeIcon icon={faChartPie} /></div>
-          <p>Statistika</p>
+        <Link href={'/panel/ai'} style={{maxHeight:'30px'}}>
+          <div className={styles.ikona}><FontAwesomeIcon icon={faRobot} style={{}}/></div>
+          <p>AI Asistent</p>
         </Link>
         {vlasnik && (
           <>
