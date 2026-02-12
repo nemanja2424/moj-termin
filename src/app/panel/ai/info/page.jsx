@@ -186,7 +186,7 @@ export default function AiInfoPage() {
         {isOwner && (
           <>
             <div className={styles.modelSection}>
-              <h3>Besplatan model (Llama 3.2)</h3>
+              <h3>Osnovan model (Llama 3.2)</h3>
               <ProgressBar
                 current={todayUsage.owner.llama3}
                 limit={limits.owner.llama3}
@@ -195,7 +195,7 @@ export default function AiInfoPage() {
             </div>
 
             <div className={styles.modelSection}>
-              <h3>Plaćeni model (Llama 4 Maverick)</h3>
+              <h3>Napredni model (Llama 4 Maverick)</h3>
               <ProgressBar
                 current={todayUsage.owner.llama4}
                 limit={limits.owner.llama4}
@@ -204,7 +204,7 @@ export default function AiInfoPage() {
             </div>
 
             <div className={styles.modelSection}>
-              <h3>Zaposleni - Besplatan model</h3>
+              <h3>Zaposleni - Osnovan model</h3>
               <ProgressBar
                 current={todayUsage.employees.llama3}
                 limit={limits.employees.llama3}
@@ -213,7 +213,7 @@ export default function AiInfoPage() {
             </div>
 
             <div className={styles.modelSection}>
-              <h3>Zaposleni - Plaćeni model</h3>
+              <h3>Zaposleni - Napredni model</h3>
               <ProgressBar
                 current={todayUsage.employees.llama4}
                 limit={limits.employees.llama4}
@@ -222,7 +222,7 @@ export default function AiInfoPage() {
             </div>
 
             <div className={styles.modelSection}>
-              <h3>Klijenti - Besplatan model</h3>
+              <h3>Klijenti - Osnovan model</h3>
               <ProgressBar
                 current={todayUsage.bookings.llama3}
                 limit={limits.bookings.llama3}
@@ -231,7 +231,7 @@ export default function AiInfoPage() {
             </div>
 
             <div className={styles.modelSection}>
-              <h3>Klijenti - Plaćeni model</h3>
+              <h3>Klijenti - Napredni model</h3>
               <ProgressBar
                 current={todayUsage.bookings.llama4}
                 limit={limits.bookings.llama4}
@@ -320,8 +320,8 @@ export default function AiInfoPage() {
           <div className={styles.infoSection}>
             <h4>Model za analizu:</h4>
             <ul>
-              <li>Besplatan: Llama-3.2-3B-Instruct-Turbo</li>
-              <li>Plaćeni: Llama-4-Maverick-17B-128E-Instruct-FP8</li>
+              <li>Osnovan: Llama-3.2-3B-Instruct-Turbo</li>
+              <li>Napredni: Llama-4-Maverick-17B-128E-Instruct-FP8</li>
             </ul>
           </div>
 
