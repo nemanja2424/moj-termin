@@ -1,0 +1,496 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  grid-auto-rows: max-content;
+}
+
+/* Smooth scrolling */
+html, body {
+  scroll-behavior: smooth;
+}
+
+/* Desktop Layout */
+@media (min-width: 1200px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    max-width: 100%;
+    max-height: calc(100vh - 40px);
+    padding: 30px;
+    gap: 30px;
+  }
+}
+
+/* Status Box */
+.statusBox {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px 0 0 12px;
+  margin-bottom: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  grid-column: 1/-1;
+  width: calc(100% - 30px);
+}
+
+.statusBox h1 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.statusContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.statusItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.statusItem span {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.statusItem strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.statusAvailable {
+  color: #4ade80;
+}
+
+/* Card */
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #667eea;
+}
+
+/* Desktop: Dnevni Limit je left column */
+.card:nth-child(2) {
+  grid-column: 1;
+}
+
+/* Desktop: Model preference je right column */
+.card:nth-child(3) {
+  grid-column: 2;
+}
+
+/* Desktop: Assistant info je full-width */
+.card:nth-child(4) {
+  grid-column: 1/-1;
+}
+
+/* Tablet/Mobile: sve u jednoj koloni */
+@media (max-width: 1199px) {
+  .card:nth-child(2),
+  .card:nth-child(3),
+  .card:nth-child(4) {
+    grid-column: 1;
+  }
+}
+
+.card h2 {
+  margin: 0 0 25px 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Model Section */
+.modelSection {
+  margin-bottom: 30px;
+}
+
+.modelSection h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+/* Employee Message */
+.employeeMessage {
+  padding: 30px;
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.dailyQuotaText {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: 0.5px;
+}
+
+/* Progress Bar */
+.progressSection {
+  margin-bottom: 20px;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progressLabel span {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.progressCount {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progressBar.low {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.progressBar.medium {
+  background: linear-gradient(90deg, #60a5fa, #3b82f6);
+}
+
+.progressBar.high {
+  background: linear-gradient(90deg, #34d399, #10b981);
+}
+
+.percentage {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.resetInfo {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Preference Content */
+.preferenceContent {
+  margin-bottom: 25px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.radioLabel:hover {
+  padding-left: 5px;
+}
+
+.radioLabel input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.radioLabel input[type="radio"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.radioLabel span {
+  font-size: 15px;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.savingText {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #667eea;
+  font-style: italic;
+}
+
+/* Info Box */
+.info {
+  background: #f0f4ff;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+  margin-top: 20px;
+}
+
+.info strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.info li {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.info strong {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Assistant Info */
+.assistantInfo {
+  color: #1f2937;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.infoRow span {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.infoRow strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.separator {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 20px 0;
+}
+
+.infoSection {
+  margin-bottom: 20px;
+}
+
+.infoSection h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.infoSection ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.infoSection li {
+  margin: 6px 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.docLink {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: #667eea;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.docLink:hover {
+  background: #764ba2;
+  transform: translateX(3px);
+}
+
+/* Responsive */
+@media (max-width: 1199px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .card:nth-child(3),
+  .card:nth-child(4) {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .statusBox {
+    padding: 20px;
+  }
+
+  .statusBox h1 {
+    font-size: 24px;
+  }
+
+  .statusContent {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modelSection {
+    margin-bottom: 20px;
+  }
+
+  .modelSection h3 {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .employeeMessage {
+    padding: 20px;
+    margin-top: 10px;
+  }
+
+  .dailyQuotaText {
+    font-size: 16px;
+  }
+
+  .radioLabel {
+    padding: 10px 0;
+  }
+
+  .preferenceContent {
+    margin-bottom: 20px;
+  }
+
+  .info {
+    padding: 12px;
+    margin-top: 15px;
+  }
+
+  .infoRow {
+    flex-direction: column;
+    padding: 8px 0;
+  }
+
+  .infoRow span {
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+    gap: 15px;
+    min-height: 100vh;
+  }
+
+  .statusBox {
+    padding: 15px;
+    margin-bottom: 0;
+  }
+
+  .statusBox h1 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .statusContent {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 15px;
+    margin-bottom: 0;
+  }
+
+  .card h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .modelSection h3 {
+    font-size: 14px;
+  }
+
+  .employeeMessage {
+    padding: 15px;
+    margin-top: 10px;
+  }
+
+  .dailyQuotaText {
+    font-size: 15px;
+  }
+
+  .progressLabel {
+    font-size: 13px;
+  }
+
+  .progressBarContainer {
+    height: 10px;
+  }
+
+  .docLink {
+    width: 100%;
+    text-align: center;
+  }
+}

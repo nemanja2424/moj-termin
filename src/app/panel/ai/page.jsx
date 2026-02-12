@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import styles from "./Statistika.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TypingIndicator = () => (
   <div className={styles.typingContainer}>
@@ -194,7 +195,7 @@ export default function StatistikaPage() {
         if (!authToken || !userId) return;
 
         const response = await fetch(
-          `https://mojtermin.site/api/chats?userId=${userId}&authToken=${authToken}`
+          `http://127.0.0.1:5000/api/chats?userId=${userId}&authToken=${authToken}`
         );
 
         if (response.ok) {
@@ -224,7 +225,7 @@ export default function StatistikaPage() {
 
       setChatLoading(true);
       const response = await fetch(
-        `https://mojtermin.site/api/chat/${chatId}?userId=${userId}&authToken=${authToken}`
+        `http://127.0.0.1:5000/api/chat/${chatId}?userId=${userId}&authToken=${authToken}`
       );
 
       if (response.ok) {
@@ -252,7 +253,7 @@ export default function StatistikaPage() {
         return;
       }
 
-      const response = await fetch("https://mojtermin.site/api/chat/create", {
+      const response = await fetch("http://127.0.0.1:5000/api/chat/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -328,7 +329,7 @@ export default function StatistikaPage() {
       if (!authToken || !userId) return;
 
       const response = await fetch(
-        `https://mojtermin.site/api/chat/${chatToDelete.chat_id}`,
+        `http://127.0.0.1:5000/api/chat/${chatToDelete.chat_id}`,
         {
           method: "DELETE",
           headers: {
@@ -371,7 +372,7 @@ export default function StatistikaPage() {
       if (!authToken || !userId) return;
 
       const response = await fetch(
-        `https://mojtermin.site/api/chat/${chatToRename.chat_id}/rename`,
+        `http://127.0.0.1:5000/api/chat/${chatToRename.chat_id}/rename`,
         {
           method: "PATCH",
           headers: {
@@ -443,7 +444,7 @@ export default function StatistikaPage() {
     let chatId = currentChatId;
     if (!chatId) {
       try {
-        const createResponse = await fetch("https://mojtermin.site/api/chat/create", {
+        const createResponse = await fetch("http://127.0.0.1:5000/api/chat/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -494,7 +495,7 @@ export default function StatistikaPage() {
 
     // Čuva user poruku u bazi
     try {
-      await fetch(`https://mojtermin.site/api/chat/${chatId}/message`, {
+      await fetch(`http://127.0.0.1:5000/api/chat/${chatId}/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -526,7 +527,7 @@ export default function StatistikaPage() {
       // Pozovi API
       const fetchAIResponse = async () => {
         try {
-          const response = await fetch("https://mojtermin.site/api/askAI", {
+          const response = await fetch("http://127.0.0.1:5000/api/askAI", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -575,7 +576,7 @@ export default function StatistikaPage() {
 
       // Čuva bot poruku u bazi
       try {
-        await fetch(`https://mojtermin.site/api/chat/${chatId}/message`, {
+        await fetch(`http://127.0.0.1:5000/api/chat/${chatId}/message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -614,10 +615,17 @@ export default function StatistikaPage() {
             <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
               <i
                 className="fa-solid fa-comments"
-                style={{ fontSize: "24px", color: "#3b82f6", cursor:'pointer' }}
+                style={{ fontSize: "24px", color: "#3b82f6" }}
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 title="Prikaži/Sakrij čatove"
               ></i>
+              <a href="/panel/ai/info">
+                <i 
+                  className="fa-solid fa-gear"
+                  style={{ fontSize: "24px", color: "#3b82f6" }}
+                  title="Prikaži informacije o AI."
+                ></i>
+              </a>
             </div>
           </div>
 

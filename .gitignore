@@ -3,9 +3,12 @@
 /public/logos
 /backend_tools/__pycache__
 /backend_tools/chats
+/backend_tools/ai_usage
+
 /CHAT_SYSTEM.md
 /CHAT_IMPLEMENTACIJA_SUMMARY.md
 /CHAT_KORISNIK_VODICG.md
+/AI_LIMITS_STRUCTURE.md
 
 # dependencies
 /node_modules

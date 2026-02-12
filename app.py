@@ -6,16 +6,18 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
+import json
 from werkzeug.utils import secure_filename
 import secrets
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
 from backend_tools.askAI import askAI
 from backend_tools.chat_manager import (
     create_new_chat, save_chat_message, load_chat, 
     get_user_chats, delete_chat, rename_chat
 )
+from backend_tools.ai_limiter import check_and_increment_ai_usage
 from dotenv import load_dotenv
 
 # Učitaj .env fajl
@@ -42,47 +44,9 @@ CORS(app)
 # Proverava SMTP konfiguraciju pri startu
 verify_smtp_config()
 
-# Keš za korisničke podatke tokom sesije
-# Format: { "user_id": {"data": {...}, "timestamp": datetime} }
-# 
-# KAKO FUNKCIONIŠE:
-# 1. Prvom pozivu /api/askAI se preuzimaju podaci sa /zakazivanja/{id} endpointa
-# 2. Podaci se čuvaju u memoriji sa timestamp-om (firm_data_cache)
-# 3. Narednim pozivima se koristi keš bez pozivanja Xano API-ja
-# 4. Ako je keš stariji od 1h, automatski se briše i preuzimaju novi podaci
-# 5. Korisnik može ručno obrisati keš sa POST /api/clearCache rutom
-# 
-# PREDNOSTI:
-# - Sprečava prenatrpanost AI konteksta
-# - Brže je (ne čeka API odgovore)
-# - Čuva bandwidth
-# - Automatski oslobađa RAM (1h TTL)
-#
-# NAPOMENA: Keš se briše kada se server restartuje (u memoriji je)
-firm_data_cache = {}
 
 
-def is_cache_valid(user_id):
-    """
-    Proverava da li je keš za korisnika validan.
-    Vraća True ako keš postoji i nije stariji od 1 sata.
-    """
-    if user_id not in firm_data_cache:
-        return False
-    
-    cache_entry = firm_data_cache[user_id]
-    if "timestamp" not in cache_entry:
-        return False
-    
-    # Proveravamo da li je keš stariji od 1 sata
-    age = datetime.now() - cache_entry["timestamp"]
-    if age > timedelta(hours=1):
-        # Keš je istekao, brišemo ga
-        del firm_data_cache[user_id]
-        print(f"[Keš] Keš za korisnika {user_id} je istekao (stariji od 1h), obrisan")
-        return False
-    
-    return True
+
 
 @app.route('/api/hello', methods=['GET'])
 def hello():
@@ -857,7 +821,7 @@ def otkaziTermin():
 @app.route('/api/askAI', methods=['POST'])
 def askAI_route():
     """
-    Ruta koja poziva askAI funkciju nakon provere validnosti tokena.
+    Ruta koja poziva askAI funkciju nakon provere validnosti tokena i limitacija.
     """
     data = request.json
 
@@ -874,44 +838,61 @@ def askAI_route():
     if not user_id:
         return jsonify({'error': 'Nedostaje userId'}), 400
 
-    # Dohvatanje podataka firme sa Xano - sa kešom
+    # ===== PROVERA AI LIMITACIJA =====
+    limit_result = check_and_increment_ai_usage(user_id, auth_token)
+    
+    if not limit_result['allowed']:
+        return jsonify({
+            'error': limit_result['error'],
+            'status': 'limit_exceeded'
+        }), 429  # Too Many Requests
+    
+    selected_model = limit_result['model']
+    print(f"✅ Odabrani model: {selected_model}")
+    # ===== KRAJ PROVERE LIMITACIJA =====
+
+    # Dohvatanje podataka firme sa Xano
     try:
-        # Provera keša (validnosti - nije stariji od 1h)
-        if is_cache_valid(user_id):
-            print(f"[Keš] Korišćenje keširanih podataka za korisnika {user_id}")
-            data_firme = firm_data_cache[user_id]["data"]
-        else:
-            print(f"[Keš] Preuzimanje novih podataka za korisnika {user_id}")
-            xano_data_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/get-for-ai/{user_id}/'
-            
-            firm_response = requests.get(
-                xano_data_url,
-                headers={
-                    'Content-Type': 'application/json',
-                    'Authorization': f'Bearer {auth_token}'
-                }
-            )
-
-            if firm_response.status_code != 200:
-                return jsonify({'error': 'Greška pri dohvatanju podataka firme'}), firm_response.status_code
-
-            data_firme = firm_response.json()
-            # Keširaj podatke sa timestamp-om za budućes pozive
-            firm_data_cache[user_id] = {
-                "data": data_firme,
-                "timestamp": datetime.now()
+        xano_data_url = f'https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/get-for-ai/{user_id}/'
+        
+        firm_response = requests.get(
+            xano_data_url,
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {auth_token}'
             }
+        )
+
+        if firm_response.status_code != 200:
+            return jsonify({'error': 'Greška pri dohvatanju podataka firme'}), firm_response.status_code
+
+        data_firme = firm_response.json()
+        
+        # DEBUG: Loguj šta se dobija od Xano-a
+        print(f"\n📊 DEBUG - Data dobijeni od Xano-a (get-for-ai):")
+        print(f"Keys: {list(data_firme.keys())}")
+        print(f"Veličina data_firme: {len(str(data_firme))} karaktera")
+        
+        # Prikaži strukturu
+        for key in list(data_firme.keys())[:5]:
+            value = data_firme[key]
+            if isinstance(value, (list, dict)):
+                print(f"  - {key}: {type(value).__name__} (len: {len(value)})")
+            else:
+                print(f"  - {key}: {type(value).__name__}")
+        print()
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'Greška pri dohvatanju podataka: {str(e)}'}), 500
 
     # Pozivanje askAI funkcije
     try:
-        odgovor = askAI(data_firme, poruke, pitanje)
+        odgovor = askAI(data_firme, poruke, pitanje, selected_model)
         
         return jsonify({
             'status': 'success',
             'odgovor': odgovor,
+            'model': selected_model,
             'poruka': 'Odgovor uspešno generisan'
         }), 200
 
@@ -922,35 +903,63 @@ def askAI_route():
         }), 500
 
 
-@app.route('/api/clearCache', methods=['POST'])
-def clear_cache():
+@app.route('/api/aiUsage', methods=['GET'])
+def get_ai_usage():
     """
-    Ruta koja čisti keš podataka firme za trenutnog korisnika.
-    Koristi se ako je korisnik ažurirao podatke i želi novi keš.
+    Vraća podatke o korišćenju AI za određeni dan.
+    Čita .json fajl iz backend_tools/ai_usage/[owner_id]/[datum].json
+    
+    Query parametri:
+    - owner_id (obavezno): ID vlasnika
+    - date (opciono): Datum u formatu YYYY-MM-DD, ako nije prosleđen koristi se danasnnji datum
+    
+    Vraća:
+    - JSON sa strukturom:
+      {
+        "owner": {"llama3": 0, "llama4": 0},
+        "employees": {"llama3": 0, "llama4": 0},
+        "bookings": {"llama3": 0, "llama4": 0}
+      }
+    
+    Ako fajl ne postoji, vraća default values sa svim 0.
     """
     try:
-        data = request.json
+        owner_id = request.args.get('owner_id')
+        date = request.args.get('date', datetime.now().strftime('%Y-%m-%d'))
         
-        if not data:
-            return jsonify({'error': 'Nema JSON podataka u zahtevу'}), 400
+        if not owner_id:
+            return jsonify({'error': 'Nedostaje owner_id parametar'}), 400
         
-        user_id = data.get('userId')
-        auth_token = data.get('authToken')
-
-        if not user_id or not auth_token:
-            return jsonify({'error': 'Nedostaju userId i authToken'}), 400
-
-        # Brisanje keša
-        if user_id in firm_data_cache:
-            del firm_data_cache[user_id]
-            print(f"[Keš] Obrisan keš za korisnika {user_id}")
-            return jsonify({'status': 'success', 'poruka': 'Keš je obrisan'}), 200
+        # Konstruiši putanju do fajla
+        file_path = f'backend_tools/ai_usage/{owner_id}/{date}.json'
+        
+        # Provera da li fajl postoji
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    return jsonify(data), 200
+            except json.JSONDecodeError as e:
+                print(f"❌ Greška pri parsiranju JSON fajla {file_path}: {str(e)}")
+                return jsonify({'error': 'Invalid JSON file'}), 500
+            except Exception as e:
+                print(f"❌ Greška pri čitanju fajla {file_path}: {str(e)}")
+                return jsonify({'error': f'Greška pri čitanju fajla: {str(e)}'}), 500
         else:
-            return jsonify({'status': 'info', 'poruka': 'Keš za ovog korisnika ne postoji'}), 200
-
+            # Ako fajl ne postoji, vrati default vrednosti
+            default_data = {
+                "owner": {"llama3": 0, "llama4": 0},
+                "employees": {"llama3": 0, "llama4": 0},
+                "bookings": {"llama3": 0, "llama4": 0}
+            }
+            return jsonify(default_data), 200
+    
     except Exception as e:
-        print(f"[ERROR] Greška u clear_cache: {str(e)}")
+        print(f"❌ Greška u /api/aiUsage: {str(e)}")
         return jsonify({'error': f'Server greška: {str(e)}'}), 500
+
+
+
 
 
 # ========== CHAT RUTE ==========
