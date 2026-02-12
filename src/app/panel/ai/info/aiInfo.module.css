@@ -12,11 +12,6 @@
   grid-auto-rows: max-content;
 }
 
-/* Smooth scrolling */
-html, body {
-  scroll-behavior: smooth;
-}
-
 /* Desktop Layout */
 @media (min-width: 1200px) {
   .container {
