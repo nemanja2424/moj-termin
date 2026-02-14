@@ -45,7 +45,7 @@ export default function AiInfoPage() {
 
         // Fetch dnevne podatke o korišćenju
         const today = new Date().toISOString().split("T")[0];
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mojtermin.site';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         const dailyUsageResponse = await fetch(
           `${apiUrl}/api/aiUsage?owner_id=${userId}&date=${today}`
         );

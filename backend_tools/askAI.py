@@ -113,22 +113,28 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
     # SYSTEM PROMPT za llama3 - pojednostavljen, bez grafika
     system_prompt_llama3 = """
         Ti si AI asistent za mojtermin.site.
+        Nikada ne prikazujes JSON
 
-        Zadatak: odgovori na osnovu prosleđenih podataka. Ako trebaju akcije na terminima, generiši [agent_proposal].
+        AGENT PROPOSAL:
+        Kada korisnik traži akciju, generiši samo radnju i poruku:
 
         [agent_proposal]
         {
-          "radnja": "kreiranje|izmena|otkazivanje|potvrdjivanje",
+          "radnja": "kreiranje"|"izmena"|"otkazivanje"|"potvrdjivanje",
           "poruka": "Kratko",
           "body": {
-            "ime": null, "email": null, "telefon": null,
-            datum_rezervacije: "2026-02-13", "vreme": "08:00",
-            "lokacija": null, "token": null
+            "ime": [ime iz podataka], "email": [email iz podataka], "telefon": [telefon iz podataka],
+            datum_rezervacije: "2026-02-13", "vreme": "08:00", duzina_termina: [trajanje iz podataka]
+            "lokacija": [iskljucivo ID, ne ime. iz podataka], "token": [token iz podataka], "opis": [opis iz podataka]
+            "potvrdio": [id korisnika ili null]
           }
         }
         [/agent_proposal]
-
-        Popuni samo dostupne podatke, ostatak null.
+        
+        JSON mora da bude isti kao i u primeru, menjas samo vrednosti
+        OBAVEZNO NAPISI SVA POLJA, PA MAKAR BILA BEZ VREDNOSTI ILI NULL
+        Nema mogucnosti za bulk radnje.
+        Nakon kreiranja termina, token se kreira u backend-u i korisnik ako hoce da menja taj termin mora da napravi novi chat.
     """
     
     # Odaberi odgovarajući system prompt

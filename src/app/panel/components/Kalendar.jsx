@@ -133,7 +133,7 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
     const authToken = localStorage.getItem('authToken');
     const userId = localStorage.getItem('userId');
     termin.potvrdio = userId;
-    const res = await fetch("https://mojtermin.site/api/potvrdi_termin", {
+    const res = await fetch("http://127.0.0.1:5000/api/potvrdi_termin", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
