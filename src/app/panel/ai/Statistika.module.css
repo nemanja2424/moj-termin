@@ -380,6 +380,7 @@
 
 .sidebarOverlay {
   display: none;
+}
 .chartError {
   color: #ef4444;
   padding: 16px;
