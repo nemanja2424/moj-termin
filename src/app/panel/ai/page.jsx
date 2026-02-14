@@ -95,22 +95,31 @@ const ChartComponent = ({ chartData }) => {
 
 const parseMessageContent = (text) => {
   const parts = [];
+  
+  // Ekstrakcija agent_proposal iz originalnog teksta
+  const agentRegex = /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/;
+  const agentMatch = text.match(agentRegex);
+  
+  // Ukloni agent proposal iz teksta za prikaz
+  let displayText = text.replace(/\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/g, '').trim();
+  
+  // Parsuj grafike iz displayText-a
   const chartRegex = /\[CHART\]([\s\S]*?)\[\/CHART\]/g;
   let lastIndex = 0;
-  let match;
+  let chartMatch;
 
-  while ((match = chartRegex.exec(text)) !== null) {
+  while ((chartMatch = chartRegex.exec(displayText)) !== null) {
     // Dodaj tekst pre grafikona
-    if (match.index > lastIndex) {
+    if (chartMatch.index > lastIndex) {
       parts.push({
         type: "text",
-        content: text.substring(lastIndex, match.index),
+        content: displayText.substring(lastIndex, chartMatch.index),
       });
     }
 
     // Dodaj grafikon
     try {
-      const chartData = JSON.parse(match[1]);
+      const chartData = JSON.parse(chartMatch[1]);
       parts.push({
         type: "chart",
         content: chartData,
@@ -119,27 +128,131 @@ const parseMessageContent = (text) => {
       console.error("Greška pri parsiranju grafikona:", e);
       parts.push({
         type: "text",
-        content: match[0],
+        content: chartMatch[0],
       });
     }
 
-    lastIndex = match.index + match[0].length;
+    lastIndex = chartMatch.index + chartMatch[0].length;
   }
 
   // Dodaj ostatak teksta
-  if (lastIndex < text.length) {
+  if (lastIndex < displayText.length) {
     parts.push({
       type: "text",
-      content: text.substring(lastIndex),
+      content: displayText.substring(lastIndex),
     });
   }
 
-  // Ako nema grafikona, vrati ceo tekst
-  if (parts.length === 0) {
-    return [{ type: "text", content: text }];
+  // Ako nema ničega, vrati ceo displayText
+  if (parts.length === 0 && displayText) {
+    return [{ type: "text", content: displayText }];
   }
 
   return parts;
+};
+
+// AGENT MAPPER - za filtriranje polja po akciji
+const AGENT_MAPPER = {
+  "kreiranje": {
+    endpoint: "/api/zakazi",
+    method: "POST",
+    extract: (body) => ({
+      id: localStorage.getItem("userId"),
+      podaci: {
+        datum_rezervacije: body.datum_rezervacije,
+        trajanje: body.duzina_termina,
+        ime: body.ime,
+        email: body.email,
+        telefon: body.telefon,
+        vreme: body.vreme,
+        lokacija: body.lokacija,
+        opis: body.opis
+      }
+    })
+  },
+  "izmena": {
+    endpoint: "/api/zakazi/izmena",
+    method: "POST",
+    extract: (body) => {
+      const [godina, mesec, dan] = body.datum_rezervacije.split("-");
+
+      return {
+        id: localStorage.getItem("userId"),
+        token: body.token,
+        podaci: {
+          datum_rezervacije: body.datum_rezervacije,
+          trajanje: body.duzina_termina,
+          ime: body.ime,
+          email: body.email,
+          telefon: body.telefon,
+          vreme: body.vreme,
+          lokacija: body.lokacija,
+          token: body.token,
+          opis: body.opis,
+
+          // nova polja
+          dan: Number(dan),
+          mesec: Number(mesec),
+          godina: Number(godina),
+        },
+        stariPodaci: {},
+        tipUlaska: 1
+      };
+    }
+  },
+  "otkazivanje": {
+    endpoint: "/api/zakazi/otkazi",
+    method: "PATCH",
+    extract: (body) => ({
+      token: body.token,
+      podaci: {
+        dan: body.dan,
+        mesec: body.mesec,
+        godina: body.godina,
+        vreme: body.vreme,
+        lokacija: body.lokacija
+      },
+      tipUlaska: 1
+    })
+  },
+  "potvrdjivanje": {
+    endpoint: "/api/potvrdi_termin",
+    method: "POST",
+    extract: (body) => ({
+      termin: {
+        token: body.token,
+        potvrdio: parseInt(localStorage.getItem("userId"))
+      }
+    })
+  }
+};
+
+// Agent komponent
+const AgentProposal = ({ proposal, onConfirm, onReject, isExecuting }) => {
+  return (
+    <div className={styles.agentProposal}>
+      <div className={styles.agentHeader}>
+        <span className={styles.agentAction}>🤖 {proposal.radnja.toUpperCase()}</span>
+      </div>
+      <p className={styles.agentMessage}>{proposal.poruka}</p>
+      <div className={styles.agentActions}>
+        <button 
+          className={styles.agentConfirm}
+          onClick={onConfirm}
+          disabled={isExecuting}
+        >
+          {isExecuting ? "⏳" : "✅"} Potvrdi
+        </button>
+        <button 
+          className={styles.agentReject}
+          onClick={onReject}
+          disabled={isExecuting}
+        >
+          ❌ Odbij
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default function StatistikaPage() {
@@ -163,6 +276,9 @@ export default function StatistikaPage() {
   const [chatToDelete, setChatToDelete] = useState(null);
   const [chatToRename, setChatToRename] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingAgent, setPendingAgent] = useState(null);
+  const [executingAgent, setExecutingAgent] = useState(false);
+  const [processedAgentMessageId, setProcessedAgentMessageId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -173,6 +289,27 @@ export default function StatistikaPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  // Ekstraktuj agent proposal iz poslednje bot poruke - samo ako nije već obrađena
+  useEffect(() => {
+    if (messages.length > 0 && !pendingAgent) {
+      const lastMessage = messages[messages.length - 1];
+      // Proveravaj samo ako je nova poruka (različitog ID-a od prethodne obrađene)
+      if (lastMessage.sender === "bot" && lastMessage.id !== processedAgentMessageId) {
+        const agentRegex = /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/;
+        const agentMatch = lastMessage.text.match(agentRegex);
+        if (agentMatch) {
+          try {
+            const agentData = JSON.parse(agentMatch[1]);
+            setPendingAgent(agentData);
+            setProcessedAgentMessageId(lastMessage.id);
+          } catch (e) {
+            console.error("Greška pri parsiranju agenta iz poruke:", e);
+          }
+        }
+      }
+    }
+  }, [messages, pendingAgent, processedAgentMessageId]);
 
   // Zatvori meni kada se klikne negde drugde
   useEffect(() => {
@@ -232,6 +369,8 @@ export default function StatistikaPage() {
         const data = await response.json();
         setMessages(data.chat.messages);
         setCurrentChatId(chatId);
+        setPendingAgent(null);  // Resetuj pending agent
+        setProcessedAgentMessageId(null);  // Resetuj processedAgentMessageId
       } else if (response.status === 403) {
         alert("Nemate dozvolu da pristupite ovom chatu");
       }
@@ -281,6 +420,10 @@ export default function StatistikaPage() {
 
         // Učitaj novi chat
         await loadChat(newChat.chat_id);
+        
+        // RESETUJ pendingAgent
+        setPendingAgent(null);
+        setProcessedAgentMessageId(null);
         
         // Resetuj poruke na početnu
         setMessages([
@@ -425,6 +568,172 @@ export default function StatistikaPage() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [deleteModalOpen, renameModalOpen]);
+
+  // Agent akcije
+  const handleConfirmAgent = async () => {
+    if (!pendingAgent) return;
+
+    try {
+      setExecutingAgent(true);
+      const authToken = localStorage.getItem("authToken");
+      const userId = localStorage.getItem("userId");
+      
+      if (!authToken) {
+        alert("Greška: Nema autentifikacije");
+        return;
+      }
+
+      const mapper = AGENT_MAPPER[pendingAgent.radnja];
+      if (!mapper) {
+        alert("Nepoznata akcija");
+        return;
+      }
+
+      const payload = mapper.extract(pendingAgent.body);
+      payload.authToken = authToken;
+
+      const response = await fetch(
+        `https://mojtermin.site${mapper.endpoint}`,
+        {
+          method: mapper.method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+      const lastMessage = messages[messages.length - 1];
+
+      if (response.ok) {
+        // Zameni [agent_proposal] sa statusom u originalnoj poruci
+        const updatedText = lastMessage.text.replace(
+          /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
+          `✅ **Akcija "${pendingAgent.radnja}" je uspešno izvršena!**`
+        );
+        
+        // Ažuriraj poruku u stanju
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { ...lastMessage, text: updatedText }
+        ]);
+        
+        // Sačuvaj ažuriranu poruku u bazi
+        try {
+          await fetch(`https://mojtermin.site/api/chat/${currentChatId}/message`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              authToken,
+              userId,
+              message: updatedText,
+              sender: "bot",
+            }),
+          });
+        } catch (error) {
+          console.error("Greška pri čuvanju poruke:", error);
+        }
+      } else {
+        // Zameni [agent_proposal] sa greškom
+        const updatedText = lastMessage.text.replace(
+          /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
+          `❌ **Greška pri izvršavanju akcije:** ${result.message || result.error || "Nepoznata greška"}`
+        );
+        
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { ...lastMessage, text: updatedText }
+        ]);
+        
+        // Sačuvaj ažuriranu poruku u bazi
+        try {
+          await fetch(`https://mojtermin.site/api/chat/${currentChatId}/message`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              authToken,
+              userId,
+              message: updatedText,
+              sender: "bot",
+            }),
+          });
+        } catch (error) {
+          console.error("Greška pri čuvanju poruke:", error);
+        }
+      }
+
+      setPendingAgent(null);
+      setProcessedAgentMessageId(null);
+    } catch (error) {
+      console.error("Greška pri izvršavanju akcije:", error);
+      const lastMessage = messages[messages.length - 1];
+      
+      const updatedText = lastMessage.text.replace(
+        /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
+        `❌ **Greška:** ${error.message}`
+      );
+      
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { ...lastMessage, text: updatedText }
+      ]);
+      
+      setPendingAgent(null);
+      setProcessedAgentMessageId(null);
+    } finally {
+      setExecutingAgent(false);
+    }
+  };
+
+  const handleRejectAgent = async () => {
+    try {
+      const authToken = localStorage.getItem("authToken");
+      const userId = localStorage.getItem("userId");
+      const lastMessage = messages[messages.length - 1];
+      
+      // Zameni [agent_proposal] sa status porukom
+      const updatedText = lastMessage.text.replace(
+        /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
+        `❌ **Akcija je odbijena od strane korisnika.**`
+      );
+      
+      // Ažuriraj poruku u stanju
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { ...lastMessage, text: updatedText }
+      ]);
+      
+      // Sačuvaj ažuriranu poruku u bazi
+      try {
+        await fetch(`https://mojtermin.site/api/chat/${currentChatId}/message`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            authToken,
+            userId,
+            message: updatedText,
+            sender: "bot",
+          }),
+        });
+      } catch (error) {
+        console.error("Greška pri čuvanju poruke:", error);
+      }
+      
+      setPendingAgent(null);
+      setProcessedAgentMessageId(null);
+    } catch (error) {
+      console.error("Greška pri odbijanju akcije:", error);
+      setPendingAgent(null);
+      setProcessedAgentMessageId(null);
+    }
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -653,9 +962,19 @@ export default function StatistikaPage() {
                                 <ReactMarkdown key={idx}>
                                   {part.content}
                                 </ReactMarkdown>
-                              ) : (
+                              ) : part.type === "chart" ? (
                                 <ChartComponent key={idx} chartData={part.content} />
-                              )
+                              ) : null
+                            )}
+                            {pendingAgent && message.id === messages[messages.length - 1].id && (
+                              <div style={{ marginTop: "16px" }}>
+                                <AgentProposal 
+                                  proposal={pendingAgent}
+                                  onConfirm={handleConfirmAgent}
+                                  onReject={handleRejectAgent}
+                                  isExecuting={executingAgent}
+                                />
+                              </div>
                             )}
                           </div>
                         ) : (

@@ -380,6 +380,84 @@
 
 .sidebarOverlay {
   display: none;
+.chartError {
+  color: #ef4444;
+  padding: 16px;
+  background-color: #fee2e2;
+  border-radius: 6px;
+}
+
+/* Agent Proposal Styles */
+.agentProposal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  padding: 16px;
+  color: white;
+  margin: 12px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.agentHeader {
+  margin-bottom: 12px;
+}
+
+.agentAction {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.agentMessage {
+  margin: 12px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.agentActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.agentConfirm,
+.agentReject {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.agentConfirm {
+  background-color: #10b981;
+  color: white;
+}
+
+.agentConfirm:hover:not(:disabled) {
+  background-color: #059669;
+  transform: scale(1.02);
+}
+
+.agentReject {
+  background-color: #ef4444;
+  color: white;
+}
+
+.agentReject:hover:not(:disabled) {
+  background-color: #dc2626;
+  transform: scale(1.02);
+}
+
+.agentConfirm:disabled,
+.agentReject:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

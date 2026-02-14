@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from together import Together
-from datetime import date
+from datetime import datetime
 import json
 
 load_dotenv()
@@ -15,7 +15,7 @@ MODEL_NAMES = {
 
 
 def askAI(data_firme, poruke, pitanje, model="llama4"):
-    today = date.today()
+    today = datetime.today()
     
     # Formatiraj JSON sa podacima firme
     formatted_data = json.dumps(data_firme, indent=2, ensure_ascii=False)
@@ -88,22 +88,47 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
         - Prikazuješ progrese i statistiku
 
         Uvek dodaj tekstualni opis IZ PODATAKA pre i/ili posle grafikona.
+
+        AGENT PROPOSAL:
+        Kada korisnik traži akciju, generiši samo radnju i poruku:
+
+        [agent_proposal]
+        {
+          "radnja": "kreiranje|izmena|otkazivanje|potvrdjivanje",
+          "poruka": "Kratko",
+          "body": {
+            "ime": [ime iz podataka], "email": [email iz podataka], "telefon": [telefon iz podataka],
+            datum_rezervacije: "2026-02-13", "vreme": "08:00", duzina_termina: [trajanje iz podataka]
+            "lokacija": [iskljucivo ID, ne ime. iz podataka], "token": [token iz podataka], "opis": [opis iz podataka]
+            "potvrdio": [id korisnika ili null]
+          }
+        }
+        [/agent_proposal]
+
+        Popuni sva polja podacima koji su ti dostavljeni, ne izostavljaj nista, ostala ostavljaju null.
+        Nema mogucnosti za bulk radnje.
+        Nakon kreiranja termina, token se kreira u backend-u i korisnik ako hoce da menja taj termin mora da napravi novi chat.
     """
     
     # SYSTEM PROMPT za llama3 - pojednostavljen, bez grafika
     system_prompt_llama3 = """
-        Ti si AI asistent za mojtermin.site - osnovna verzija.
+        Ti si AI asistent za mojtermin.site.
 
-        Tvoj zadatak je da daš brz odgovor na osnovu prosleđenih podataka.
+        Zadatak: odgovori na osnovu prosleđenih podataka. Ako trebaju akcije na terminima, generiši [agent_proposal].
 
-        Pravila:
-        - Koristi podatke iz JSON-a
-        - Budi koncizan i direktan
-        - Ako podatak ne postoji, to ispomeni
-        - Govori jednostavno
-        - Ne pravi grafike i složene analize
-        
-        Odgovori kratko i jasno.
+        [agent_proposal]
+        {
+          "radnja": "kreiranje|izmena|otkazivanje|potvrdjivanje",
+          "poruka": "Kratko",
+          "body": {
+            "ime": null, "email": null, "telefon": null,
+            datum_rezervacije: "2026-02-13", "vreme": "08:00",
+            "lokacija": null, "token": null
+          }
+        }
+        [/agent_proposal]
+
+        Popuni samo dostupne podatke, ostatak null.
     """
     
     # Odaberi odgovarajući system prompt
@@ -123,7 +148,7 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
             "content": f"PODACI FIRME:\n{formatted_data}\n\nDanasnji datum: {today}"
         }
     ]
-    print(formatted_data)
+    #print(formatted_data)
     # Dodaj prethodne poruke (conversation history)
     messages.extend(poruke)
     
@@ -148,4 +173,5 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
         temperature=0.2,
     )
     
+    print(response.choices[-1].message.content)
     return response.choices[0].message.content
