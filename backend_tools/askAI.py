@@ -7,7 +7,7 @@ load_dotenv()
 client = Together()
 
 
-# Mapping od skraćenih imena na pune model zvanične nazive
+# Mapping od skraćenih imena na pune model zvanične naziveeeee
 MODEL_NAMES = {
     #"llama3": "meta-llama/Meta-Llama-3-8B-Instruct-Lite",
     "llama3": "meta-llama/Llama-3.2-3B-Instruct-Turbo",
