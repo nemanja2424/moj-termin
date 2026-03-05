@@ -5,6 +5,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import styles from './podesavanja.module.css';
 import stylesLogin from '@/app/login/login.module.css';
 import useLogout from '@/hooks/useLogout';
+import MarkdownEditor from '@/components/MarkdownEditor';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function PodesavanjaPage() {
     const logout = useLogout();
@@ -37,6 +39,7 @@ export default function PodesavanjaPage() {
     const [loadingTT, setLoadingTT] = useState(false);
     const [showRadnoVreme, setShowRadnoVreme] = useState("");
     const [isLocked, setIsLocked] = useState(true);
+    const [copyHover, setCopyHover] = useState(false);
 
     const sati = [
         "00:00", "00:30",
@@ -82,6 +85,23 @@ export default function PodesavanjaPage() {
     const [showTT, setShowTT] = useState("");
     const trajanja = ["30 min", "1 h", "1 h 30 min", "2 h", "3 h"];
     const [izabranaTrajanja, setIzabranaTrajanja] = useState([]);
+
+    // TT - Cenovnik varijable
+    const [novaUsluga_cena, setNovaUsluga_cena] = useState('');
+    const [novaUsluga_naziv, setNovaUsluga_naziv] = useState('');
+    const [novaUsluga_trajanje, setNovaUsluga_trajanje] = useState('');
+    const [novaUsluga_trajanje_prikaz, setNovaUsluga_trajanje_prikaz] = useState('');
+    const [editingServiceId, setEditingServiceId] = useState(null);
+    const [editingServiceData, setEditingServiceData] = useState({});
+
+    const cenaPrikazi = [
+        { vrednost: 30, prikaz: "30 min" },
+        { vrednost: 60, prikaz: "1 sat" },
+        { vrednost: 90, prikaz: "1 sat 30 min" },
+        { vrednost: 120, prikaz: "2 sata" },
+        { vrednost: 180, prikaz: "3 sata" },
+        { vrednost: 240, prikaz: "4 sata" },
+    ];
 
 
 
@@ -455,18 +475,76 @@ export default function PodesavanjaPage() {
     const prikaziTT = (tip) => {
         if (tip === 'default') {
             setShowTT("Podrazumevano trajanje termina");
-            setIzabranaTrajanja(korisnik.trajanje);
+            setIzabranaTrajanja(Array.isArray(korisnik.trajanje) ? korisnik.trajanje : []);
         } else {
             setShowTT(`Trajanje termina za ${tip.ime}`);
-            setIzabranaTrajanja(tip.duzina_termina);
+            setIzabranaTrajanja(Array.isArray(tip.duzina_termina) ? tip.duzina_termina : []);
             setOdabranaFirma(tip);
         }
-    }
+        // Resetuj obrasca za novu uslugu
+        resetujFormularUsluge();
+    };
+
+    const resetujFormularUsluge = () => {
+        setNovaUsluga_cena('');
+        setNovaUsluga_naziv('');
+        setNovaUsluga_trajanje('');
+        setNovaUsluga_trajanje_prikaz('');
+        setEditingServiceId(null);
+        setEditingServiceData({});
+    };
+
+    const handleAddService = () => {
+        if (!novaUsluga_cena || !novaUsluga_naziv || !novaUsluga_trajanje) {
+            toast.error('Popunite sva polja.');
+            return;
+        }
+
+        const novaUsluga = {
+            cena: parseInt(novaUsluga_cena),
+            usluga: novaUsluga_naziv,
+            trajanje: parseInt(novaUsluga_trajanje),
+            trajanje_prikaz: novaUsluga_trajanje_prikaz
+        };
+
+        setIzabranaTrajanja(prev => [...prev, novaUsluga]);
+        resetujFormularUsluge();
+        toast.success('Usluga dodana!');
+    };
+
+    const handleDeleteService = (index) => {
+        setIzabranaTrajanja(prev => prev.filter((_, i) => i !== index));
+        toast.success('Usluga obrisana!');
+    };
+
+    const handleStartEditService = (index, service) => {
+        setEditingServiceId(index);
+        setEditingServiceData({
+            cena: service.cena,
+            usluga: service.usluga,
+            trajanje: service.trajanje,
+            trajanje_prikaz: service.trajanje_prikaz
+        });
+    };
+
+    const handleSaveEditService = (index) => {
+        if (!editingServiceData.cena || !editingServiceData.usluga || !editingServiceData.trajanje) {
+            toast.error('Popunite sva polja.');
+            return;
+        }
+
+        const updatedServices = [...izabranaTrajanja];
+        updatedServices[index] = editingServiceData;
+        setIzabranaTrajanja(updatedServices);
+        setEditingServiceId(null);
+        setEditingServiceData({});
+        toast.success('Usluga ažurirana!');
+    };
     const handlePromeniTT = async(e) => {
         e.preventDefault();
         setLoadingTT(true);
-        if (izabranaTrajanja.length === 0) {
-            toast.error("Morate odabrati makar jednu stavku.");
+        if (!Array.isArray(izabranaTrajanja) || izabranaTrajanja.length === 0) {
+            toast.error("Morate dodati makar jednu uslugu.");
             setLoadingTT(false);
             return;
         }
@@ -491,15 +569,37 @@ export default function PodesavanjaPage() {
                 toast.error(data.message || 'Greška prilikom izmene.');
                 return;
             }
-            toast.success("Uspešno ste promenili radno vreme.");
+            toast.success("Uspešno ste promenili cenovnik.");
             setKorisnik(data.korisnik);
             setPreduzeca(data.preduzeca);
             setShowTT("");
         } catch (error) {
             console.log(error);
+            toast.error("Došlo je do greške.");
         }
         setLoadingTT(false);
     }
+
+    const [link, setLink] = useState('');
+    const qrRef = useRef(null);
+    const preuzmiQRCode = () => {
+        const svg = qrRef.current;
+        if (!svg) return;
+
+        const serializer = new XMLSerializer();
+        const svgStr = serializer.serializeToString(svg);
+
+        const blob = new Blob([svgStr], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "qrcode.svg";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
 
 
 
@@ -605,6 +705,35 @@ export default function PodesavanjaPage() {
                     )}
                 </div>
             </div>
+
+            <div className={styles.stavka} style={{flexDirection:'column', alignItems:'center'}}>
+                <h3>URL za zakazivanje</h3>
+                <div style={{display:'flex', width:'100%', maxWidth: '500px', marginBottom:'20px', position:'relative'}}>
+                    <input 
+                        type="text"
+                        value={`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`}
+                        disabled
+                        placeholder="Link za zakazivanje"
+                        style={{flex:1, padding:'8px 40px 8px 12px', borderRadius:'4px', border:'1px solid #ccc', backgroundColor:'#f5f5f5'}}
+                    />
+                    <button 
+                        type="button"
+                        onClick={() => {
+                            navigator.clipboard.writeText(`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`);
+                            toast.success('Link je kopiran u clipboard!');
+                        }} 
+                        onMouseEnter={() => setCopyHover(true)}
+                        onMouseLeave={() => setCopyHover(false)}
+                        style={{position:'absolute', right:'8px', top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', padding:'4px'}}
+                        title="Kopiraj link"
+                    >
+                        <i className="fa-solid fa-copy" style={{color: copyHover ? '#1890ff' : '#666', fontSize:'16px', transition: 'color 0.2s ease'}}></i>
+                    </button>
+                </div>
+                <button onClick={preuzmiQRCode} className={styles.btn}>
+                    Preuzmi QR kod
+                </button>
+            </div>
         </div>
 
         <div className={styles.section}>
@@ -612,25 +741,20 @@ export default function PodesavanjaPage() {
             <div className={styles.stavka}>
                 <div>
                     <span>Ime:</span>
-                    {editingPrIme ? (
-                        <input 
-                            value={korisnik.ime_preduzeca} 
-                            onChange={(e) => setKorisnik({ ...korisnik, ime_preduzeca: e.target.value })} 
-                        />
-                    ) : (
-                        <h4>{korisnik.ime_preduzeca  === '' ? ('Unesite ime') : (korisnik.ime_preduzeca)}</h4>
-                    )}
+                    <h4>{korisnik.ime_preduzeca  === '' ? ('Unesite ime') : (korisnik.ime_preduzeca)}</h4>
                     <span>Ukupan broj zaposlenih:</span>
                     <h4>{brRadnika}</h4>
                 </div>
-                <button 
-                    onClick={editingPrIme ? handleImeEmailTel : handlePrIme} 
-                    className={styles.btn}
-                    style={{maxHeight:'35px'}}
-                    disabled={loadingPotvrdi}
-                >
-                    {editingPrIme && loadingPotvrdi ? <div className="spinnerMali"></div> : (editingPrIme ? 'Potvrdi' : 'Izmeni')}
-                </button>            
+                <div className={styles.buttonsDiv}>
+                    <button 
+                        onClick={handlePrIme} 
+                        className={styles.btn}
+                        style={{maxHeight:'35px'}}
+                        disabled={loadingPotvrdi}
+                    >
+                        Izmeni
+                    </button>
+                </div>
             </div>
             <div className={styles.stavka} style={{maxHeight:'150px'}}>
                 <div className={styles.logoDiv}>
@@ -681,7 +805,7 @@ export default function PodesavanjaPage() {
                         Radno vreme
                     </button>
                     <button className={styles.btn} onClick={() => prikaziTT("default")}>
-                        Termini
+                        Cenovnik
                     </button>
                 </div>
 
@@ -701,15 +825,21 @@ export default function PodesavanjaPage() {
                                             value={editedFirmData.adresa || ''} 
                                             onChange={(e) => setEditedFirmData({...editedFirmData, adresa: e.target.value})}
                                         />
+                                        <input 
+                                            value={editedFirmData.overlapLimit || ''} 
+                                            onChange={(e) => setEditedFirmData({...editedFirmData, overlapLimit: e.target.value})}
+                                            placeholder='Ograničenja istovremenih termina'
+                                        />
                                     </>
                                 ) : (
                                     <>
                                         <h4>{firma.ime}</h4>
                                         <span>{firma.adresa}</span>
+                                        <span style={{fontWeight:'300'}}>Ograničenja istovremenih termina: <span style={{fontWeight:'600'}}>{firma.overlapLimit}</span></span>
                                     </>
                                 )}
 
-                                <p>Broj zaposlenih: <strong>{firma.zaposleni.length}</strong></p>
+                                <p style={{fontWeight:'300'}}>Broj zaposlenih: <strong style={{fontWeight:'600'}}>{firma.zaposleni.length}</strong></p>
                             </div>
                             <div style={{display:'flax',flexDirection:'row',gap:'15px'}}>
                                 <button 
@@ -719,7 +849,7 @@ export default function PodesavanjaPage() {
                                             handleConfirmEdit(firma.id);
                                         } else {
                                             setEditFirmaId(firma.id);
-                                            setEditedFirmData({ ime: firma.ime, adresa: firma.adresa });
+                                            setEditedFirmData({ ime: firma.ime, adresa: firma.adresa, overlapLimit: firma.overlapLimit });
                                         }
                                     }}
                                     disabled={isEditing && loadingPotvrdi}
@@ -730,7 +860,7 @@ export default function PodesavanjaPage() {
                                     Radno vreme
                                 </button>
                                 <button className={styles.btn} onClick={() => prikaziTT(firma)}>
-                                    Termini
+                                    Cenovnik
                                 </button>
                             </div>
                         </div>
@@ -739,6 +869,36 @@ export default function PodesavanjaPage() {
             </div>
 
         </div>
+
+        {editingPrIme && (
+            <div>
+                <div className={styles.blur}></div>
+                <div className={styles.dodajKorisnika} style={{height:'auto'}}>
+                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
+                    <form onSubmit={handleImeEmailTel} className={styles.forma}>
+                        <h2 style={{marginBottom:'15px', marginTop:"8px"}} >Izmeni podatke preduzeća</h2>
+                        <div className={stylesLogin.formGroup}>
+                            <input type='text' value={korisnik.ime_preduzeca} onChange={(e) => { setKorisnik({...korisnik, ime_preduzeca: e.target.value}) }}
+                                className={stylesLogin.formStyle} placeholder='Ime preduzeća' />
+                            <i className={`${stylesLogin.inputIcon} uil uil-building`}></i>
+                        </div>
+                        <div className={stylesLogin.formGroup}>
+                            <MarkdownEditor 
+                                value={korisnik.opis || ''} 
+                                onChange={(e) => { setKorisnik({...korisnik, opis: e.target.value}) }}
+                                placeholder='Opis preduzeća'
+                            />
+                        </div>
+                        <button type='submit' className={styles.btn2} disabled={loadingPotvrdi}>
+                            {loadingPotvrdi ? <div className="spinnerMali"></div> : 'Sačuvaj'}
+                        </button>
+                        <div className={styles.x} onClick={() => setEditingPrIme(false)}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        )}
 
         {showChangePass && (
             <div>
@@ -855,38 +1015,171 @@ export default function PodesavanjaPage() {
         {showTT !== '' && (
              <div>
                 <div className={styles.blur}></div>
-                <div className={styles.dodajKorisnika} style={{height:'280px'}}>
-                    <div className={stylesLogin.zatamniLogin} style={{zIndex:'-1'}}></div>
-                    <form onSubmit={handlePromeniTT} className={styles.forma} style={{alignItems:'flex-start'}}>
-                        <h2 style={{marginBottom:'30px'}}>{showTT}</h2>
-                        {trajanja.map((trajanje, index) => (
-                            <label key={index}>
-                                <input
-                                    type="checkbox"
-                                    className={styles['checkbox-custom']}
-                                    checked={Array.isArray(izabranaTrajanja) && izabranaTrajanja.includes(trajanje)}
-                                    onChange={() => {
-                                        setIzabranaTrajanja(prev =>
-                                        Array.isArray(prev)
-                                            ? (prev.includes(trajanje)
-                                                ? prev.filter(t => t !== trajanje)
-                                                : [...prev, trajanje])
-                                            : [trajanje]
-                                        );
-                                    }}
-                                />
-                                {trajanje}
-                         </label>
-                        ))}
-                        <button className={styles.btn2} type='submit'>
-                            {loadingTT ? <div className="spinnerMali"></div> : 'Potvrdi izmene'}
-                        </button>
-                        
+                <div className={styles.dodajKorisnika2} style={{height:'auto', maxHeight:'80vh', overflowY:'auto'}}>
+                    <div className={styles.cenovnikZatamni}>
+                        <form onSubmit={handlePromeniTT} className={styles.forma} style={{alignItems:'flex-start'}}>
+                            <h2 style={{marginBottom:'30px'}}>{showTT}</h2>
 
-                        <div className={styles.x} onClick={() => setShowTT("")}>
-                            <i className="fa-regular fa-circle-xmark"></i>
-                        </div>
-                    </form>
+                            {/* Forma za dodavanje nove usluge */}
+                            <div className={styles.cenovnikForm}>
+                                <h3>Dodaj novu uslugu</h3>
+                                <div className={styles.cenovnikFormInputs}>
+                                    <input
+                                        type="text"
+                                        placeholder="Naziv usluge"
+                                        value={novaUsluga_naziv}
+                                        onChange={(e) => setNovaUsluga_naziv(e.target.value)}
+                                        className={styles.cenovnikInput}
+                                    />
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        placeholder="Cena (RSD)"
+                                        value={novaUsluga_cena}
+                                        onChange={(e) => setNovaUsluga_cena(e.target.value)}
+                                        className={styles.cenovnikInput}
+                                    />
+                                    <select
+                                        value={novaUsluga_trajanje}
+                                        onChange={(e) => {
+                                            const selectedIndex = e.target.selectedIndex;
+                                            setNovaUsluga_trajanje(e.target.value);
+                                            if (selectedIndex > 0) {
+                                                setNovaUsluga_trajanje_prikaz(cenaPrikazi[selectedIndex - 1].prikaz);
+                                            }
+                                        }}
+                                        className={styles.cenovnikSelect}
+                                    >
+                                        <option value="">Odaberite trajanje</option>
+                                        {cenaPrikazi.map((p) => (
+                                            <option key={p.vrednost} value={p.vrednost}>
+                                                {p.prikaz}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="button"
+                                        className={styles.cenovnikAddBtn}
+                                        onClick={handleAddService}
+                                    >
+                                        Dodaj uslugu
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Prikaz postojećih usluga */}
+                            <div className={styles.cenovnikUsluge}>
+                                <h3>Usluge ({Array.isArray(izabranaTrajanja) ? izabranaTrajanja.length : 0})</h3>
+                                {Array.isArray(izabranaTrajanja) && izabranaTrajanja.length > 0 ? (
+                                    <div style={{display:'flex', flexDirection:'column', gap:'15px'}}>
+                                        {izabranaTrajanja.map((usluga, index) => (
+                                            <div
+                                                key={index}
+                                                className={`${styles.cenovnikUsluga} ${editingServiceId === index ? styles.cenovnikUslugaEditMode : ''}`}
+                                            >
+                                                {editingServiceId === index ? (
+                                                    <div>
+                                                        <div className={styles.uslugaEditInputs}>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Naziv usluge"
+                                                                value={editingServiceData.usluga || ''}
+                                                                onChange={(e) => setEditingServiceData({...editingServiceData, usluga: e.target.value})}
+                                                                className={styles.cenovnikInput}
+                                                            />
+                                                            <input
+                                                                type="number"
+                                                                placeholder="Cena (RSD)"
+                                                                value={editingServiceData.cena || ''}
+                                                                onChange={(e) => setEditingServiceData({...editingServiceData, cena: parseInt(e.target.value) || 0})}
+                                                                className={styles.cenovnikInput}
+                                                            />
+                                                            <select
+                                                                value={editingServiceData.trajanje || ''}
+                                                                onChange={(e) => {
+                                                                    const selectedIndex = e.target.selectedIndex;
+                                                                    setEditingServiceData({...editingServiceData, trajanje: parseInt(e.target.value) || 0});
+                                                                    if (selectedIndex > 0) {
+                                                                        setEditingServiceData(prev => ({...prev, trajanje_prikaz: cenaPrikazi[selectedIndex - 1].prikaz}));
+                                                                    }
+                                                                }}
+                                                                className={styles.cenovnikSelect}
+                                                            >
+                                                                <option value="">Odaberite trajanje</option>
+                                                                {cenaPrikazi.map((p) => (
+                                                                    <option key={p.vrednost} value={p.vrednost} selected={editingServiceData.trajanje === p.vrednost}>
+                                                                        {p.prikaz}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div className={styles.uslugaEditDugmici}>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.uslugaDugmeSacuvaj}
+                                                                onClick={() => handleSaveEditService(index)}
+                                                                disabled={loadingTT}
+                                                            >
+                                                                Sačuvaj
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.uslugaDugmeOtkaziEdit}
+                                                                onClick={() => setEditingServiceId(null)}
+                                                            >
+                                                                Otkaži
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className={styles.uslugaDisplay}>
+                                                        <div className={styles.uslugaHeader}>
+                                                            <div className={styles.uslugaNaziv}>
+                                                                <h4 style={{textAlign:'left'}}>{usluga.usluga}</h4>
+                                                                <span style={{textAlign:'left'}}>{usluga.trajanje_prikaz || `${usluga.trajanje} min`}</span>
+                                                            </div>
+                                                            <div className={styles.uslugaCena} style={{fontSize:'16px'}}>{usluga.cena} RSD</div>
+                                                        </div>
+                                                        <div className={styles.uslugaDugmici}>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.uslugaDugmeIzmeni}
+                                                                onClick={() => handleStartEditService(index, usluga)}
+                                                            >
+                                                                Izmeni
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.uslugaDugmeObrisi}
+                                                                onClick={() => handleDeleteService(index)}
+                                                            >
+                                                                Obriši
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className={styles.cenovnikEmpty}>
+                                        Nema usluga. Dodajte novu uslugu gore.
+                                    </div>
+                                )}
+                            </div>
+
+                            <button className={styles.btn2} type='submit' style={{marginTop:'20px', alignSelf:'center'}}>
+                                {loadingTT ? <div className="spinnerMali"></div> : 'Sačuvaj cenovnik'}
+                            </button>
+
+                            <div className={styles.x} onClick={() => {
+                                setShowTT("");
+                                resetujFormularUsluge();
+                            }}>
+                                <i className="fa-regular fa-circle-xmark"></i>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         )}

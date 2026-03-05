@@ -147,9 +147,31 @@ const LoginPage = () => {
     }
 
     const trajanje = [
-      "30 min",
-      "1 h"
+      {
+        "cena": 1000,
+        "usluga": "Moja usluga",
+        "trajanje": 60,
+        "trajanje_prikaz": "1 sat"
+      }
     ]
+
+    const ai_info = {
+      "limits": {
+        "owner": {
+          "llama3": 0,
+          "llama4": 5
+        },
+        "bookings": {
+          "llama3": 0,
+          "llama4": 0
+        },
+        "employees": {
+          "llama3": 0,
+          "llama4": 0
+        }
+      },
+      "llm-switch": "default"
+    }
 
     setLoading(true)
   
@@ -159,7 +181,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma, radnoVreme, trajanje })
+        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma, radnoVreme, trajanje, ai_info })
       });
   
       const data = await res.json();
