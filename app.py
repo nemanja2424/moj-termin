@@ -70,7 +70,7 @@ def upload_logo():
 
     userId = request.form.get('id')
     authToken = request.form.get('authToken')
-    logoName = f'/logos/{file.filename}'
+    logoName = f'{file.filename}'
 
     if not userId or not authToken:
         return jsonify({'error': 'Nedostaju podaci'}), 400
