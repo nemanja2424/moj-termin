@@ -96,7 +96,9 @@ def upload_logo():
 
 @app.route("/logo/<filename>")
 def serve_logo(filename):
-    return send_from_directory("public/", filename)
+    putanja = f'public/{filename}'
+    print(putanja)
+    return send_from_directory(putanja)
 
 
 html_head = """
