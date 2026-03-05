@@ -526,7 +526,7 @@ export default function NaloziPage() {
                                 </select>
                                 <i className={`${styles.inputIcon2} fa-solid fa-building`}></i>
                             </div>
-                            <button type='submit' className={localStyles.btn}>
+                            <button type='submit' className={localStyles.btn} style={{zIndex:1000}}>
                                     {loadingSpinDodaj ? (
                                         <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
                                         <div className="spinnerMali" ></div>

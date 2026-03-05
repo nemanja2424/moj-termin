@@ -197,7 +197,7 @@ export default function DefaultDesign({
       <header className={styles.header}>
         <div className={styles.brandFirme}>
           {forma.logoFirme === true && 
-            <img className={styles.logo} src={preduzece.putanja_za_logo} />
+            <img className={styles.logo} src={`${preduzece.putanja_za_logo}?t=${Date.now()}`} />
           }
           {forma.nazivFirme === true && (
             <h1>{preduzece.ime_preduzeca}</h1>

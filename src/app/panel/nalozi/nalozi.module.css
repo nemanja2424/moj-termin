@@ -21,6 +21,7 @@
 
 
 .dodajKorisnika {
+    overflow: hidden;
     padding: 20px;
     width: 100%;
     max-width: 350px;
