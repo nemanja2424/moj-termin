@@ -254,7 +254,7 @@ export default function PodesavanjaPage() {
         formData.append('authToken', authToken);
     
         try {
-            const response = await fetch('https://mojtermin.site/api/novi_logo', {
+            const response = await fetch('https://test.mojtermin.site/api/novi_logo', {
                 method: 'POST',
                 body: formData,
             });
@@ -264,7 +264,7 @@ export default function PodesavanjaPage() {
                 // Odmah ažuriraj logo u korisnik state-u
                 setKorisnik(prev => ({
                     ...prev,
-                    putanja_za_logo: `/logos/${data.filename}`
+                    putanja_za_logo: `${data.filename}`
                 }));
                 toast.success("Logo uspešno poslat!");
             } else {
