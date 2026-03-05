@@ -40,6 +40,7 @@ export default function PodesavanjaPage() {
     const [showRadnoVreme, setShowRadnoVreme] = useState("");
     const [isLocked, setIsLocked] = useState(true);
     const [copyHover, setCopyHover] = useState(false);
+    const [bookingLink, setBookingLink] = useState('');
 
     const sati = [
         "00:00", "00:30",
@@ -360,6 +361,10 @@ export default function PodesavanjaPage() {
         }
     }
     useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            setBookingLink(`https://mojtermin.site/zakazi/${userId}`);
+        }
         fetchData();
     }, []);
 
@@ -711,7 +716,7 @@ export default function PodesavanjaPage() {
                 <div style={{display:'flex', width:'100%', maxWidth: '500px', marginBottom:'20px', position:'relative'}}>
                     <input 
                         type="text"
-                        value={`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`}
+                        value={bookingLink}
                         disabled
                         placeholder="Link za zakazivanje"
                         style={{flex:1, padding:'8px 40px 8px 12px', borderRadius:'4px', border:'1px solid #ccc', backgroundColor:'#f5f5f5'}}
@@ -719,7 +724,7 @@ export default function PodesavanjaPage() {
                     <button 
                         type="button"
                         onClick={() => {
-                            navigator.clipboard.writeText(`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`);
+                            navigator.clipboard.writeText(bookingLink);
                             toast.success('Link je kopiran u clipboard!');
                         }} 
                         onMouseEnter={() => setCopyHover(true)}
