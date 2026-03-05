@@ -11,6 +11,7 @@ export default function BrendPage() {
     const [showStruktura, setShowStruktura] = useState(false);
     const [formaStruktura, setFormaStruktura] = useState(null);
     const [paket, setPaket] = useState('')
+    const [loadingScreen, setLoadingScreen] = useState(true);
 
     const qrRef = useRef(null);
     const preuzmiQRCode = () => {
@@ -43,6 +44,7 @@ export default function BrendPage() {
             localStorage.setItem('zakaziForma', JSON.stringify(data.forma));
             localStorage.setItem('zakaziPreduzece', JSON.stringify(data));
             setPaket(data.paket)
+            setLoadingScreen(false);
         };
 
         init();
@@ -320,6 +322,9 @@ export default function BrendPage() {
                 </div>
             )}
 
+            <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+                <span className="spinner"></span>
+            </div>
             <ToastContainer />
         </div>
     );

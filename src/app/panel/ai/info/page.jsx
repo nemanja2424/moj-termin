@@ -11,6 +11,7 @@ export default function AiInfoPage() {
   const [userId, setUserId] = useState(null);
   const [selectedModel, setSelectedModel] = useState("default");
   const [savingModel, setSavingModel] = useState(false);
+  const [loadingScreen, setLoadingScreen] = useState(true);
 
   useEffect(() => {
     // Preuzmi korisničke podatke iz localStorage
@@ -59,6 +60,7 @@ export default function AiInfoPage() {
         setError(err.message);
       } finally {
         setLoading(false);
+        setLoadingScreen(false);
       }
     };
 
@@ -335,6 +337,9 @@ export default function AiInfoPage() {
             </ul>
           </div>
         </div>
+      </div>
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
       </div>
     </div>
   );

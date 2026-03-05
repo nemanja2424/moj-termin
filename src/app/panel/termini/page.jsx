@@ -14,6 +14,7 @@ export default function PanelPage() {
   const [canRefresh, setCanRefresh] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [resetFiltersKey, setResetFiltersKey] = useState(0);
+  const [loadingScreen, setLoadingScreen] = useState(true);
 
   const fetchData = useCallback(async () => {
     const userId = localStorage.getItem("userId");
@@ -58,6 +59,7 @@ export default function PanelPage() {
 
   useEffect(() => {
     fetchData();
+    setLoadingScreen(false);
     const intervalId = setInterval(fetchData, 3600000);
     return () => clearInterval(intervalId);
   }, [fetchData]);
@@ -120,6 +122,9 @@ export default function PanelPage() {
         ? <Tabela desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} showFilters={showFilters} resetFiltersKey={resetFiltersKey}/>
         : <Kalendar desavanjaData={desavanjaData} fetchData={fetchData} loading={loading} izmeniTermin={izmeniTermin} />
       }
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
+      </div>
     </div>
   );
 }

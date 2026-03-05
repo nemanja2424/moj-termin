@@ -285,6 +285,7 @@ export default function StatistikaPage() {
   const [pendingAgent, setPendingAgent] = useState(null);
   const [executingAgent, setExecutingAgent] = useState(false);
   const [processedAgentMessageId, setProcessedAgentMessageId] = useState(null);
+  const [loadingScreen, setLoadingScreen] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -351,8 +352,10 @@ export default function StatistikaPage() {
             loadChat(firstChatId);
           }
         }
+        setLoadingScreen(false);
       } catch (error) {
         console.error("Greška pri učitavanju chatova:", error);
+        setLoadingScreen(false);
       }
     };
 
@@ -1425,6 +1428,9 @@ export default function StatistikaPage() {
           </div>
         </div>
       )}
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
+      </div>
     </div>
   );
 }

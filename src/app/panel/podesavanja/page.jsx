@@ -41,6 +41,7 @@ export default function PodesavanjaPage() {
     const [isLocked, setIsLocked] = useState(true);
     const [copyHover, setCopyHover] = useState(false);
     const [bookingLink, setBookingLink] = useState('');
+    const [loadingScreen, setLoadingScreen] = useState(true);
 
     const sati = [
         "00:00", "00:30",
@@ -346,6 +347,7 @@ export default function PodesavanjaPage() {
             return suma + (firma.zaposleni?.length || 0);
         }, 0);
         setBrRadnika(ukupno);
+        setLoadingScreen(false);
 
         const { paket_limits } = data.korisnik;
         const brojPreduzeca = data.preduzeca.length;
@@ -1187,6 +1189,9 @@ export default function PodesavanjaPage() {
             </div>
         )}
 
+        <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+            <span className="spinner"></span>
+        </div>
         <ToastContainer />
     </div>
   );

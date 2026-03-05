@@ -33,6 +33,7 @@ export default function NaloziPage() {
     const [showRegPassConf, setShowRegPassConf] = useState(false);
     const [brTel, setBrTel] = useState('+381');
     const [zaposlenU, setZaposlenU] = useState(0);
+    const [loadingScreen, setLoadingScreen] = useState(true);
 
     const handleDodajKorisnika = async (e) => {
         e.preventDefault();
@@ -123,6 +124,7 @@ export default function NaloziPage() {
             setKorisnici(data.korisnici);
             setPreduzeca(data.preduzeca);
             setVlasnik(data.vlasnik);
+            setLoadingScreen(false);
 
             const { paket_limits } = data.vlasnik;
             const brZaposlenih = data.korisnici.flat().length;
@@ -543,6 +545,9 @@ export default function NaloziPage() {
                     </div>
                 </div>
             )}
+            <div className={`${panelStyles.loadingScreen} ${loadingScreen ? '' : panelStyles.ucitano}`}>
+                <span className="spinner"></span>
+            </div>
             <ToastContainer />
         </div>
     );
