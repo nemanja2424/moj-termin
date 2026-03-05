@@ -124,15 +124,14 @@ export default function NaloziPage() {
             setPreduzeca(data.preduzeca);
             setVlasnik(data.vlasnik);
 
-            const paket = data.vlasnik.paket;
+            const { paket_limits } = data.vlasnik;
             const brZaposlenih = data.korisnici.flat().length;
+            const maxRadnika = paket_limits?.radnika ?? 0;
 
-            if (paket === "Osnovni" && brZaposlenih < 3) {
+            if (brZaposlenih < maxRadnika) {
                 setIsLocked(false);
-            } else if (paket === "Pro" && brZaposlenih < 9){
-                setIsLocked(false);
-            } else if (paket === "Premium") {
-                setIsLocked(false);
+            } else {
+                setIsLocked(true);
             }
 
         } catch (error) {

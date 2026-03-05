@@ -347,14 +347,11 @@ export default function PodesavanjaPage() {
         }, 0);
         setBrRadnika(ukupno);
 
-        const { paket } = data.korisnik;
+        const { paket_limits } = data.korisnik;
         const brojPreduzeca = data.preduzeca.length;
+        const maxLokacija = paket_limits?.lokacije ?? 0;
 
-        if (brojPreduzeca < 1) {
-            setIsLocked(false);
-        } else if (paket === "Pro" && brojPreduzeca < 3) {
-            setIsLocked(false);
-        } else if (paket === "Premium") {
+        if (brojPreduzeca < maxLokacija) {
             setIsLocked(false);
         } else {
             setIsLocked(true);

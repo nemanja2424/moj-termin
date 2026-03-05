@@ -173,6 +173,11 @@ const LoginPage = () => {
       "llm-switch": "default"
     }
 
+    const paket_limits = {
+      "lokacije": 1,
+      "radnika": 0
+    }
+
     setLoading(true)
   
     try {
@@ -181,7 +186,7 @@ const LoginPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma, radnoVreme, trajanje, ai_info })
+        body: JSON.stringify({ regEmail, regPass, ime, brTel, forma, radnoVreme, trajanje, ai_info, paket_limits })
       });
   
       const data = await res.json();
