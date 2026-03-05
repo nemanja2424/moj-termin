@@ -94,11 +94,15 @@ def upload_logo():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route("/logo/<filename>")
+@app.route("/api/logo/<filename>")
 def serve_logo(filename):
-    putanja = f'public/{filename}'
+    if filename == "/images/logo.webp":
+        return send_from_directory("public/Images", "logo.webp")
+    
+    safe_name = secure_filename(filename)
+    putanja = f'public/logos'
     print(putanja)
-    return send_from_directory(putanja)
+    return send_from_directory(putanja, safe_name)
 
 
 html_head = """
