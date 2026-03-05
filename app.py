@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, jwt_required, get_jwt_identity
 from flask_cors import CORS
 import smtplib
@@ -94,6 +94,9 @@ def upload_logo():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route("/logo/<filename>")
+def serve_logo(filename):
+    return send_from_directory("public/", filename)
 
 
 html_head = """

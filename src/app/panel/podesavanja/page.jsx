@@ -770,7 +770,7 @@ export default function PodesavanjaPage() {
                     <button onClick={handleButtonClickLogo} className={styles.btn} style={{width:'120px', textAlign:'center'}}>Izmeni logo</button>
                     <input type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef} onChange={handleFileChange} />
                 </div>
-                <img loading='lazy' src={korisnik.putanja_za_logo === '' ? '/Images/logo.webp' : `${korisnik.putanja_za_logo}?t=${Date.now()}`} />
+                <img loading='lazy' src={korisnik.putanja_za_logo === '' ? '/Images/logo.webp' : `https://mojtermin.site/api/logo/${korisnik.putanja_za_logo}`} />
             </div>
             <div className={`${styles.stavka} ${styles.firme}`} style={{flexDirection:'column', alignItems:'center'}}>
                 <h2>Moje lokacije</h2>
