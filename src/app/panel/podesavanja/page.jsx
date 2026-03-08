@@ -586,23 +586,30 @@ export default function PodesavanjaPage() {
 
     const [link, setLink] = useState('');
     const qrRef = useRef(null);
-    const preuzmiQRCode = () => {
-        const svg = qrRef.current;
-        if (!svg) return;
+    
+    const preuzmiQRCode = async () => {
+        try {
+            const svg = qrRef.current?.querySelector('svg');
+            if (!svg) return;
 
-        const serializer = new XMLSerializer();
-        const svgStr = serializer.serializeToString(svg);
+            const serializer = new XMLSerializer();
+            const svgStr = serializer.serializeToString(svg);
 
-        const blob = new Blob([svgStr], { type: "image/svg+xml" });
-        const url = URL.createObjectURL(blob);
+            const blob = new Blob([svgStr], { type: "image/svg+xml" });
+            const url = URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "qrcode.svg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "booking-qrcode.svg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast.success('QR kod je preuzet!');
+        } catch (error) {
+            console.error('Greška pri preuzimanju QR koda:', error);
+            toast.error('Greška pri preuzimanju QR koda');
+        }
     };
 
 
@@ -733,6 +740,15 @@ export default function PodesavanjaPage() {
                     >
                         <i className="fa-solid fa-copy" style={{color: copyHover ? '#1890ff' : '#666', fontSize:'16px', transition: 'color 0.2s ease'}}></i>
                     </button>
+                </div>
+                {/* Skriveni QR kod za preuzimanje */}
+                <div ref={qrRef} style={{display: 'none'}}>
+                    <QRCodeSVG 
+                        value={bookingLink} 
+                        size={300}
+                        level="H"
+                        includeMargin={true}
+                    />
                 </div>
                 <button onClick={preuzmiQRCode} className={styles.btn}>
                     Preuzmi QR kod

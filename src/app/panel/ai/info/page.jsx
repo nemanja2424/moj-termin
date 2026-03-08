@@ -136,7 +136,11 @@ export default function AiInfoPage() {
   };
 
   if (loading) {
-    return <div className={styles.container}>Učitavanje...</div>;
+    return (
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
+      </div>
+    );
   }
 
   if (error) {
@@ -187,58 +191,61 @@ export default function AiInfoPage() {
 
         {isOwner && (
           <>
-            <div className={styles.modelSection}>
-              <h3>Osnovan model (Llama 3.2)</h3>
-              <ProgressBar
-                current={todayUsage.owner.llama3}
-                limit={limits.owner.llama3}
-                label="Vlasnik"
-              />
+            {/* Vlasnik */}
+            <div className={styles.userGroup}>
+              <h4 className={styles.groupTitle}>👤 Vlasnik</h4>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.owner.llama3}
+                  limit={limits.owner.llama3}
+                  label="Osnovan model"
+                />
+              </div>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.owner.llama4}
+                  limit={limits.owner.llama4}
+                  label="Napredni model"
+                />
+              </div>
             </div>
 
-            <div className={styles.modelSection}>
-              <h3>Napredni model (Llama 4 Maverick)</h3>
-              <ProgressBar
-                current={todayUsage.owner.llama4}
-                limit={limits.owner.llama4}
-                label="Vlasnik"
-              />
+            {/* Zaposleni */}
+            <div className={styles.userGroup}>
+              <h4 className={styles.groupTitle}>👥 Zaposleni</h4>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.employees.llama3}
+                  limit={limits.employees.llama3}
+                  label="Osnovan model"
+                />
+              </div>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.employees.llama4}
+                  limit={limits.employees.llama4}
+                  label="Napredni model"
+                />
+              </div>
             </div>
 
-            <div className={styles.modelSection}>
-              <h3>Zaposleni - Osnovan model</h3>
-              <ProgressBar
-                current={todayUsage.employees.llama3}
-                limit={limits.employees.llama3}
-                label="Ukupno zaposleni"
-              />
-            </div>
-
-            <div className={styles.modelSection}>
-              <h3>Zaposleni - Napredni model</h3>
-              <ProgressBar
-                current={todayUsage.employees.llama4}
-                limit={limits.employees.llama4}
-                label="Ukupno zaposleni"
-              />
-            </div>
-
-            <div className={styles.modelSection}>
-              <h3>Klijenti - Osnovan model</h3>
-              <ProgressBar
-                current={todayUsage.bookings.llama3}
-                limit={limits.bookings.llama3}
-                label="Zakazivanja"
-              />
-            </div>
-
-            <div className={styles.modelSection}>
-              <h3>Klijenti - Napredni model</h3>
-              <ProgressBar
-                current={todayUsage.bookings.llama4}
-                limit={limits.bookings.llama4}
-                label="Zakazivanja"
-              />
+            {/* Klijenti */}
+            <div className={styles.userGroup}>
+              <h4 className={styles.groupTitle}>🛒 Klijenti</h4>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.bookings.llama3}
+                  limit={limits.bookings.llama3}
+                  label="Osnovan model"
+                />
+              </div>
+              <div className={styles.modelSection}>
+                <ProgressBar
+                  current={todayUsage.bookings.llama4}
+                  limit={limits.bookings.llama4}
+                  label="Napredni model"
+                />
+              </div>
             </div>
           </>
         )}
@@ -252,95 +259,143 @@ export default function AiInfoPage() {
         )}
       </div>
 
-      {/* Model Preference */}
+      {/* Model Preference & Assistant Info */}
       {isOwner && (
         <div className={styles.card}>
-            <h2>🤖 PREFERENCIJA MODELA</h2>
+          {/* PREFERENCIJA MODELA */}
+          <h2>🤖 PREFERENCIJA MODELA</h2>
 
-            <div className={styles.preferenceContent}>
+          <div className={styles.preferenceContent}>
             <label className={styles.radioLabel}>
-                <input
+              <input
                 type="radio"
                 name="llmSwitch"
                 value="default"
                 checked={selectedModel === "default"}
                 onChange={() => handleModelChange("default")}
                 disabled={savingModel}
-                />
-                <span>Automatski switch (preporuka)</span>
+              />
+              <span>Automatski switch (preporuka)</span>
             </label>
 
             <label className={styles.radioLabel}>
-                <input
+              <input
                 type="radio"
                 name="llmSwitch"
                 value="jeftin"
                 checked={selectedModel === "jeftin"}
                 onChange={() => handleModelChange("jeftin")}
                 disabled={savingModel}
-                />
-                <span>Prioritet: Osnovan model</span>
+              />
+              <span>Prioritet: Osnovan model</span>
             </label>
 
             {savingModel && <p className={styles.savingText}>Čuvanje...</p>}
-            </div>
+          </div>
 
-            <div className={styles.info}>
+          <div className={styles.info}>
             <strong>ℹ️ Kako funkcioniše:</strong>
             <ul>
-                <li>
+              <li>
                 <strong>Automatski switch:</strong> Koristi napredni model dok je dostupan, zatim osnovan
-                </li>
-                <li>
+              </li>
+              <li>
                 <strong>Prioritet osnovan:</strong> Koristi osnovan model, kako bi uštedeo napredni model
-                </li>
+              </li>
             </ul>
+          </div>
+
+          <div style={{marginTop:'15px', padding:'0px 8px'}}>
+            <p>
+              Odabrana preferenca se koristi za sve vaše zaposlene i klijente. Svako od njih ima svoja dnevna ograničenja.
+            </p>
+          </div>
+
+          {/* Separator */}
+          <div className={styles.divider}></div>
+
+          {/* O ASISTENTU */}
+          <h2>ℹ️ O ASISTENTU</h2>
+
+          <div className={styles.assistantInfo}>
+            <div className={styles.infoRow}>
+              <span>Verzija:</span>
+              <strong>MT 1.5 agent (beta)</strong>
             </div>
+            <div className={styles.infoRow}>
+              <span>Tip:</span>
+              <strong>Business Analytics AI</strong>
+            </div>
+            <div className={styles.infoRow}>
+              <span>Dostupnost:</span>
+              <strong>24/7</strong>
+            </div>
+
+            <div className={styles.separator}></div>
+
+            <div className={styles.infoSection}>
+              <h4>Model za analizu:</h4>
+              <ul>
+                <li>Osnovan: Mistral-Small-24B</li>
+                <li>Napredni: Llama-4-Maverick</li>
+              </ul>
+            </div>
+
+            <div className={styles.infoSection}>
+              <h4>Mogućnosti:</h4>
+              <ul>
+                <li>✓ Analiza termina</li>
+                <li>✓ Preporuke optimizacije</li>
+                <li>✓ Financijski izveštaji</li>
+                <li>✓ Grafici i vizuelizacija</li>
+                <li>✓ Upravljanje terminima</li>
+              </ul>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Assistant Info */}
-      <div className={styles.card}>
-        <h2>ℹ️ O ASISTENTU</h2>
+      {!isOwner && (
+        <div className={styles.card}>
+          <h2>ℹ️ O ASISTENTU</h2>
 
-        <div className={styles.assistantInfo}>
-          <div className={styles.infoRow}>
-            <span>Verzija:</span>
-            <strong>2.0 (Claude-powered)</strong>
-          </div>
-          <div className={styles.infoRow}>
-            <span>Tip:</span>
-            <strong>Business Analytics AI</strong>
-          </div>
-          <div className={styles.infoRow}>
-            <span>Dostupnost:</span>
-            <strong>24/7</strong>
-          </div>
+          <div className={styles.assistantInfo}>
+            <div className={styles.infoRow}>
+              <span>Verzija:</span>
+              <strong>MT 1.5 agent (beta)</strong>
+            </div>
+            <div className={styles.infoRow}>
+              <span>Tip:</span>
+              <strong>Business Analytics AI</strong>
+            </div>
+            <div className={styles.infoRow}>
+              <span>Dostupnost:</span>
+              <strong>24/7</strong>
+            </div>
 
-          <div className={styles.separator}></div>
+            <div className={styles.separator}></div>
 
-          <div className={styles.infoSection}>
-            <h4>Model za analizu:</h4>
-            <ul>
-              <li>Osnovan: Llama-3.2-3B-Instruct-Turbo</li>
-              <li>Napredni: Llama-4-Maverick-17B-128E-Instruct-FP8</li>
-            </ul>
-          </div>
+            <div className={styles.infoSection}>
+              <h4>Model za analizu:</h4>
+              <ul>
+                <li>Osnovan: Mistral-Small-24B</li>
+                <li>Napredni: Llama-4-Maverick</li>
+              </ul>
+            </div>
 
-          <div className={styles.infoSection}>
-            <h4>Mogućnosti:</h4>
-            <ul>
-              <li>✓ Analiza termina</li>
-              <li>✓ Preporuke optimizacije</li>
-              <li>✓ Financijski izveštaji</li>
-              <li>✓ Grafici i vizuelizacija</li>
-            </ul>
+            <div className={styles.infoSection}>
+              <h4>Mogućnosti:</h4>
+              <ul>
+                <li>✓ Analiza termina</li>
+                <li>✓ Preporuke optimizacije</li>
+                <li>✓ Financijski izveštaji</li>
+                <li>✓ Grafici i vizuelizacija</li>
+                <li>✓ Upravljanje terminima</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
-        <span className="spinner"></span>
-      </div>
+      )}
     </div>
   );
 }

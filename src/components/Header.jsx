@@ -27,7 +27,6 @@ export default function Header() {
         <a href={"/"}><Image src="/Images/logo.webp" alt="logo" width={70} height={70} /></a>
         <nav className={styles.nav}>
             <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
-            <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
             <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
             {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
           </nav>
@@ -45,7 +44,6 @@ export default function Header() {
 
       <div className={`${styles.phoneNav} ${navOpen ? styles.open : ''}`}>
           <a onClick={() => {redirekt('/#about')}}>Zašto mi</a>
-          <a onClick={() => {redirekt('/#paketi')}}>Paketi</a>
           <a onClick={() => {redirekt('/panel')}}>Korisnički panel</a>
           {ulogovan && (<a onClick={() => {localStorage.removeItem('authToken');setUlogovan(false);localStorage.removeItem('userId');}}>Odjavi se</a>)}
         <button className={`${styles.button1} ${styles.forPh}`}>Kontaktirajte nas</button>

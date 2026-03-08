@@ -147,103 +147,16 @@ export default function HomePage() {
       <section className={styles['info-between']}>
         <h2 className='anim2'><br />Rešite sve svoje potrebe za zakazivanje termina na jednom mestu</h2>
         <p className='anim'>Naš sistem za digitalno zakazivanje termina je jednostavan za korišćenje i prilagodljiv svim vrstama poslovanja. Bilo da ste frizer, lekar, trener ili neko drugi ko upravlja terminima, naš alat vam omogućava brzo i efikasno upravljanje, štedeći vreme i smanjujući greške. Sa našim rešenjem, vaši klijenti će imati jednostavan pristup, a vi ćete moći da se fokusirate na rast svog biznisa.</p>
-        <p className='anim3'><br/>Naš sistem nudi jednostavnu stranu za zakazivanje termina za vaše klijente, kontrolnu tablu za vas sa svim potrebnim informacijama, kao i naprednu analitiku koja vam pomaže da pratite učinkovitost vašeg poslovanja. Uz mogućnost automatskog slanja obaveštenja i bezbednost podataka, možete biti sigurni da će vaše poslovanje teći glatko i sigurno.</p>
+        <p className='anim3'><br/>Naš sistem nudi jednostavnu stranu za zakazivanje termina za vaše klijente, kontrolnu tablu za vas sa svim potrebnim informacijama, kao i analitiku koja vam pomaže da pratite učinkovitost vašeg poslovanja. Uz mogućnost automatskog slanja obaveštenja i bezbednost podataka, možete biti sigurni da će vaše poslovanje teći glatko i sigurno.</p>
         <p className='anim4'><br/>Bez obzira na vrstu vašeg biznisa, naš sistem je fleksibilan i lako se integriše u vaše postojeće radne procese. Pružite svojim klijentima najbolje iskustvo u zakazivanju termina i uštedite dragoceno vreme!</p>
       </section>
-
-
-      <section id='paketi' className={styles['benefits-section']}>
-        <h2 className='anim2'>Fleksibilni paketi za svaki biznis</h2>
-        <div className='anim2'>
-          <h6 className="mb-0 pb-3 h6">
-            <span id="prijavaOkret" onClick={toggleMonthly}>
-              Mesečno
-            </span>
-            <span id="registracijaOkret" onClick={toggleYearly}>
-              Godišnje
-            </span>
-          </h6>
-          <input
-            type="checkbox"
-            checked={monthly}
-            onChange={toggleTime}
-            id="reg-log"
-            name="reg-log"
-            className={styles.checkbox}
-          />
-          <label htmlFor="reg-log"></label>
-        </div>
-
-        <div className={styles.paketi}>
-          {/* Osnovni paket */}
-          <div className={`${styles.paket} anim2`}>
-            <h2>Osnovni paket</h2>
-            <p>1 radno mesto</p>
-            <p>Do 3 zaposlenih</p>
-            <p>Online kalendar</p>
-            <p>Email obaveštenja</p>
-            <p>Korisnička podrška</p>
-            <div className={styles.cena}>
-              {!monthly ? (
-                <h3>2.500 RSD</h3>
-              ) : (
-                <h3 className={styles['godisnja-cena']}>
-                  25.000 RSD <span>30.000 RSD</span>
-                </h3>
-              )}
-            </div>
-          </div>
-          <div className={`${styles.paket} anim2`}>
-            <h2>Pro paket</h2>
-            <p>3 radna mesta</p>
-            <p>Do 9 zaposlenih</p>
-            <p>Online kalendar</p>
-            <p>Statistika</p>
-            <p>Email obaveštenja</p>
-            <p>Korisnička podrška</p>
-            <div className={styles.cena}>
-              {!monthly ? (
-                <h3>5.000 RSD</h3>
-              ) : (
-                <h3 className={styles['godisnja-cena']}>
-                  45.000 RSD <span>60.000 RSD</span>
-                </h3>
-              )}
-            </div>
-          </div>
-          <div className={`${styles.paket} anim2`}>
-            <h2>Premium paket</h2>
-            <p>Neograničen broj radnih mesta</p>
-            <p>Neograničen broj zaposlenih</p>
-            <p>Online kalendar</p>
-            <p>Statistika</p>
-            <p>Email obaveštenja</p>
-            <p>Korisnička podrška</p>
-            <div className={styles.cena}>
-              {!monthly ? (
-                <h3>10.000 RSD</h3>
-              ) : (
-                <h3 className={styles['godisnja-cena']}>
-                  80.000 RSD <span>120.000 RSD</span>
-                </h3>
-              )}
-            </div>
-          </div>
-          <div className={`${styles.paket} anim2`}>
-            <h2>Personalni paket</h2>
-            <p>1 korisnički nalog</p>
-            <p>Online kalendar</p>
-            <p>Email obaveštenja</p>
-            <p>Bez integracije na vašem sajtu</p>
-            <p>Do 20 termina mesečno</p>
-            <p>Bez korisničke podrške</p>
-            <div className={styles.cena}>
-              <h3>Besplatno</h3>
-              <a href='/login' style={{fontSize:'14px',cursor:'pointer'}}>Napravite nalog</a>
-            </div>
-          </div>
-        </div>
+      
+      <section className={styles['info-between']}>
+        <h2 className='anim2'><br />Rešite sve svoje potrebe za zakazivanje termina na jednom mestu</h2>
+        <p className='anim'>Platforma takođe omogućava upravljanje više poslovnih lokacija, gde svaka može imati svoje radno vreme, zaposlene i usluge. Pored toga, možete dodavati zaposlene.  Sve informacije o terminima, zaposlenima i lokacijama nalaze se na jednom mestu, što olakšava svakodnevno upravljanje poslovanjem.</p>
       </section>
+
+      
 
 
       <section className={styles['cta-section']}>

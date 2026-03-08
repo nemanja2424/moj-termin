@@ -1032,7 +1032,7 @@ export default function StatistikaPage() {
           <div style={{ padding: "10px", borderBottom: "1px solid #e5e7eb", display: 'flex',
               flexDirection:'column', alignItems:'center', gap:'8px'
            }}>
-            <h2>AI Asistent</h2>
+            <h2>Ćaskanja</h2>
             <button
               onClick={handleCreateNewChat}
               style={{
@@ -1051,7 +1051,7 @@ export default function StatistikaPage() {
               onMouseLeave={(e) => (e.target.style.backgroundColor = "#3b82f6")}
             >
               <i className="fa-solid fa-plus" style={{ marginRight: "6px" }}></i>
-              Novi chat
+              Novo ćaskanje
             </button>
           </div>
 
