@@ -339,7 +339,7 @@ export default function StatistikaPage() {
         if (!authToken || !userId) return;
 
         const response = await fetch(
-          `http://127.0.0.1:5000/api/chats?userId=${userId}&authToken=${authToken}`
+          `https://test.mojtermin.site/api/chats?userId=${userId}&authToken=${authToken}`
         );
 
         if (response.ok) {
@@ -371,7 +371,7 @@ export default function StatistikaPage() {
 
       setChatLoading(true);
       const response = await fetch(
-        `http://127.0.0.1:5000/api/chat/${chatId}?userId=${userId}&authToken=${authToken}`
+        `https://test.mojtermin.site/api/chat/${chatId}?userId=${userId}&authToken=${authToken}`
       );
 
       if (response.ok) {
@@ -401,7 +401,7 @@ export default function StatistikaPage() {
         return;
       }
 
-      const response = await fetch("http://127.0.0.1:5000/api/chat/create", {
+      const response = await fetch("https://test.mojtermin.site/api/chat/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -481,7 +481,7 @@ export default function StatistikaPage() {
       if (!authToken || !userId) return;
 
       const response = await fetch(
-        `http://127.0.0.1:5000/api/chat/${chatToDelete.chat_id}`,
+        `https://test.mojtermin.site/api/chat/${chatToDelete.chat_id}`,
         {
           method: "DELETE",
           headers: {
@@ -524,7 +524,7 @@ export default function StatistikaPage() {
       if (!authToken || !userId) return;
 
       const response = await fetch(
-        `http://127.0.0.1:5000/api/chat/${chatToRename.chat_id}/rename`,
+        `https://test.mojtermin.site/api/chat/${chatToRename.chat_id}/rename`,
         {
           method: "PATCH",
           headers: {
@@ -602,7 +602,7 @@ export default function StatistikaPage() {
       payload.authToken = authToken;
 
       const response = await fetch(
-        `http://127.0.0.1:5000${mapper.endpoint}`,
+        `https://test.mojtermin.site${mapper.endpoint}`,
         {
           method: mapper.method,
           headers: {
@@ -630,7 +630,7 @@ export default function StatistikaPage() {
         
         // Sačuvaj ažuriranu poruku u bazi
         try {
-          await fetch(`http://127.0.0.1:5000/api/chat/${currentChatId}/message`, {
+          await fetch(`https://test.mojtermin.site/api/chat/${currentChatId}/message`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -659,7 +659,7 @@ export default function StatistikaPage() {
         
         // Sačuvaj ažuriranu poruku u bazi
         try {
-          await fetch(`http://127.0.0.1:5000/api/chat/${currentChatId}/message`, {
+          await fetch(`https://test.mojtermin.site/api/chat/${currentChatId}/message`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -719,7 +719,7 @@ export default function StatistikaPage() {
       
       // Sačuvaj ažuriranu poruku u bazi
       try {
-        await fetch(`http://127.0.0.1:5000/api/chat/${currentChatId}/message`, {
+        await fetch(`https://test.mojtermin.site/api/chat/${currentChatId}/message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -762,7 +762,7 @@ export default function StatistikaPage() {
     let chatId = currentChatId;
     if (!chatId) {
       try {
-        const createResponse = await fetch("http://127.0.0.1:5000/api/chat/create", {
+        const createResponse = await fetch("https://test.mojtermin.site/api/chat/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -813,7 +813,7 @@ export default function StatistikaPage() {
 
     // Čuva user poruku u bazi
     try {
-      await fetch(`http://127.0.0.1:5000/api/chat/${chatId}/message`, {
+      await fetch(`https://test.mojtermin.site/api/chat/${chatId}/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -845,7 +845,7 @@ export default function StatistikaPage() {
       // Pozovi API
       const fetchAIResponse = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:5000/api/askAI", {
+          const response = await fetch("https://test.mojtermin.site/api/askAI", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -894,7 +894,7 @@ export default function StatistikaPage() {
 
       // Čuva bot poruku u bazi
       try {
-        await fetch(`http://127.0.0.1:5000/api/chat/${chatId}/message`, {
+        await fetch(`https://test.mojtermin.site/api/chat/${chatId}/message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
