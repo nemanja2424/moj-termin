@@ -70,6 +70,8 @@
   word-wrap: break-word;
   line-height: 1.5;
   font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .message.user .messageBubble {
@@ -86,53 +88,94 @@
 
 .inputArea {
   display: flex;
-  padding: 15px 20px;
+  padding: 10px 20px 15px 20px;
   gap: 10px;
   border-top: 1px solid #ccc;
   background-color: #f9fafb;
 }
 
-.input {
+.textareaWrapper {
   flex: 1;
-  padding: 10px 15px;
+  display: flex;
+  position: relative;
+  background-color: white;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-  outline: none;
+  padding: 8px;
+  align-items: flex-end;
+  gap: 8px;
   transition: all 0.3s ease;
 }
 
-.input:focus {
+.textareaWrapper:focus-within {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.sendBtn {
-  padding: 10px 20px;
+.textarea {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  padding: 6px 8px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  min-height: 48px;
+  max-height: 250px;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+
+.textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Scrollbar za textarea */
+.textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.sendBtnInline {
+  padding: 8px 12px;
   background-color: #3b82f6;
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  height: 36px;
+  width: 36px;
 }
 
-.sendBtn:hover {
+.sendBtnInline:hover:not(:disabled) {
   background-color: #0066cc;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-.sendBtn:active {
+.sendBtnInline:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.sendBtn:disabled {
+.sendBtnInline:disabled {
   background-color: #d1d5db;
   cursor: not-allowed;
   opacity: 0.5;
@@ -480,13 +523,18 @@
   }
 
   .inputArea {
-    padding: 10px 15px;
-    flex-direction: column;
+    padding: 8px 12px 10px 12px;
   }
 
-  .sendBtn {
-    width: 100%;
-    justify-content: center;
+  .textarea {
+    max-height: 150px !important;
+    font-size: 13px;
+  }
+
+  .sendBtnInline {
+    height: 32px;
+    width: 32px;
+    font-size: 14px;
   }
 
   .markdown h1 {

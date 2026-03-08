@@ -289,9 +289,63 @@ export default function StatistikaPage() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Auto-resize textarea
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  // Handle Shift+Enter for new line, Enter to send
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        // Shift+Enter - nova linija
+        e.preventDefault();
+        const textarea = e.target;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        
+        // Brojanje uzastopnih novih redova pre kursora
+        let consecutiveNewlines = 0;
+        for (let i = start - 1; i >= 0 && input[i] === '\n'; i--) {
+          consecutiveNewlines++;
+        }
+        
+        // Ako ima više od 4 \n (što znači 5 praznih redova), ne dodaj novi
+        if (consecutiveNewlines >= 4) {
+          return;
+        }
+        
+        const newValue = input.substring(0, start) + '\n' + input.substring(end);
+        setInput(newValue);
+        
+        // Restore cursor position nakon što se React update-a
+        setTimeout(() => {
+          inputRef.current.selectionStart = inputRef.current.selectionEnd = start + 1;
+          inputRef.current.focus();
+        }, 0);
+      } else {
+        // Enter - pošalji poruku
+        e.preventDefault();
+        if (input.trim()) {
+          handleSendMessage(e);
+        }
+      }
+    }
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Auto-resize textarea kada se input promeni
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+      const maxHeight = window.innerWidth < 768 ? 150 : 250;
+      const newHeight = Math.min(inputRef.current.scrollHeight, maxHeight);
+      inputRef.current.style.height = newHeight + 'px';
+    }
+  }, [input]);
 
   useEffect(() => {
     scrollToBottom();
@@ -809,6 +863,12 @@ export default function StatistikaPage() {
     const userInput = input;
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    // Reset textarea height
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+      const minHeight = window.innerWidth < 768 ? 48 : 48;
+      inputRef.current.style.height = minHeight + 'px';
+    }
     setLoading(true);
 
     // Čuva user poruku u bazi
@@ -1005,23 +1065,25 @@ export default function StatistikaPage() {
             </div>
 
             <form className={styles.inputArea} onSubmit={handleSendMessage}>
-              <input
-                ref={inputRef}
-                type="text"
-                className={styles.input}
-                placeholder="Unesite vašu poruku..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                className={styles.sendBtn}
-                disabled={loading || !input.trim()}
-              >
-                <i className="fa-solid fa-paper-plane"></i>
-                Pošalji
-              </button>
+              <div className={styles.textareaWrapper}>
+                <textarea
+                  ref={inputRef}
+                  className={styles.textarea}
+                  placeholder="Unesite vašu poruku... (Shift+Enter za novi red)"
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  disabled={loading}
+                />
+                <button
+                  type="submit"
+                  className={styles.sendBtnInline}
+                  disabled={loading || !input.trim()}
+                  title="Pošalji poruku (Enter)"
+                >
+                  <i className="fa-solid fa-paper-plane"></i>
+                </button>
+              </div>
             </form>
           </div>
         </div>
