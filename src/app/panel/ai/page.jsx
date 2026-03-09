@@ -999,6 +999,14 @@ export default function StatistikaPage() {
     }, 800);
   };
 
+  if (loadingScreen) {
+    return (
+      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
+        <span className="spinner"></span>
+      </div>
+    );
+  }
+
 
   return (
     <div className={styles.container}>
@@ -1515,9 +1523,6 @@ export default function StatistikaPage() {
           </div>
         </div>
       )}
-      <div className={`${styles.loadingScreen} ${loadingScreen ? '' : styles.ucitano}`}>
-        <span className="spinner"></span>
-      </div>
     </div>
   );
 }
