@@ -659,6 +659,31 @@ export default function StatistikaPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [deleteModalOpen, renameModalOpen]);
 
+  // Helper funkcija za generisanje specifične poruke o uspešnosti
+  const generateSuccessMessage = (radnja, body) => {
+    switch (radnja) {
+      case "kreiranje": {
+        const datum = new Date(body.datum_rezervacije);
+        const dan = datum.getDate();
+        const mesec = datum.getMonth() + 1;
+        const godina = datum.getFullYear();
+        return `✅ **Kreiran novi termin za ${body.ime} u ${body.vreme} ${dan}.${mesec}.${godina}. na lokaciji ${body.lokacija}.**`;
+      }
+      case "izmena": {
+        const [godina, mesec, dan] = body.datum_rezervacije.split("-");
+        return `✅ **Termin za ${body.ime} je promenjen na ${body.vreme} ${dan}.${mesec}.${godina}. na lokaciji ${body.lokacija}.**`;
+      }
+      case "otkazivanje": {
+        return `✅ **Termin u ${body.vreme} ${body.dan}.${body.mesec}.${body.godina}. na lokaciji ${body.lokacija} je otkazan.**`;
+      }
+      case "potvrdjivanje": {
+        return `✅ **Termin je potvrđen.**`;
+      }
+      default:
+        return `✅ **Akcija "${radnja}" je uspešno izvršena!**`;
+    }
+  };
+
   // Agent akcije
   const handleConfirmAgent = async () => {
     if (!pendingAgent) return;
@@ -698,10 +723,14 @@ export default function StatistikaPage() {
 
       if (response.ok) {
         // Zameni [agent_proposal] sa statusom u originalnoj poruci
+        const successMessage = generateSuccessMessage(pendingAgent.radnja, pendingAgent.body);
         const updatedText = lastMessage.text.replace(
           /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
-          `✅ **Akcija "${pendingAgent.radnja}" je uspešno izvršena!**`
+          successMessage
         );
+        
+        // Obriši cache za ovu poruku kako bi se prikazao novi tekst
+        messageParsingCache.delete(lastMessage.id);
         
         // Ažuriraj poruku u stanju
         setMessages((prev) => [
@@ -728,10 +757,14 @@ export default function StatistikaPage() {
         }
       } else {
         // Zameni [agent_proposal] sa greškom
+        const errorMessage = `❌ **Greška pri izvršavanju akcije:** ${result.message || result.error || "Nepoznata greška"}`;
         const updatedText = lastMessage.text.replace(
           /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
-          `❌ **Greška pri izvršavanju akcije:** ${result.message || result.error || "Nepoznata greška"}`
+          errorMessage
         );
+        
+        // Obriši cache za ovu poruku kako bi se prikazao novi tekst
+        messageParsingCache.delete(lastMessage.id);
         
         setMessages((prev) => [
           ...prev.slice(0, -1),
@@ -763,10 +796,14 @@ export default function StatistikaPage() {
       console.error("Greška pri izvršavanju akcije:", error);
       const lastMessage = messages[messages.length - 1];
       
+      const catchErrorMessage = `❌ **Greška:** ${error.message}`;
       const updatedText = lastMessage.text.replace(
         /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
-        `❌ **Greška:** ${error.message}`
+        catchErrorMessage
       );
+      
+      // Obriši cache za ovu poruku kako bi se prikazao novi tekst
+      messageParsingCache.delete(lastMessage.id);
       
       setMessages((prev) => [
         ...prev.slice(0, -1),
@@ -791,6 +828,9 @@ export default function StatistikaPage() {
         /\[agent_proposal\]([\s\S]*?)\[\/agent_proposal\]/,
         `❌ **Akcija je odbijena od strane korisnika.**`
       );
+      
+      // Obriši cache za ovu poruku kako bi se prikazao novi tekst
+      messageParsingCache.delete(lastMessage.id);
       
       // Ažuriraj poruku u stanju
       setMessages((prev) => [
@@ -829,6 +869,12 @@ export default function StatistikaPage() {
     e.preventDefault();
 
     if (!input.trim()) return;
+
+    // Provera broja poruka - limit od 30 korisničkih poruka (60 ukupno sa bot porukama)
+    if (messages.length >= 60) {
+      alert("📊 Dostigli ste limit od 30 poruka u ovom ćaskanju. Napravite novo ćaskanje da nastavite!");
+      return;
+    }
 
     // Dohvati token i userId
     const authToken = localStorage.getItem("authToken");
@@ -1097,7 +1143,38 @@ export default function StatistikaPage() {
               )}
             </div>
 
-            <form className={styles.inputArea} onSubmit={handleSendMessage}>
+            <form className={styles.inputArea} style={{ position: "relative" }} onSubmit={handleSendMessage}>
+              {/* Indikator stanja gore desno */}
+              {messages.length >= 55 && (
+                <div style={{
+                  position: "absolute",
+                  top: "-28px",
+                  right: "0",
+                  fontSize: "11px",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  fontWeight: "500",
+                  backgroundColor: messages.length >= 60 ? "#fee2e2" : "#fef3c7",
+                  color: messages.length >= 60 ? "#991b1b" : "#b45309",
+                  whiteSpace: "nowrap"
+                }}>
+                  {messages.length >= 60 ? (
+                    <>
+                      <i className="fa-solid fa-circle-xmark"></i>
+                      <span>Limit: {Math.floor(messages.length / 2)}/30</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-info-circle"></i>
+                      <span>{Math.floor(messages.length / 2)}/30</span>
+                    </>
+                  )}
+                </div>
+              )}
+              
               <div className={styles.textareaWrapper}>
                 <textarea
                   ref={inputRef}
@@ -1106,13 +1183,14 @@ export default function StatistikaPage() {
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  disabled={loading}
+                  disabled={loading || messages.length >= 60}
+                  style={messages.length >= 60 ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                 />
                 <button
                   type="submit"
                   className={styles.sendBtnInline}
-                  disabled={loading || !input.trim()}
-                  title="Pošalji poruku (Enter)"
+                  disabled={loading || !input.trim() || messages.length >= 60}
+                  title={messages.length >= 60 ? "Dostigli ste limit" : "Pošalji poruku (Enter)"}
                 >
                   <i className="fa-solid fa-paper-plane"></i>
                 </button>
