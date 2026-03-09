@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import styles from "./Statistika.module.css";
@@ -14,7 +14,7 @@ const TypingIndicator = () => (
   </div>
 );
 
-const ChartComponent = ({ chartData }) => {
+const ChartComponent = React.memo(({ chartData }) => {
   const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
 
   try {
@@ -30,7 +30,7 @@ const ChartComponent = ({ chartData }) => {
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data}>
+              <BarChart data={data} isAnimationActive={false}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={xKey} />
                 <YAxis />
@@ -47,7 +47,7 @@ const ChartComponent = ({ chartData }) => {
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={data}>
+              <LineChart data={data} isAnimationActive={false}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={xKey} />
                 <YAxis />
@@ -64,7 +64,7 @@ const ChartComponent = ({ chartData }) => {
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
             <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
+              <PieChart isAnimationActive={false}>
                 <Pie
                   data={data}
                   dataKey={yKey}
@@ -91,7 +91,10 @@ const ChartComponent = ({ chartData }) => {
     console.error("Greška pri renderovanju grafikona:", error);
     return <p className={styles.chartError}>Greška pri prikazu grafikona</p>;
   }
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison - vrati true ako su isti (sprečava re-render)
+  return JSON.stringify(prevProps.chartData) === JSON.stringify(nextProps.chartData);
+});
 
 const parseMessageContent = (text) => {
   const parts = [];
@@ -149,6 +152,16 @@ const parseMessageContent = (text) => {
   }
 
   return parts;
+};
+
+// Cache za već parsovane poruke - sprečava ponovno parsiranje pri tipkanju
+const messageParsingCache = new Map();
+
+const getCachedParsedContent = (messageId, messageText) => {
+  if (!messageParsingCache.has(messageId)) {
+    messageParsingCache.set(messageId, parseMessageContent(messageText));
+  }
+  return messageParsingCache.get(messageId);
 };
 
 // AGENT MAPPER - za filtriranje polja po akciji
@@ -291,7 +304,14 @@ export default function StatistikaPage() {
 
   // Auto-resize textarea
   const handleInputChange = (e) => {
-    setInput(e.target.value);
+    const textarea = e.target;
+    setInput(textarea.value);
+    
+    // Resize textarea odmah (bez useEffect loop)
+    textarea.style.height = 'auto';
+    const maxHeight = window.innerWidth < 768 ? 150 : 250;
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+    textarea.style.height = newHeight + 'px';
   };
 
   // Handle Shift+Enter for new line, Enter to send
@@ -318,10 +338,16 @@ export default function StatistikaPage() {
         const newValue = input.substring(0, start) + '\n' + input.substring(end);
         setInput(newValue);
         
-        // Restore cursor position nakon što se React update-a
+        // Restore cursor position i resize nakon što se React update-a
         setTimeout(() => {
-          inputRef.current.selectionStart = inputRef.current.selectionEnd = start + 1;
-          inputRef.current.focus();
+          const ta = inputRef.current;
+          ta.selectionStart = ta.selectionEnd = start + 1;
+          ta.focus();
+          // Resize textarea
+          ta.style.height = 'auto';
+          const maxHeight = window.innerWidth < 768 ? 150 : 250;
+          const newHeight = Math.min(ta.scrollHeight, maxHeight);
+          ta.style.height = newHeight + 'px';
         }, 0);
       } else {
         // Enter - pošalji poruku
@@ -336,16 +362,6 @@ export default function StatistikaPage() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // Auto-resize textarea kada se input promeni
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-      const maxHeight = window.innerWidth < 768 ? 150 : 250;
-      const newHeight = Math.min(inputRef.current.scrollHeight, maxHeight);
-      inputRef.current.style.height = newHeight + 'px';
-    }
-  }, [input]);
 
   useEffect(() => {
     scrollToBottom();
@@ -430,6 +446,8 @@ export default function StatistikaPage() {
 
       if (response.ok) {
         const data = await response.json();
+        // Clear cache za stare poruke
+        messageParsingCache.clear();
         setMessages(data.chat.messages);
         setCurrentChatId(chatId);
         setPendingAgent(null);  // Resetuj pending agent
@@ -489,6 +507,8 @@ export default function StatistikaPage() {
         setProcessedAgentMessageId(null);
         
         // Resetuj poruke na početnu
+        // Clear cache
+        messageParsingCache.clear();
         setMessages([
           {
             id: 1,
@@ -865,9 +885,7 @@ export default function StatistikaPage() {
     setInput("");
     // Reset textarea height
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-      const minHeight = window.innerWidth < 768 ? 48 : 48;
-      inputRef.current.style.height = minHeight + 'px';
+      inputRef.current.style.height = '48px';
     }
     setLoading(true);
 
@@ -1026,7 +1044,7 @@ export default function StatistikaPage() {
                       >
                         {message.sender === "bot" ? (
                           <div className={styles.markdown}>
-                            {parseMessageContent(message.text).map((part, idx) =>
+                            {getCachedParsedContent(message.id, message.text).map((part, idx) =>
                               part.type === "text" ? (
                                 <ReactMarkdown key={idx}>
                                   {part.content}
