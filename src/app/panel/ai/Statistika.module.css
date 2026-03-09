@@ -44,7 +44,7 @@
 .message {
   display: flex;
   margin-bottom: 8px;
-  animation: slideIn 0.3s ease-out;
+  /* animacija onemogućena za performanse */
 }
 
 @keyframes slideIn {
@@ -67,6 +67,7 @@
 }
 
 .messageBubble {
+  overflow-x: hidden;
   max-width: 70%;
   padding: 12px 16px;
   border-radius: 8px;
@@ -107,7 +108,7 @@
   padding: 8px;
   align-items: flex-end;
   gap: 8px;
-  transition: all 0.3s ease;
+  /* tranzicija onemogućena */
 }
 
 .textareaWrapper:focus-within {
@@ -159,7 +160,7 @@
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  /* tranzicija onemogućena */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,7 +172,7 @@
 
 .sendBtnInline:hover:not(:disabled) {
   background-color: #0066cc;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  /* box-shadow onemogućen */
 }
 
 .sendBtnInline:active:not(:disabled) {
@@ -236,25 +237,23 @@
   height: 8px;
   border-radius: 50%;
   background-color: #666;
-  animation: typing 1.4s infinite;
+  animation: typing 0.6s infinite;
 }
 
 .typingDot:nth-child(2) {
-  animation-delay: 0.2s;
+  animation-delay: 0.1s;
 }
 
 .typingDot:nth-child(3) {
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 
 @keyframes typing {
-  0%, 60%, 100% {
-    opacity: 0.7;
-    transform: translateY(0);
+  0%, 100% {
+    opacity: 0.4;
   }
-  30% {
+  50% {
     opacity: 1;
-    transform: translateY(-10px);
   }
 }
 

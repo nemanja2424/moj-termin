@@ -29,8 +29,8 @@ const ChartComponent = React.memo(({ chartData }) => {
         return (
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data} isAnimationActive={false}>
+            <ResponsiveContainer width="100%" height={280} debounce={300}>
+              <BarChart data={data} isAnimationActive={false} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={xKey} />
                 <YAxis />
@@ -46,14 +46,14 @@ const ChartComponent = React.memo(({ chartData }) => {
         return (
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={data} isAnimationActive={false}>
+            <ResponsiveContainer width="100%" height={280} debounce={300}>
+              <LineChart data={data} isAnimationActive={false} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey={xKey} />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey={yKey} stroke="#3b82f6" />
+                <Line type="monotone" dataKey={yKey} stroke="#3b82f6" isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -63,7 +63,7 @@ const ChartComponent = React.memo(({ chartData }) => {
         return (
           <div className={styles.chartWrapper}>
             {title && <h4 className={styles.chartTitle}>{title}</h4>}
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={280} debounce={300}>
               <PieChart isAnimationActive={false}>
                 <Pie
                   data={data}
@@ -71,8 +71,9 @@ const ChartComponent = React.memo(({ chartData }) => {
                   nameKey={xKey}
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
-                  label
+                  outerRadius={75}
+                  label={false}
+                  isAnimationActive={false}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -92,8 +93,14 @@ const ChartComponent = React.memo(({ chartData }) => {
     return <p className={styles.chartError}>Greška pri prikazu grafikona</p>;
   }
 }, (prevProps, nextProps) => {
-  // Custom comparison - vrati true ako su isti (sprečava re-render)
-  return JSON.stringify(prevProps.chartData) === JSON.stringify(nextProps.chartData);
+  // Brzo poređenje - sprečava skupo JSON.stringify
+  if (prevProps.chartData === nextProps.chartData) return true;
+  if (!prevProps.chartData || !nextProps.chartData) return false;
+  return (
+    prevProps.chartData.type === nextProps.chartData.type &&
+    prevProps.chartData.title === nextProps.chartData.title &&
+    prevProps.chartData.data?.length === nextProps.chartData.data?.length
+  );
 });
 
 const parseMessageContent = (text) => {
