@@ -13,60 +13,11 @@ export default function DefaultDesign({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
+  const [calendarMonth, setCalendarMonth] = useState(today.getMonth());
+  const [calendarYear, setCalendarYear] = useState(today.getFullYear());
 
-  const years = Array.from({ length: 3 }, (_, i) => today.getFullYear() + i);
-  const months = Array.from({ length: 12 }, (_, i) => i);
-
-  const getDaysInMonthExcludingWeekends = (year, month) => {
-    const days = [];
-    const now = new Date();
-    const totalDays = new Date(year, month + 1, 0).getDate();
-
-    for (let day = 1; day <= totalDays; day++) {
-        const date = new Date(year, month, day);
-        const dayOfWeek = date.getDay();
-
-        if (dayOfWeek === 0 || dayOfWeek === 6) continue;
-
-        if (
-        year === now.getFullYear() &&
-        month === now.getMonth() &&
-        day < now.getDate()
-        ) continue;
-
-        days.push(day);
-    }
-
-    return days;
-  };
-
-  const getAvailableDays = (year, month) => {
-    const days = [];
-    const now = new Date();
-    now.setHours(0, 0, 0, 0); // samo datum, bez vremena
-    const totalDays = new Date(year, month + 1, 0).getDate();
-
-    for (let day = 1; day <= totalDays; day++) {
-      const date = new Date(year, month, day);
-      date.setHours(0, 0, 0, 0);
-
-      // Prikazi samo danas ili u budućnosti
-      if (date < now) continue;
-
-      // Ako želiš da preskočiš vikende, otkomentariši sledeće dve linije:
-      // const dayOfWeek = date.getDay();
-      // if (dayOfWeek === 0 || dayOfWeek === 6) continue;
-
-      days.push(day);
-    }
-    return days;
-  };
-
-  const useFilteredDays = false; // ili true da uključiš
-
-  const days = getAvailableDays(formData.godina, formData.mesec);
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -77,13 +28,9 @@ export default function DefaultDesign({
     setFormData((prev) => ({ ...prev, telefon: '+381' + broj }));
   };
 
-
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
-
-
-
 
   // Kada stigne preduzece, postavi podrazumevanu lokaciju
   useEffect(() => {
@@ -96,42 +43,37 @@ export default function DefaultDesign({
     }
   }, [preduzece.lokacije]);
 
-
-  // Pronađi selektovanu lokaciju (pazi na tip podatka)
+  // Pronađi selektovanu lokaciju
   const selectedLokacija = preduzece.lokacije?.find(
     (lok) => String(lok.id) === String(formData.lokacija)
   );
 
-  // Prikaz vremena samo ako postoji i nije prazan string
-  const getDayKey = () => {
-    if (!formData.godina || !formData.mesec || !formData.dan) return null;
-    const jsDay = new Date(formData.godina, formData.mesec, formData.dan).getDay();
-    const map = ['sun', 'mon', 'tue', 'wen', 'thu', 'fri', 'sat'];
-    return map[jsDay];
+  // Pribavi usluge iz lokacije (cenovnik - duzina_termina)
+  const getAvailableServices = () => {
+    return selectedLokacija?.duzina_termina || [];
   };
 
-  const danKey = getDayKey();
-  const radnoVreme = selectedLokacija?.radno_vreme?.[danKey] || '';
+  // Pronađi selektovanu uslugu
+  const selectedService = getAvailableServices().find(
+    (srv) => srv.usluga === formData.usluga
+  ) || getAvailableServices()[0];
 
   // Pomocna funkcija za parsiranje trajanja termina u minute
   const parseDuration = (trajanje) => {
     if (!trajanje) return 60;
-    // Ukloni sve razmake radi lakšeg parsiranja
+    if (typeof trajanje === 'number') return trajanje;
     const t = trajanje.replace(/\s+/g, '');
-    // "1h30min"
     const hMatch = t.match(/(\d+)h/);
     const mMatch = t.match(/(\d+)min/);
     const sati = hMatch ? parseInt(hMatch[1], 10) : 0;
     const minuti = mMatch ? parseInt(mMatch[1], 10) : 0;
     if (sati || minuti) return sati * 60 + minuti;
-    // Samo minuti, npr "45min"
     if (/^\d+min$/.test(t)) return parseInt(t, 10);
-    // Samo sati, npr "2h"
     if (/^\d+h$/.test(t)) return parseInt(t, 10) * 60;
     return 60;
   };
 
-  // Pomocna funkcija: vraca Date objekat za vreme (npr. "09:30")
+  // Vraca Date objekat za vreme
   const getDateForTime = (baseDate, timeStr) => {
     const [h, m] = timeStr.split(':').map(Number);
     return new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), h, m, 0, 0);
@@ -144,53 +86,108 @@ export default function DefaultDesign({
     return startA < endB && startB < endA;
   };
 
-  let odabranDatum;
-  // Generisanje slobodnih termina na osnovu radnog vremena, trajanja i zauzetih termina
-  const generateSlobodniTermini = (radnoVreme, trajanje, zauzetiTermini, selectedDate) => {
-    console.log('IZABRAN DATUM:', `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`);
-    odabranDatum = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
-    console.log(days)
+  // Pronađi radno vreme za odabrani dan
+  const getWorkingHoursForDate = (date) => {
+    const dayOfWeek = date.getDay();
+    const map = ['sun', 'mon', 'tue', 'wen', 'thu', 'fri', 'sat'];
+    const dayKey = map[dayOfWeek];
+    return selectedLokacija?.radno_vreme?.[dayKey] || '';
+  };
+
+  // Generiši slobodne termine
+  const generateSlobodniTermini = (date, trajanje, zauzetiTermini) => {
+    const radnoVreme = getWorkingHoursForDate(date);
     if (!radnoVreme || !trajanje) return [];
+
     const [start, end] = radnoVreme.split('-');
     const [startHour, startMin] = start.split(':').map(Number);
     const [endHour, endMin] = end.split(':').map(Number);
 
     const trajanjeMin = parseDuration(trajanje);
-
     const termini = [];
-    let current = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), startHour, startMin, 0, 0);
-    const endTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), endHour, endMin, 0, 0);
+    let current = new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, startMin, 0, 0);
+    const endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, endMin, 0, 0);
 
-    // Filtriraj zauzete termine za taj dan
-    const selectedDateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth()+1).padStart(2,'0')}-${String(selectedDate.getDate()).padStart(2,'0')}`;
-    const danPre = new Date(selectedDate);
-    danPre.setDate(selectedDate.getDate());
-    const danPreStr = `${danPre.getFullYear()}-${String(danPre.getMonth()+1).padStart(2,'0')}-${String(danPre.getDate()).padStart(2,'0')}`;
+    const selectedDateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    const zauzeti = (zauzetiTermini || []).filter(z => z.datum_rezervacije === selectedDateStr);
 
-    const zauzeti = (zauzetiTermini || []).filter(
-      z => z.datum_rezervacije === selectedDateStr || z.datum_rezervacije === danPreStr
-    );
-    console.log('ZAUZETI TERMINI ZA DAN:', zauzeti);
+    // Pribavi overlapLimit (default je 1 ako nije definisan)
+    const overlapLimit = selectedLokacija?.overlapLimit || 1;
 
     while (current.getTime() + trajanjeMin * 60000 <= endTime.getTime()) {
       const h = current.getHours().toString().padStart(2, '0');
       const m = current.getMinutes().toString().padStart(2, '0');
       const slot = `${h}:${m}`;
 
-      const overlap = zauzeti.some(z => {
+      // Prebrojavanje preklapajućih termina
+      const overlapCount = zauzeti.filter(z => {
         const vremeRez = z.vreme_rezervacije.replace(/h$/, '').replace(/\s+/g, '').trim();
-        const zStart = getDateForTime(selectedDate, vremeRez);
+        const zStart = getDateForTime(date, vremeRez);
         const zDur = parseDuration(z.duzina_termina);
         return isOverlap(current, trajanjeMin, zStart, zDur);
-      });
+      }).length;
 
-      if (!overlap) {
+      // Dodaj termin samo ako je broj preklapа manji od limitiranja
+      if (overlapCount < overlapLimit) {
         termini.push(slot);
       }
       current = new Date(current.getTime() + trajanjeMin * 60000);
     }
     return termini;
   };
+
+  // Pronađi dostupne dane za mini kalendar
+  const getCalendarDays = () => {
+    const days = [];
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    
+    // Termin se može zakazati tek od sutra
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const totalDays = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+    for (let day = 1; day <= totalDays; day++) {
+      const date = new Date(calendarYear, calendarMonth, day);
+      date.setHours(0, 0, 0, 0);
+      
+      // Proveri da li je datum pre sutra
+      if (date < tomorrow) {
+        days.push({ day, date, isDisabled: true });
+      } else {
+        // Proveri da li je taj dan radni dan
+        const dayOfWeek = date.getDay();
+        const map = ['sun', 'mon', 'tue', 'wen', 'thu', 'fri', 'sat'];
+        const dayKey = map[dayOfWeek];
+        const radnoVreme = selectedLokacija?.radno_vreme?.[dayKey];
+        const isWorkingDay = radnoVreme && radnoVreme.trim() !== '';
+        
+        days.push({ day, date, isDisabled: !isWorkingDay });
+      }
+    }
+    return days;
+  };
+
+  // Postavi odabrani dan i automatski popuni formData
+  const handleCalendarDayClick = (date) => {
+    setSelectedCalendarDate(date);
+    setFormData((prev) => ({
+      ...prev,
+      dan: date.getDate(),
+      mesec: date.getMonth(),
+      godina: date.getFullYear(),
+      vreme: ''
+    }));
+  };
+
+  // Prikazi dane u mini kalendaru
+  const calendarDays = getCalendarDays();
+  const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1).getDay();
+  // Prilagodi za kalendar gde je Ponedeljak prvi dan (not Nedelja)
+  // getDay(): 0=Nedelja, 1=Pon, ..., 6=Subota
+  // Prikaz: Pon, Uto, Sre, Čet, Pet, Sub, Ned
+  const emptySlots = Array(firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1).fill(null);
 
   return (
     <div className={styles.container}>
@@ -272,95 +269,160 @@ export default function DefaultDesign({
             </div>
           )}
 
-          {selectedLokacija && (
+          {selectedLokacija && getAvailableServices().length > 0 && (
             <div className={styles.inputGroup}>
-              <label>Trajanje</label>
+              <label>Usluga</label>
               <select
-                name="trajanje"
-                value={formData.trajanje}
+                name="usluga"
+                value={formData.usluga}
                 onChange={handleChange}
                 required
               >
-                {selectedLokacija.duzina_termina?.map((dt, idx) => (
-                  <option key={idx} value={dt}>{dt}</option>
+                <option value="">Izaberi uslugu</option>
+                {getAvailableServices().map((srv, idx) => (
+                  <option key={idx} value={srv.usluga || srv}>
+                    {typeof srv === 'object' ? `${srv.usluga} - ${srv.trajanje_prikaz} (${srv.cena}din)` : srv}
+                  </option>
                 ))}
               </select>
             </div>
           )}
 
-          <div className={styles.inputGroup}>
-            <label>{forma.datum === true && 'Datum'}{forma.datum === true && forma.vreme === true && ' i '}{forma.vreme === true && 'Vreme'}</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-              {forma.datum === true && (
+          {forma.datum === true || forma.vreme === true ? (
+            <div className={styles.inputGroup}>
+              <label>Odaberi dan i vreme</label>
+              
+              {selectedLokacija && formData.usluga && (
                 <>
-                  <select
-                    value={formData.dan}
-                    onChange={e => setFormData(prev => ({ ...prev, dan: Number(e.target.value), vreme: '' }))}
-                    required
-                  >
-                    <option value="">Dan</option>
-                    {days.map(day => {
-                      const dateObj = new Date(formData.godina, formData.mesec, day);
-                      const weekday = dateObj.toLocaleDateString('sr-Latn-RS', { weekday: 'short' }); // ili 'long'
-                      return (
-                        <option key={day} value={day}>
-                          {day} ({weekday})
-                        </option>
-                      );
-                    })}
-                  </select>
+                  {/* MINI KALENDAR */}
+                  <div style={{
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    padding: '15px',
+                    marginBottom: '15px',
+                    backgroundColor: '#f9f9f9'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '15px'
+                    }}>
+                      <button
+                        type="button"
+                        onClick={() => setCalendarMonth(m => m === 0 ? 11 : m - 1)}
+                        style={{ padding: '5px 10px', cursor: 'pointer' }}
+                      >
+                        &larr;
+                      </button>
+                      <span style={{ fontWeight: 'bold', minWidth: '150px', textAlign: 'center' }}>
+                        {new Date(calendarYear, calendarMonth).toLocaleString('sr-Latn-RS', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setCalendarMonth(m => m === 11 ? 0 : m + 1)}
+                        style={{ padding: '5px 10px', cursor: 'pointer' }}
+                      >
+                        &rarr;
+                      </button>
+                    </div>
 
-                  <select
-                    value={formData.mesec}
-                    onChange={e => setFormData(prev => ({ ...prev, mesec: Number(e.target.value), dan: '', vreme: '' }))}
-                    required
-                  >
-                    {months.map(m => (
-                      <option key={m} value={m}>
-                        {new Date(0, m).toLocaleString('sr-Latn-RS', { month: 'long' })}
-                      </option>
-                    ))}
-                  </select>
+                    {/* Dan u sedmici */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(7, 1fr)',
+                      gap: '5px',
+                      marginBottom: '10px'
+                    }}>
+                      {['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'].map(day => (
+                        <div key={day} style={{
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          fontSize: '12px',
+                          color: '#666'
+                        }}>
+                          {day}
+                        </div>
+                      ))}
+                    </div>
 
-                  <select
-                    value={formData.godina}
-                    onChange={e => setFormData(prev => ({ ...prev, godina: Number(e.target.value), dan: '', vreme: '' }))}
-                    required
-                  >
-                    {years.map(y => (
-                      <option key={y} value={y}>{y}</option>
-                    ))}
-                  </select>
+                    {/* Dani */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(7, 1fr)',
+                      gap: '5px'
+                    }}>
+                      {emptySlots.map((_, idx) => (
+                        <div key={`empty-${idx}`} />
+                      ))}
+                      {calendarDays.map((dayObj) => (
+                        <button
+                          key={`${dayObj.day}-${calendarMonth}-${calendarYear}`}
+                          type="button"
+                          onClick={() => handleCalendarDayClick(dayObj.date)}
+                          style={{
+                            padding: '8px',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            backgroundColor: selectedCalendarDate && 
+                              selectedCalendarDate.getDate() === dayObj.day &&
+                              selectedCalendarDate.getMonth() === calendarMonth &&
+                              selectedCalendarDate.getFullYear() === calendarYear
+                              ? '#007bff'
+                              : dayObj.isDisabled ? '#f0f0f0' : 'white',
+                            color: selectedCalendarDate &&
+                              selectedCalendarDate.getDate() === dayObj.day &&
+                              selectedCalendarDate.getMonth() === calendarMonth &&
+                              selectedCalendarDate.getFullYear() === calendarYear
+                              ? 'white'
+                              : 'black',
+                            cursor: dayObj.isDisabled ? 'not-allowed' : 'pointer',
+                            opacity: dayObj.isDisabled ? 0.5 : 1,
+                            fontSize: '14px',
+                            fontWeight: 'bold'
+                          }}
+                          disabled={dayObj.isDisabled}
+                        >
+                          {dayObj.day}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* IZBOR VREMENA */}
+                  {selectedCalendarDate && (
+                    <div>
+                      <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+                        Vreme
+                      </label>
+                      <select
+                        name="vreme"
+                        value={formData.vreme}
+                        onChange={handleChange}
+                        required
+                        style={{ width: '100%', padding: '10px' }}
+                      >
+                        <option value="">Izaberi vreme</option>
+                        {generateSlobodniTermini(
+                          selectedCalendarDate,
+                          selectedService?.trajanje,
+                          selectedLokacija?.zauzeti_termini
+                        ).map((t, i) => (
+                          <option key={i} value={t}>{t}h</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </>
               )}
-              
-              {forma.vreme === true && formData.dan && (
-                radnoVreme && radnoVreme !== "" && formData.trajanje ? (
-                  <select
-                    name="vreme"
-                    value={formData.vreme}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Izaberi vreme</option>
-                    {generateSlobodniTermini(
-                      radnoVreme,
-                      formData.trajanje,
-                      selectedLokacija?.zauzeti_termini,
-                      new Date(formData.godina, formData.mesec, Number(formData.dan))
-                    ).map((t, i) => (
-                      <option key={i} value={t}>{t}h</option>
-                    ))}
-                  </select>
-                ) : (
-                  <div style={{ color: 'gray', alignSelf: 'center', padding: '0 10px' }}>
-                    Nema termina za izabrani dan
-                  </div>
-                )
-              )}
 
+              {(!selectedLokacija || !formData.usluga) && (
+                <div style={{ color: '#666', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+                  {!selectedLokacija ? 'Prvo izaberi lokaciju' : 'Odaberi uslugu'}
+                </div>
+              )}
             </div>
-          </div>
+          ) : null}
 
           {forma.opis === true && (
             <div className={styles.inputGroup}>
@@ -422,6 +484,21 @@ export default function DefaultDesign({
           )}
 
         </form>
+
+        {preduzece.opis_preduzeca && (
+          <div style={{
+            marginTop: '30px',
+            padding: '20px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '8px',
+            borderLeft: '4px solid #007bff'
+          }}>
+            <h3 style={{ marginTop: 0, color: '#333' }}>O nama</h3>
+            <p style={{ color: '#666', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+              {preduzece.opis_preduzeca}
+            </p>
+          </div>
+        )}
       </main>
       
 

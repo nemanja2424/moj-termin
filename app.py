@@ -472,7 +472,7 @@ def zakazi():
         izabrana_lokacija = next((l for l in lokacije if str(l.get('id')) == str(odabrana_lokacija)), None)
         adresa = izabrana_lokacija.get('adresa') if izabrana_lokacija else ''
 
-        datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
+        datum_i_vreme = f"{podaci.get('dan')}.{int(podaci.get('mesec')) + 1}.{podaci.get('godina')} u {podaci.get('vreme')}"
         subject = f"Zakazivanje termina - {preduzece}"
         poruka = f"""Poštovani,
             \nVaš termin u {preduzece} je uspešno zakazan za {datum_i_vreme}, na adresi {adresa}. Dobićete obaveštenje kada neko potvrdi vaš termin.
@@ -568,7 +568,7 @@ def izmeniTermin():
         user = res_json.get('user', {})
         preduzece = user.get('ime_preduzeca')
         lokacije = user.get('lokacije', [])
-        datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
+        datum_i_vreme = f"{podaci.get('dan')}.{int(podaci.get('mesec')) + 1}.{podaci.get('godina')} u {podaci.get('vreme')}"
 
         subject = f"Izmena termina - {preduzece}"
         
@@ -761,7 +761,7 @@ def otkaziTermin():
         user = res_json.get('user', {})
         preduzece = user.get('ime_preduzeca')
         lokacije = user.get('lokacije', [])
-        datum_i_vreme = f"{podaci.get('dan')}.{podaci.get('mesec')}.{podaci.get('godina')} u {podaci.get('vreme')}"
+        datum_i_vreme = f"{podaci.get('dan')}.{int(podaci.get('mesec')) + 1}.{podaci.get('godina')} u {podaci.get('vreme')}"
 
         subject = "Otkazivanje termina"
 
