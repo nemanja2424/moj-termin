@@ -180,7 +180,7 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
         [agent_proposal]
         {
           "radnja": "kreiranje|izmena|otkazivanje|potvrdjivanje",
-          "poruka": "Kratko",
+          "poruka": "Opis šta radiš",
           "body": {
             "ime": [ime iz podataka], "email": [email iz podataka], "telefon": [telefon iz podataka],
             datum_rezervacije: "2026-02-13", "vreme": "08:00", duzina_termina: [trajanje iz podataka]
@@ -282,7 +282,7 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
         [agent_proposal]
         {
           "radnja": "kreiranje|izmena|otkazivanje|potvrdjivanje",
-          "poruka": "Kratko",
+          "poruka": "Opis šta radiš",
           "body": {
             "ime": [ime iz podataka], "email": [email iz podataka], "telefon": [telefon iz podataka],
             datum_rezervacije: "2026-02-13", "vreme": "08:00", duzina_termina: [trajanje iz podataka]
