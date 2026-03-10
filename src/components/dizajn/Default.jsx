@@ -189,6 +189,7 @@ export default function DefaultDesign({
     // Proveri da li ima stvarnog teksta
     return cleaned.length > 0;
   };
+  const calendarDays = getCalendarDays();
   const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1).getDay();
   // Prilagodi za kalendar gde je Ponedeljak prvi dan (not Nedelja)
   // getDay(): 0=Nedelja, 1=Pon, ..., 6=Subota
