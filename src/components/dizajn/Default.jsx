@@ -181,8 +181,14 @@ export default function DefaultDesign({
     }));
   };
 
-  // Prikazi dane u mini kalendaru
-  const calendarDays = getCalendarDays();
+  // Proveri da li opis sadrži stvarni sadržaj (ne samo HTML tagove)
+  const hasDescriptionContent = () => {
+    const opis = preduzece.opis_preduzeca || preduzece.opis || '';
+    // Ukloni sve HTML tagove
+    const cleaned = opis.replace(/<[^>]*>/g, '').trim();
+    // Proveri da li ima stvarnog teksta
+    return cleaned.length > 0;
+  };
   const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1).getDay();
   // Prilagodi za kalendar gde je Ponedeljak prvi dan (not Nedelja)
   // getDay(): 0=Nedelja, 1=Pon, ..., 6=Subota
@@ -209,7 +215,14 @@ export default function DefaultDesign({
       </header>
 
       <main className={styles.formWrapper}>
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <div style={{
+          width: '100%',
+          maxWidth: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0'
+        }}>
+          <form className={styles.form} onSubmit={handleSubmit}>
           {forma.ime === true && (
             <div className={styles.inputGroup}>
               <label>Ime</label>
@@ -483,22 +496,32 @@ export default function DefaultDesign({
             </>
           )}
 
-        </form>
+          </form>
 
-        {preduzece.opis_preduzeca && (
+          {(hasDescriptionContent()) && (
           <div style={{
-            marginTop: '30px',
+            marginTop: '0',
             padding: '20px',
             backgroundColor: '#f5f5f5',
             borderRadius: '8px',
-            borderLeft: '4px solid #007bff'
+            borderLeft: '4px solid #007bff',
+            width: '100%',
+            boxSizing: 'border-box'
           }}>
-            <h3 style={{ marginTop: 0, color: '#333' }}>O nama</h3>
-            <p style={{ color: '#666', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-              {preduzece.opis_preduzeca}
-            </p>
+            <h3 style={{ marginTop: 0, marginBottom: '15px', color: '#333', fontSize: '1.2rem' }}>O nama</h3>
+            <div 
+              style={{ 
+                color: '#666', 
+                lineHeight: '1.6',
+                fontSize: '1rem',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word'
+              }}
+              dangerouslySetInnerHTML={{ __html: preduzece.opis_preduzeca || preduzece.opis }}
+            />
           </div>
         )}
+        </div>
       </main>
       
 

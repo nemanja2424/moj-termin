@@ -906,9 +906,13 @@ export default function PodesavanjaPage() {
                         <div className={stylesLogin.formGroup}>
                             <MarkdownEditor 
                                 value={korisnik.opis || ''} 
-                                onChange={(e) => { setKorisnik({...korisnik, opis: e.target.value}) }}
+                                onChange={(e) => { 
+                                    const opis = e.target.value.slice(0, 150);
+                                    setKorisnik({...korisnik, opis}) 
+                                }}
                                 placeholder='Opis preduzeća'
                             />
+                            
                         </div>
                         <button type='submit' className={styles.btn2} disabled={loadingPotvrdi}>
                             {loadingPotvrdi ? <div className="spinnerMali"></div> : 'Sačuvaj'}
