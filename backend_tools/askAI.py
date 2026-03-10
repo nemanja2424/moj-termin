@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from together import Together
 from datetime import datetime
 import json
+import os
 
 load_dotenv()
 client = Together()
@@ -14,6 +15,89 @@ MODEL_NAMES = {
     "llama4": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
 }
 
+USAGE_FILE_PATH = os.path.join(os.path.dirname(__file__), "ai_usage", "sumUsage.json")
+
+def update_token_usage(prompt_tokens, completion_tokens, model="llama4"):
+    """Ažurira sumUsage.json sa informacijama o potrošnji tokena"""
+    try:
+        # Provjeri da li fajl postoji
+        if not os.path.exists(USAGE_FILE_PATH):
+            print(f"📝 Kreiram novi sumUsage.json...")
+            # Kreiraj direktorijum ako ne postoji
+            os.makedirs(os.path.dirname(USAGE_FILE_PATH), exist_ok=True)
+            # Kreiraj template fajl
+            template_data = {
+                "sum": {
+                    "total_token_usage": 0,
+                    "entry_token_usage": 0,
+                    "generated_token_usage": 0,
+                    "total_req": 0
+                },
+                "models": {
+                    "llama3": {
+                        "total_tokens": 0,
+                        "entry_tokens": 0,
+                        "generated_tokens": 0,
+                        "requests": 0
+                    },
+                    "llama4": {
+                        "total_tokens": 0,
+                        "entry_tokens": 0,
+                        "generated_tokens": 0,
+                        "requests": 0
+                    }
+                },
+                "history": []
+            }
+            with open(USAGE_FILE_PATH, 'w', encoding='utf-8') as f:
+                json.dump(template_data, f, indent=4, ensure_ascii=False)
+            data = template_data
+        else:
+            # Pročitaj postojeću datoteku
+            with open(USAGE_FILE_PATH, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        
+        total_tokens = prompt_tokens + completion_tokens
+        
+        # Ažuriraj sum
+        data["sum"]["total_token_usage"] += total_tokens
+        data["sum"]["entry_token_usage"] += prompt_tokens
+        data["sum"]["generated_token_usage"] += completion_tokens
+        data["sum"]["total_req"] += 1
+        
+        # Ažuriraj brojeve za specifičan model
+        if model not in data["models"]:
+            data["models"][model] = {
+                "total_tokens": 0,
+                "entry_tokens": 0,
+                "generated_tokens": 0,
+                "requests": 0
+            }
+        
+        data["models"][model]["total_tokens"] += total_tokens
+        data["models"][model]["entry_tokens"] += prompt_tokens
+        data["models"][model]["generated_tokens"] += completion_tokens
+        data["models"][model]["requests"] += 1
+        
+        # Dodaj novu entry u history
+        data["history"].append({
+            "timestamp": datetime.now().isoformat(),
+            "model": model,
+            "entry_token_usage": prompt_tokens,
+            "generated_token_usage": completion_tokens
+        })
+        
+        # Sačuvaj ažurirani fajl
+        with open(USAGE_FILE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        
+        print(f"\n✅ TOKENI LOGOVANI:")
+        print(f"   📥 Ulazni tokeni: {prompt_tokens}")
+        print(f"   📤 Generisani tokeni: {completion_tokens}")
+        print(f"   🤖 Model: {model.upper()}")
+        
+    except Exception as e:
+        print(f"❌ Greška pri loganju tokena: {e}")
 
 def askAI(data_firme, poruke, pitanje, model="llama4"):
     today = datetime.today()
@@ -267,5 +351,14 @@ def askAI(data_firme, poruke, pitanje, model="llama4"):
         temperature=0.2,
     )
     
-    print(response.choices[-1].message.content)
+    # Izvuci informacije o potrošnji tokena
+    if hasattr(response, 'usage') and response.usage:
+        try:
+            prompt_tokens = response.usage.prompt_tokens
+            completion_tokens = response.usage.completion_tokens
+            update_token_usage(prompt_tokens, completion_tokens, model)
+        except Exception as e:
+            print(f"❌ Greška pri ekstraktovanju tokena: {e}")
+    
+    #print(response.choices[-1].message.content)
     return response.choices[0].message.content

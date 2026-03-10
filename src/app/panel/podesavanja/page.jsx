@@ -362,7 +362,7 @@ export default function PodesavanjaPage() {
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         if (userId) {
-            setBookingLink(`https://mojtermin.site/zakazi/${userId}`);
+            setBookingLink(`https://test.mojtermin.site/zakazi/${userId}`);
         }
         fetchData();
     }, []);

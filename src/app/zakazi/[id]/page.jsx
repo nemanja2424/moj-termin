@@ -87,8 +87,8 @@ export default function ZakaziPage() {
             datum_rezervacije: odabranDatum,
         };
         const url = localhost
-            ? 'https://mojtermin.site/api/zakazi'
-            : 'https://mojtermin.site/api/zakazi';
+            ? 'https://test.mojtermin.site/api/zakazi'
+            : 'https://test.mojtermin.site/api/zakazi';
 
         try {
             const res = await fetch(url, {
