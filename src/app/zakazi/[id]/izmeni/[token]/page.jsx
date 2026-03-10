@@ -4,9 +4,9 @@ import DefaultDesign from "@/components/dizajn/Default";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import ModernDesign from "@/components/dizajn/Modern";
 import MinimalDesign from "@/components/dizajn/Minimal";
-
+import MultiStepDesign from "@/components/dizajn/MultiStep";
+import TimelineDesign from "@/components/dizajn/Timeline";
 
 export default function IzmeniZakaziPage() {
     const router = useRouter();
@@ -32,6 +32,7 @@ export default function IzmeniZakaziPage() {
     const [loadingSpin, setLoadingSpin] = useState(false);
     const [loadingSpinOtkaz, setLoadingSpinOtkaz] = useState(false);
     const [loadingSpinPotvrda, setLoadingSpinPotvrda] = useState(false);
+    const [resetMultiStep, setResetMultiStep] = useState(false);
     
 
     const fetchData = async () => {
@@ -171,63 +172,24 @@ export default function IzmeniZakaziPage() {
 
     return (
         <>
-            {forma.izgled === "default" && (
-                        <DefaultDesign
-                            forma={forma}
-                            setForma={setForma}
-                            preduzece={preduzece}
-                            setPreduzece={setPreduzece}
-                            formData={formData}
-                            setFormData={setFormData}
-                            id={id}
-                            token={token}
-                            handleSubmit={handleSubmit}
-                            tipUlaska={tipUlaska}
-                            handleOtkazi={handleOtkazi}
-                            potvrdiTermin={potvrdiTermin}
-                            loadingSpin={loadingSpin}
-                            loadingSpinOtkaz={loadingSpinOtkaz}
-                            loadingSpinPotvrda={loadingSpinPotvrda}
-                        />
-                    )}
-                    {forma.izgled === "modern" && (
-                        <ModernDesign
-                            forma={forma}
-                            setForma={setForma}
-                            preduzece={preduzece}
-                            setPreduzece={setPreduzece}
-                            formData={formData}
-                            setFormData={setFormData}
-                            id={id}
-                            token={token}
-                            handleSubmit={handleSubmit}
-                            tipUlaska={tipUlaska}
-                            handleOtkazi={handleOtkazi}
-                            potvrdiTermin={potvrdiTermin}
-                            loadingSpin={loadingSpin}
-                            loadingSpinOtkaz={loadingSpinOtkaz}
-                            loadingSpinPotvrda={loadingSpinPotvrda}
-                        />
-                    )}
-                    {forma.izgled === "minimal" && (
-                        <MinimalDesign
-                            forma={forma}
-                            setForma={setForma}
-                            preduzece={preduzece}
-                            setPreduzece={setPreduzece}
-                            formData={formData}
-                            setFormData={setFormData}
-                            id={id}
-                            token={token}
-                            handleSubmit={handleSubmit}
-                            tipUlaska={tipUlaska}
-                            handleOtkazi={handleOtkazi}
-                            potvrdiTermin={potvrdiTermin}
-                            loadingSpin={loadingSpin}
-                            loadingSpinOtkaz={loadingSpinOtkaz}
-                            loadingSpinPotvrda={loadingSpinPotvrda}
-                        />
-                    )}
+            <DefaultDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                token={token}
+                handleSubmit={handleSubmit}
+                tipUlaska={tipUlaska}
+                handleOtkazi={handleOtkazi}
+                potvrdiTermin={potvrdiTermin}
+                loadingSpin={loadingSpin}
+                loadingSpinOtkaz={loadingSpinOtkaz}
+                loadingSpinPotvrda={loadingSpinPotvrda}
+            />
+
             <Footer />
             <ToastContainer />
         </>

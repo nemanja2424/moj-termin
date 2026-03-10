@@ -5,7 +5,7 @@ import styles from './Brend.module.css';
 import { toast, ToastContainer } from 'react-toastify';
 
 export default function BrendPage() {
-    const [selectedDesign, setSelectedDesign] = useState('default');
+    const [selectedDesign, setSelectedDesign] = useState('');
     const [dizajnObavestenja, setDizajnObavestenja] = useState(true);
     const [showLink, setShowLink] = useState(false);
     const [showStruktura, setShowStruktura] = useState(false);
@@ -43,7 +43,8 @@ export default function BrendPage() {
 
             localStorage.setItem('zakaziForma', JSON.stringify(data.forma));
             localStorage.setItem('zakaziPreduzece', JSON.stringify(data));
-            setPaket(data.paket)
+            setPaket(data.paket);
+            setSelectedDesign(data.forma.izgled);
             setLoadingScreen(false);
         };
 
@@ -120,20 +121,34 @@ export default function BrendPage() {
     }
     const saveChanges = async () => {
         const userId = localStorage.getItem('userId');
+        const forma = JSON.parse(localStorage.getItem('zakaziForma'));
+        
+        // Sačuvan izgled kao deo forme
+        const updatedForma = {
+            ...forma,
+            izgled: selectedDesign
+        };
+
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/brend/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             },
-            body: JSON.stringify({forma: JSON.parse(localStorage.getItem('zakaziForma'))})
+            body: JSON.stringify({
+                forma: updatedForma,
+                izgled: selectedDesign
+            })
         })
         const data = await res.json();
+        
         if (!res.ok) {
             toast.error('Greška prilikom čuvanja promena.');
             return;
         }
 
+        // Ažurira localStorage
+        localStorage.setItem('zakaziForma', JSON.stringify(updatedForma));
         toast.success('Promene su sačuvane!');
 
     }
@@ -170,7 +185,9 @@ export default function BrendPage() {
                 <>
                     <div style={{ display: 'flex', gap: '10px', padding: '10px' }}>
                         <button onClick={() => {setSelectedDesign('default'); console.log(selectedDesign)}} className={styles.button2}>Default</button>
-                        <button onClick={() => setSelectedDesign('minimal')} className={styles.button2}>Minimal</button>
+                        <button onClick={() => {setSelectedDesign('minimal'); console.log(selectedDesign)}} className={styles.button2}>Minimal</button>
+                        <button onClick={() => {setSelectedDesign('multistep'); console.log(selectedDesign)}} className={styles.button2}>MultiStep</button>
+                        <button onClick={() => {setSelectedDesign('timeline'); console.log(selectedDesign)}} className={styles.button2}>Timeline</button>
                     </div>
                     <div className={styles.content}>
                         <div className={styles.prikazDizajna}>

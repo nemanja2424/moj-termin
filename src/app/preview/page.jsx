@@ -5,11 +5,12 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DefaultDesign from '@/components/dizajn/Default';
 import MinimalDesign from '@/components/dizajn/Minimal';
-import ModernDesign from '@/components/dizajn/Modern';
+import MultiStepDesign from '@/components/dizajn/MultiStep';
+import TimelineDesign from "@/components/dizajn/Timeline";
 
 function PreviewPage() {
   const searchParams = useSearchParams();
-  const design = searchParams.get('design') || 'default';
+  const design = searchParams.get('design');
   const tipUlaska = 1;
 
   const [formData, setFormData] = useState({
@@ -22,7 +23,8 @@ function PreviewPage() {
     dan: '',
     mesec: new Date().getMonth(),
     godina: new Date().getFullYear(),
-    opis: ''
+    opis: '',
+    usluga: ''
   });
 
   const [forma, setForma] = useState({});
@@ -36,10 +38,38 @@ function PreviewPage() {
     setPreduzece(preduzece);
   }, []);
 
-  const props = { forma, setForma, preduzece, setPreduzece, formData, setFormData, id, tipUlaska };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Preview mod - Zakazivanje nije aktivno');
+  };
 
-  if (design === 'minimal') return <MinimalDesign {...props} />;
-  if (design === 'modern') return <ModernDesign {...props} />;
+  const handleOtkazi = () => {
+    alert('Preview mod - Otkazivanje nije aktivno');
+  };
+
+  const potvrdiTermin = () => {
+    alert('Preview mod - Potvrda nije aktivna');
+  };
+
+  const props = { 
+    forma, setForma, 
+    preduzece, setPreduzece, 
+    formData, setFormData, 
+    id, 
+    token: null,
+    handleSubmit,
+    tipUlaska,
+    handleOtkazi,
+    potvrdiTermin,
+    loadingSpin: false,
+    loadingSpinOtkaz: false,
+    loadingSpinPotvrda: false
+  };
+
+  const designLower = design.toLowerCase();
+  if (designLower === 'minimal') return <MinimalDesign {...props} />;
+  if (designLower === 'multistep') return <MultiStepDesign {...props} />;
+  if (designLower === 'timeline') return <TimelineDesign {...props} />;
   return <DefaultDesign {...props} />;
 }
 

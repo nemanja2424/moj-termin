@@ -4,15 +4,16 @@ import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import DefaultDesign from "@/components/dizajn/Default";
-import ModernDesign from "@/components/dizajn/Modern";
 import MinimalDesign from "@/components/dizajn/Minimal";
+import MultiStepDesign from "@/components/dizajn/MultiStep";
+import TimelineDesign from "@/components/dizajn/Timeline";
 
 export default function ZakaziPage() {
     const { id } = useParams();
     const [forma, setForma] = useState({});
     const [preduzece, setPreduzece] = useState({});
     const today = new Date();
-    const [formData, setFormData] = useState({
+    const initialFormData = {
         ime: '',
         prezime: '',
         email: '',
@@ -23,10 +24,13 @@ export default function ZakaziPage() {
         dan: '',
         mesec: today.getMonth(),
         godina: today.getFullYear(),
-        opis: ''
-    });
+        opis: '',
+        usluga: ''
+    };
+    const [formData, setFormData] = useState(initialFormData);
     const [loadingSpin, setLoadingSpin] = useState(false);
     const [prebukiran, setPrebukiran] = useState(false);
+    const [resetMultiStep, setResetMultiStep] = useState(false);
 
     const fetchData = async () => {
         const res = await fetch(`https://x8ki-letl-twmt.n7.xano.io/api:YgSxZfYk/zakazi/${id}/forma`);
@@ -74,6 +78,16 @@ export default function ZakaziPage() {
     }, []);
 
     const [localhost, setLocalHost] = useState(false);
+    
+    const resetFormData = () => {
+        setFormData({
+            ...initialFormData,
+            mesec: new Date().getMonth(),
+            godina: new Date().getFullYear()
+        });
+        setResetMultiStep(true); // Trigger MultiStep reset
+    };
+
     const handleSubmit = async (e) => {
         let userId = localStorage.getItem('userId') || "0"; // za potvrdio, ako postoji
         e.preventDefault();
@@ -104,6 +118,7 @@ export default function ZakaziPage() {
 
             const data = await res.json();
             toast.success(data.app_response || 'Uspešno zakazano!');
+            resetFormData(); // Reset forma nakon uspešnog zakazivanja
             fetchData();
         } catch (error) {
             console.log(error);
@@ -128,20 +143,6 @@ export default function ZakaziPage() {
                 loadingSpin={loadingSpin}
             />
         )}
-        {forma.izgled === "modern" && (
-            <ModernDesign
-                forma={forma}
-                setForma={setForma}
-                preduzece={preduzece}
-                setPreduzece={setPreduzece}
-                formData={formData}
-                setFormData={setFormData}
-                id={id}
-                handleSubmit={handleSubmit}
-                tipUlaska={1}
-                loadingSpin={loadingSpin}
-            />
-        )}
         {forma.izgled === "minimal" && (
             <MinimalDesign
                 forma={forma}
@@ -154,6 +155,37 @@ export default function ZakaziPage() {
                 handleSubmit={handleSubmit}
                 tipUlaska={1}
                 loadingSpin={loadingSpin}
+            />
+        )}
+        {forma.izgled === "multistep" && (
+            <MultiStepDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                handleSubmit={handleSubmit}
+                tipUlaska={1}
+                loadingSpin={loadingSpin}
+                shouldResetStep={resetMultiStep}
+                onResetComplete={() => setResetMultiStep(false)}
+            />
+        )}
+        {forma.izgled === "timeline" && (
+            <TimelineDesign
+                forma={forma}
+                setForma={setForma}
+                preduzece={preduzece}
+                setPreduzece={setPreduzece}
+                formData={formData}
+                setFormData={setFormData}
+                id={id}
+                handleSubmit={handleSubmit}
+                tipUlaska={1}
+                loadingSpin={loadingSpin}
+                shouldResetStep={resetMultiStep}
             />
         )}
         <Footer />

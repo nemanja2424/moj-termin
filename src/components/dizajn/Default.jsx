@@ -404,29 +404,28 @@ export default function DefaultDesign({
                   </div>
 
                   {/* IZBOR VREMENA */}
-                  {selectedCalendarDate && (
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
-                        Vreme
-                      </label>
-                      <select
-                        name="vreme"
-                        value={formData.vreme}
-                        onChange={handleChange}
-                        required
-                        style={{ width: '100%', padding: '10px' }}
-                      >
-                        <option value="">Izaberi vreme</option>
-                        {generateSlobodniTermini(
-                          selectedCalendarDate,
-                          selectedService?.trajanje,
-                          selectedLokacija?.zauzeti_termini
-                        ).map((t, i) => (
-                          <option key={i} value={t}>{t}h</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+                      Vreme
+                    </label>
+                    <select
+                      name="vreme"
+                      value={formData.vreme}
+                      onChange={handleChange}
+                      required
+                      disabled={!selectedCalendarDate}
+                      style={{ width: '100%', padding: '10px' }}
+                    >
+                      <option value="">Izaberi vreme</option>
+                      {selectedCalendarDate && generateSlobodniTermini(
+                        selectedCalendarDate,
+                        selectedService?.trajanje,
+                        selectedLokacija?.zauzeti_termini
+                      ).map((t, i) => (
+                        <option key={i} value={t}>{t}h</option>
+                      ))}
+                    </select>
+                  </div>
                 </>
               )}
 

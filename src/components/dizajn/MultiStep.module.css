@@ -1,0 +1,658 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: white;
+  padding: 15px 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+}
+
+.brandFirme {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  max-height: 50px;
+  max-width: 50px;
+  border-radius: 8px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.menuIcon {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  align-items: center;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #667eea;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav a:hover {
+  color: #764ba2;
+}
+
+
+.formWrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.formContainer {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== PROGRESS SECTION ===== */
+.progressSection {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.progressBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.progressStep {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #999;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.progressStep.completed {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.progressStep.active {
+  background-color: #667eea;
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: scale(1.1);
+}
+
+.progressLine {
+  width: 30px;
+  height: 2px;
+  background-color: #e0e0e0;
+  transition: background-color 0.3s ease;
+}
+
+.progressLine.completed {
+  background-color: #10b981;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 500;
+}
+
+.progressLabels span {
+  flex: 1;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.progressLabels span.activeLabel {
+  color: #667eea;
+  font-weight: 700;
+}
+
+/* ===== FORM ===== */
+.form {
+  width: 100%;
+}
+
+.stepContent {
+  animation: fadeInContent 0.3s ease;
+}
+
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.stepTitle {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0 0 25px 0;
+  text-align: center;
+}
+
+/* ===== INPUT GROUPS ===== */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.inputGroup label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.inputGroup input,
+.inputGroup select,
+.inputGroup textarea {
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.inputGroup input:disabled,
+.inputGroup select:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ===== PHONE INPUT ===== */
+.phoneInput {
+  display: flex;
+  gap: 8px;
+}
+
+.phonePrefix {
+  width: 70px !important;
+  background-color: #f0f0f0 !important;
+  cursor: not-allowed !important;
+}
+
+.phoneNumber {
+  flex: 1 !important;
+}
+
+/* ===== INFO BOX ===== */
+.infoBox {
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  margin-bottom: 20px;
+}
+
+.infoBox p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.smallText {
+  font-size: 0.85rem !important;
+  color: #999 !important;
+}
+
+/* ===== CALENDAR ===== */
+.calendarWrapper {
+  background-color: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendarBtn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #667eea;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+}
+
+.calendarBtn:hover {
+  color: #764ba2;
+  transform: scale(1.2);
+}
+
+.calendarMonth {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.1rem;
+  min-width: 150px;
+  text-align: center;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.weekDay {
+  text-align: center;
+  font-weight: 700;
+  color: #667eea;
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.calendarDay:hover:not(:disabled) {
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
+.calendarDay.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.calendarDay.disabled {
+  background-color: #f0f0f0;
+  color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: #e0e0e0;
+}
+
+/* ===== BUTTONS ===== */
+.buttonRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btnSecondary {
+  background-color: #f0f0f0;
+  color: #555;
+  border: 2px solid #ddd;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.btnSuccess {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btnSuccess:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.btnInfo {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btnInfo:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.btnDanger {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btnDanger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* ===== CONFIRM INFO ===== */
+.confirmInfo {
+  text-align: center;
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #f0f9ff;
+  border-radius: 8px;
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+/* ===== ABOUT SECTION ===== */
+.aboutSection {
+  margin-top: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+  animation: slideUp 0.4s ease 0.2s both;
+}
+
+.aboutSection h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.aboutContent {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .brandFirme {
+    flex: 0 0 auto;
+    gap: 8px;
+  }
+
+  .menuIcon {
+    display: block;
+    order: 2;
+    margin-left: auto;
+    cursor: pointer;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: row;
+    order: 3;
+    width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin-left: 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    max-height: 0;
+    margin-top: 0;
+  }
+
+  .nav.open {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+    max-height: 40px;
+  }
+
+  .formContainer {
+    padding: 25px;
+  }
+
+  .formContainer h1 {
+    font-size: 1.2rem;
+  }
+
+  .progressBar {
+    gap: 5px;
+  }
+
+  .progressStep {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .progressLine {
+    width: 15px;
+  }
+
+  .stepTitle {
+    font-size: 1.2rem;
+  }
+
+  .buttonRow {
+    gap: 8px;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 100px;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+
+  .phoneInput {
+    gap: 6px;
+  }
+
+  .phonePrefix {
+    width: 60px !important;
+  }
+
+  .progressLabels {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  .formContainer {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .progressStep {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .progressBar {
+    gap: 2px;
+  }
+
+  .progressLine {
+    width: 8px;
+  }
+
+  .stepTitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .inputGroup {
+    margin-bottom: 15px;
+  }
+
+  .inputGroup input,
+  .inputGroup select {
+    padding: 10px 12px;
+    font-size: 16px; /* Sprečava zoom na iOS */
+  }
+
+  .btn {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    min-width: 80px;
+  }
+
+  .phoneInput {
+    gap: 4px;
+  }
+  .phoneInput input:not(.phonePrefix) {
+    flex: 1;
+    font-size: 0.9rem;
+    padding: 8px 6px;
+    max-width: 150px;
+  }
+
+  .phonePrefix {
+    width: 50px !important;
+    font-size: 0.9rem !important;
+    padding: 8px 6px !important;
+  }
+
+  .phoneNumber {
+    flex: 1 !important;
+    font-size: 0.9rem;
+    padding: 8px 6px;
+  }
+
+  .aboutSection {
+    padding: 15px;
+    margin-top: 25px;
+  }
+
+  .aboutSection h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .aboutContent {
+    font-size: 0.85rem;
+  }
+}
