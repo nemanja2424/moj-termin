@@ -99,8 +99,8 @@ export default function IzmeniZakaziPage() {
         datum_rezervacije: odabranDatum,
         };
         const url = localhost
-        ? 'https://test.mojtermin.site/api/zakazi/izmena'
-        : 'https://test.mojtermin.site/api/zakazi/izmena';
+        ? 'https://mojtermin.site/api/zakazi/izmena'
+        : 'https://mojtermin.site/api/zakazi/izmena';
 
         console.log('Form data:', podaci, id, token, stariPodaci);
 
@@ -134,8 +134,8 @@ export default function IzmeniZakaziPage() {
             datum_rezervacije: odabranDatum,
         };
         const url = localhost
-        ? 'https://test.mojtermin.site/api/zakazi/otkazi'
-        : 'https://test.mojtermin.site/api/zakazi/otkazi';
+        ? 'https://mojtermin.site/api/zakazi/otkazi'
+        : 'https://mojtermin.site/api/zakazi/otkazi';
 
         setLoadingSpinOtkaz(true);
         try {
@@ -167,7 +167,7 @@ export default function IzmeniZakaziPage() {
         const authToken = localStorage.getItem('authToken');
         const userId = localStorage.getItem('userId');
         termin.potvrdio = userId;
-        const res = await fetch("https://test.mojtermin.site/api/potvrdi_termin", {
+        const res = await fetch("https://mojtermin.site/api/potvrdi_termin", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

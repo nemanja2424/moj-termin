@@ -225,18 +225,18 @@ export default function BrendPage() {
                     <div className={styles.linkDiv} onClick={e => e.stopPropagation()}>
                         <div className={styles.qr}>
                             <h3>QR kod za zakazivanje</h3>
-                            <QRCodeSVG value={`https://test.mojtermin.site/zakazi/${localStorage.getItem('userId')}`} className={styles.qr} ref={qrRef} />
+                            <QRCodeSVG value={`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`} className={styles.qr} ref={qrRef} />
                             <button onClick={preuzmiQRCode} className={styles.copyBtn}>Preuzmi QR kod</button>
                         </div>
 
                         <div className={styles.copyWrapper}>
                             <span className={styles.linkText}>
-                            {`https://test.mojtermin.site/zakazi/${localStorage.getItem('userId')}`}
+                            {`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`}
                             </span>
                             <button
                             className={styles.copyBtn}
                             onClick={() => {
-                                navigator.clipboard.writeText(`https://test.mojtermin.site/zakazi/${localStorage.getItem('userId')}`);
+                                navigator.clipboard.writeText(`https://mojtermin.site/zakazi/${localStorage.getItem('userId')}`);
                                 toast.success('Link je kopiran.')
                             }}
                             >
