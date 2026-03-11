@@ -52,6 +52,16 @@ export default function DefaultDesign({
     }
   }, [preduzece.lokacije]);
 
+  // Inicijalizuj kalendar na osnovu formData.dan, mesec, godina
+  useEffect(() => {
+    if (formData.dan && formData.mesec !== '' && formData.godina) {
+      const selectedDate = new Date(formData.godina, formData.mesec, formData.dan);
+      setSelectedCalendarDate(selectedDate);
+      setCalendarMonth(formData.mesec);
+      setCalendarYear(formData.godina);
+    }
+  }, [formData.dan, formData.mesec, formData.godina]);
+
   // Pronađi selektovanu lokaciju
   const selectedLokacija = preduzece.lokacije?.find(
     (lok) => String(lok.id) === String(formData.lokacija)
