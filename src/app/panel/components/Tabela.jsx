@@ -271,7 +271,7 @@ export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin
                 Vreme{sortKey === 'vreme_rezervacije' && (sortOrder === 'asc' ? '▲' : '▼')}
               </th>
               <th style={{cursor:'default'}}>
-                Trajanje{sortKey === 'duzina_termina' && (sortOrder === 'asc' ? '▲' : '▼')}
+                Usluga{sortKey === 'duzina_termina' && (sortOrder === 'asc' ? '▲' : '▼')}
               </th>
               <th style={{cursor:'default'}}>
                 Telefon{sortKey === 'telefon' && (sortOrder === 'asc' ? '▲' : '▼')}
@@ -293,7 +293,7 @@ export default function Tabela({ desavanjaData, fetchData, loading, izmeniTermin
                 <td>{event.ime}</td>
                 <td>{formatirajDatum(event.datum)}</td>
                 <td>{event.vreme_rezervacije}</td>
-                <td>{event.duzina_termina}</td>
+                <td>{event.usluga.usluga}</td>
                 <td>
                   <a href={`tel:${event.telefon}`} style={{ color: "#3b82f6" }}>
                     {event.telefon}

@@ -283,7 +283,7 @@ export default function DashboardPage() {
         <div className={styles.sekcija30}>
           <div className={`${styles.stavka2}`}>
             <div className={styles.logoDiv}>
-              <img src={vlasnik.putanja_za_logo} alt="Logo" />
+              <img loading='lazy' src={vlasnik.putanja_za_logo === '' ? '/Images/logo.webp' : `https://test.mojtermin.site/api/logo/${vlasnik.putanja_za_logo}`} />
             </div>
             <div>
               <h2>{vlasnik?.ime_preduzeca || "Preduzece"}</h2>

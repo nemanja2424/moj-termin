@@ -23,6 +23,7 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
   const [selectedDate, setSelectedDate] = useState(formatDate(today));
   const [selectedEvents, setSelectedEvents] = useState([]);
   const scrollRef = useRef(null);
+  const [rola, setRola] = useState(null); //1 = vlasnik; 2 = korisnik; Eventualno 3 = admin
 
   const generateCalendar = (month, year) => {
     const firstDay = new Date(year, month, 1);
@@ -104,6 +105,8 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
 
   useEffect(() => {
     generateCalendar(currentMonth, currentYear);
+    let rolaInt = localStorage.getItem('rola');
+    setRola(rolaInt);
   }, [desavanjaData, currentMonth, currentYear]);
 
   useEffect(() => {
@@ -198,10 +201,13 @@ export default function Kalendar({ desavanjaData, fetchData, loading }) {
                 <div>
                   <h3>{event.ime}</h3>
                   <p><strong>Vreme:</strong> {event.vreme_rezervacije}</p>
-                  <p><strong>Trajanje:</strong> {event.duzina_termina}</p>
+                  <p><strong>Usluga:</strong> {event.usluga?.usluga || 'Nema usluge'}</p>
                   <p><strong>Opis:</strong> {event.opis}</p>
                   <p><strong>Telefon:</strong> <a href={`tel:${event.telefon}`} style={{ color: '#3b82f6' }}>{event.telefon}</a></p>
                   <p><strong>Email:</strong> <a href={`mailto:${event.email}`} style={{ color: '#3b82f6' }}>{event.email}</a></p>
+                  {rola === "1" && (
+                    <p><strong>Lokacija: </strong>{event.lokacija.ime}</p>
+                  )}
                   <p>
                     {event.potvrdio !== 0 ? (
                       <>
