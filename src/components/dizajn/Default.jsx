@@ -22,6 +22,15 @@ export default function DefaultDesign({
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleUslugaChange = (e) => {
+    const selectedIndex = parseInt(e.target.value);
+    const selectedUsluga = getAvailableServices()[selectedIndex];
+    setFormData((prev) => ({
+      ...prev,
+      usluga: selectedUsluga,
+      vreme: ''
+    }));
+  };
 
   const handlePhoneChange = (e) => {
     const broj = e.target.value.replace(/\D/g, '').slice(0, 9);
@@ -54,9 +63,9 @@ export default function DefaultDesign({
   };
 
   // Pronađi selektovanu uslugu
-  const selectedService = getAvailableServices().find(
-    (srv) => srv.usluga === formData.usluga
-  ) || getAvailableServices()[0];
+  const selectedService = (typeof formData.usluga === 'object' && formData.usluga?.usluga) 
+    ? formData.usluga 
+    : getAvailableServices()[0];
 
   // Pomocna funkcija za parsiranje trajanja termina u minute
   const parseDuration = (trajanje) => {
@@ -288,13 +297,17 @@ export default function DefaultDesign({
               <label>Usluga</label>
               <select
                 name="usluga"
-                value={formData.usluga}
-                onChange={handleChange}
+                value={getAvailableServices().findIndex(srv => 
+                  typeof formData.usluga === 'object' 
+                    ? srv.usluga === formData.usluga.usluga 
+                    : srv.usluga === formData.usluga
+                )}
+                onChange={handleUslugaChange}
                 required
               >
                 <option value="">Izaberi uslugu</option>
                 {getAvailableServices().map((srv, idx) => (
-                  <option key={idx} value={srv.usluga || srv}>
+                  <option key={idx} value={idx}>
                     {typeof srv === 'object' ? `${srv.usluga} - ${srv.trajanje_prikaz} (${srv.cena}din)` : srv}
                   </option>
                 ))}
@@ -306,7 +319,7 @@ export default function DefaultDesign({
             <div className={styles.inputGroup}>
               <label>Odaberi dan i vreme</label>
               
-              {selectedLokacija && formData.usluga && (
+              {selectedLokacija && formData.usluga?.usluga && (
                 <>
                   {/* MINI KALENDAR */}
                   <div style={{
@@ -429,7 +442,7 @@ export default function DefaultDesign({
                 </>
               )}
 
-              {(!selectedLokacija || !formData.usluga) && (
+              {(!selectedLokacija || !formData.usluga?.usluga) && (
                 <div style={{ color: '#666', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
                   {!selectedLokacija ? 'Prvo izaberi lokaciju' : 'Odaberi uslugu'}
                 </div>

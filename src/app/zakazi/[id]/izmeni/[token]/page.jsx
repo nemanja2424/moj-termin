@@ -22,6 +22,7 @@ export default function IzmeniZakaziPage() {
         telefon: '+381',
         trajanje: '1h',
         lokacija: '',
+        usluga: {},
         vreme: '',
         dan: '',
         mesec: today.getMonth(),
@@ -60,6 +61,25 @@ export default function IzmeniZakaziPage() {
         if (termin.duzina_termina) {termin.trajanje = termin.duzina_termina}
         if(termin.vreme_rezervacije) {termin.vreme = termin.vreme_rezervacije}
         if(termin.ime_firme) {termin.lokacija = termin.ime_firme}
+        
+        // Pronađi ceo objekat usluge iz dostupnih servisa
+        if (termin.lokacija && data.preduzece.lokacije) {
+          const lokacija = data.preduzece.lokacije.find(
+            (lok) => String(lok.id) === String(termin.lokacija) || lok.ime === termin.lokacija
+          );
+          if (lokacija && lokacija.duzina_termina && termin.duzina_termina) {
+            const uslugeNiz = lokacija.duzina_termina;
+            const pronadenoObjekt = uslugeNiz.find(srv => 
+              srv.usluga === termin.duzina_termina || 
+              srv.trajanje === termin.duzina_termina ||
+              `${srv.usluga} - ${srv.trajanje_prikaz}` === termin.duzina_termina
+            );
+            if (pronadenoObjekt) {
+              termin.usluga = pronadenoObjekt;
+            }
+          }
+        }
+        
         setFormData(termin);
         setStariPodaci(termin);
     }

@@ -65,11 +65,19 @@ export default function MinimalDesign({
 
   const useFilteredDays = false; // ili true da uključiš
 
-  const days = getAvailableDays(formData.godina, formData.mesec);
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleUslugaChange = (e) => {
+    const selectedIndex = parseInt(e.target.value);
+    const selectedUsluga = getAvailableServices()[selectedIndex];
+    setFormData((prev) => ({
+      ...prev,
+      usluga: selectedUsluga,
+      vreme: ''
+    }));
+  };
 
   const handlePhoneChange = (e) => {
     const broj = e.target.value.replace(/\D/g, '').slice(0, 9);
@@ -99,6 +107,10 @@ export default function MinimalDesign({
   const selectedLokacija = preduzece.lokacije?.find(
     (lok) => String(lok.id) === String(formData.lokacija)
   );
+
+  const getAvailableServices = () => {
+    return selectedLokacija?.duzina_termina || [];
+  };
 
   // Prikaz vremena samo ako postoji i nije prazan string
   const getDayKey = () => {
@@ -275,14 +287,20 @@ export default function MinimalDesign({
             <div className={styles.inputGroup}>
               <label>Trajanje</label>
               <select
-                name="trajanje"
-                value={formData.trajanje}
-                onChange={handleChange}
+                name="usluga"
+                value={getAvailableServices().findIndex(srv => 
+                  typeof formData.usluga === 'object' 
+                    ? srv.usluga === formData.usluga.usluga 
+                    : srv.usluga === formData.usluga
+                )}
+                onChange={handleUslugaChange}
                 required
               >
                 <option value="">Izaberi trajanje</option>
-                {selectedLokacija.duzina_termina?.map((dt, idx) => (
-                  <option key={idx} value={dt}>{dt}</option>
+                {getAvailableServices().map((srv, idx) => (
+                  <option key={idx} value={idx}>
+                    {typeof srv === 'object' ? `${srv.trajanje_prikaz}` : srv}
+                  </option>
                 ))}
               </select>
             </div>
@@ -335,7 +353,7 @@ export default function MinimalDesign({
               )}
               
               {forma.vreme === true && formData.dan && (
-                radnoVreme && radnoVreme !== "" && formData.trajanje ? (
+                radnoVreme && radnoVreme !== "" && formData.usluga && typeof formData.usluga === 'object' ? (
                   <select
                     name="vreme"
                     value={formData.vreme}
@@ -345,7 +363,7 @@ export default function MinimalDesign({
                     <option value="">Izaberi vreme</option>
                     {generateSlobodniTermini(
                       radnoVreme,
-                      formData.trajanje,
+                      formData.usluga?.trajanje,
                       selectedLokacija?.zauzeti_termini,
                       new Date(formData.godina, formData.mesec, Number(formData.dan))
                     ).map((t, i) => (

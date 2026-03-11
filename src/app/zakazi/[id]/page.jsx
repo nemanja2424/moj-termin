@@ -18,14 +18,13 @@ export default function ZakaziPage() {
         prezime: '',
         email: '',
         telefon: '+381',
-        trajanje: '1h',
         lokacija: '',
         vreme: '',
         dan: '',
         mesec: today.getMonth(),
         godina: today.getFullYear(),
         opis: '',
-        usluga: ''
+        usluga: {}
     };
     const [formData, setFormData] = useState(initialFormData);
     const [loadingSpin, setLoadingSpin] = useState(false);
@@ -100,6 +99,7 @@ export default function ZakaziPage() {
             ...formData,
             datum_rezervacije: odabranDatum,
         };
+        
         const url = localhost
             ? 'https://test.mojtermin.site/api/zakazi'
             : 'https://test.mojtermin.site/api/zakazi';

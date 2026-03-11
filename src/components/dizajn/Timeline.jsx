@@ -20,6 +20,14 @@ export default function TimelineDesign({
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleUslugaChange = (usluga) => {
+    setFormData((prev) => ({
+      ...prev,
+      usluga: usluga,
+      vreme: ''
+    }));
+  };
+
   const handlePhoneChange = (e) => {
     const broj = e.target.value.replace(/\D/g, '').slice(0, 9);
     setFormData((prev) => ({ ...prev, telefon: '+381' + broj }));
@@ -46,9 +54,9 @@ export default function TimelineDesign({
     return selectedLokacija?.duzina_termina || [];
   };
 
-  const selectedService = getAvailableServices().find(
-    (srv) => srv.usluga === formData.usluga
-  ) || getAvailableServices()[0];
+  const selectedService = (typeof formData.usluga === 'object' && formData.usluga) 
+    ? formData.usluga 
+    : getAvailableServices()[0];
 
   const parseDuration = (trajanje) => {
     if (!trajanje) return 60;
@@ -176,7 +184,7 @@ export default function TimelineDesign({
 
   const availableDays = selectedLokacija ? getAvailableDays() : [];
   const visibleDays = availableDays;
-  const availableTimes = selectedDate && formData.usluga ? 
+  const availableTimes = selectedDate && formData.usluga && typeof formData.usluga === 'object' ? 
     generateSlobodniTermini(selectedDate, selectedService?.trajanje, selectedLokacija?.zauzeti_termini) 
     : [];
 
@@ -255,8 +263,8 @@ export default function TimelineDesign({
                   {getAvailableServices().map((srv, idx) => (
                     <div
                       key={idx}
-                      className={`${styles.serviceCard} ${formData.usluga === srv.usluga ? styles.selected : ''}`}
-                      onClick={() => setFormData(prev => ({ ...prev, usluga: srv.usluga, vreme: '' }))}
+                      className={`${styles.serviceCard} ${typeof formData.usluga === 'object' && formData.usluga.usluga === srv.usluga ? styles.selected : ''}`}
+                      onClick={() => handleUslugaChange(srv)}
                     >
                       <div className={styles.serviceName}>{srv.usluga}</div>
                       <div className={styles.servicePrice}>{srv.cena}din</div>
@@ -268,7 +276,7 @@ export default function TimelineDesign({
             )}
 
             {/* KORAK 4: TERMIN - TIMELINE */}
-            {selectedLokacija && formData.usluga && (
+            {selectedLokacija && formData.usluga && typeof formData.usluga === 'object' && (
               <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Odaberi datum i vreme</h2>
                 
