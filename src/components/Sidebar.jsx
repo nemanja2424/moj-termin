@@ -41,10 +41,12 @@ export default function Sidebar({ rasirenSidebar, setRasirenSidebar }) {
           <div className={styles.ikona}><FontAwesomeIcon icon={faCalendarDays} /></div>
           <p>Termini</p>
         </Link>
+{/*
         <Link href={'/panel/ai'} style={{maxHeight:'30px'}}>
           <div className={styles.ikona}><FontAwesomeIcon icon={faRobot} style={{}}/></div>
           <p>AI Asistent</p>
         </Link>
+*/}
         {vlasnik && (
           <>
             <span className={styles.brend}>
