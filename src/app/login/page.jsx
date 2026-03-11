@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import styles from './login.module.css';
@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
-const LoginPage = () => {
+const LoginContent = () => {
   const searchParams = useSearchParams();
   const [Login, setLogin] = useState(searchParams.get('register') === 'true');
 
@@ -322,5 +322,13 @@ const LoginPage = () => {
     </div>
   );
 };
+
+function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
+  );
+}
 
 export default LoginPage;
