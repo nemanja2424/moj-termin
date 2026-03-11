@@ -270,7 +270,7 @@ export default function NaloziPage() {
                                 className={localStyles.btn} style={{margin:'0'}}
                                 onClick={() => setShowDodajKorisnika(prev => !prev)}
                             >
-                                <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika
+                                <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenog
                             </button>
                             <div
                                 style={{
@@ -302,7 +302,7 @@ export default function NaloziPage() {
                         className={localStyles.btn} style={{margin:'0'}}
                         onClick={() => setShowDodajKorisnika(prev => !prev)}
                     >
-                        <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenika
+                        <i className="fa-solid fa-plus"></i>&nbsp;&nbsp;Dodaj zaposlenog
                     </button>
                 )}
             </div>

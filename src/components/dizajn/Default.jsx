@@ -474,6 +474,19 @@ export default function DefaultDesign({
           ) : (
             <>
               <div className={styles.buttons}>
+                {(tipUlaska === 2 || tipUlaska === 3) && (
+                  <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
+                    {loadingSpinOtkaz ? (
+                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
+                        <div className="spinnerMali" ></div>
+                      </div>
+                    ) : (
+                      <p>
+                        Otkaži termin
+                      </p>
+                    )}
+                  </button>
+                )}
                 <button type="submit" className={styles.submitBtn}>
                   {loadingSpin === true ? (
                       <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
@@ -495,19 +508,6 @@ export default function DefaultDesign({
                     ) : (
                       <p>
                         Potvrdi
-                      </p>
-                    )}
-                  </button>
-                )}
-                {(tipUlaska === 2 || tipUlaska === 3) && (
-                  <button onClick={handleOtkazi} className={styles.submitBtn} style={{backgroundColor:'red'}} type='button'>
-                    {loadingSpinOtkaz ? (
-                      <div style={{maxHeight:'100%',display:'flex',justifyContent:'center',alignItems:'center'}}>
-                        <div className="spinnerMali" ></div>
-                      </div>
-                    ) : (
-                      <p>
-                        Otkaži termin
                       </p>
                     )}
                   </button>

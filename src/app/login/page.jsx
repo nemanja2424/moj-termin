@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import styles from './login.module.css';
 import Header from '@/components/Header';
@@ -10,14 +11,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 const LoginPage = () => {
+  const searchParams = useSearchParams();
+  const [Login, setLogin] = useState(searchParams.get('register') === 'true');
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (authToken) {
       window.location.href = "/";
     }
   }, []);
-
-  const [Login, setLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const toggleLogin = () => setLogin(false);
   const toggleReg = () => setLogin(true);

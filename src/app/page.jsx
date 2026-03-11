@@ -88,6 +88,13 @@ export default function HomePage() {
         </div>
       </div>
 
+      <section className={styles['info-between']}>
+        <h2 className='anim2'><br />Rešite sve svoje potrebe za zakazivanje termina na jednom mestu</h2>
+        <p className='anim'>Naš sistem za digitalno zakazivanje termina je jednostavan za korišćenje i prilagodljiv svim vrstama poslovanja. Bilo da ste frizer, lekar, trener ili neko drugi ko upravlja terminima, naš alat vam omogućava brzo i efikasno upravljanje, štedeći vreme i smanjujući greške. Sa našim rešenjem, vaši klijenti će imati jednostavan pristup, a vi ćete moći da se fokusirate na rast svog biznisa.</p>
+        <p className='anim3'><br/>Naš sistem nudi jednostavnu stranu za zakazivanje termina za vaše klijente, kontrolnu tablu za vas sa svim potrebnim informacijama, kao i analitiku koja vam pomaže da pratite učinkovitost vašeg poslovanja. Uz mogućnost automatskog slanja obaveštenja i bezbednost podataka, možete biti sigurni da će vaše poslovanje teći glatko i sigurno.</p>
+        <p className='anim4'><br/>Bez obzira na vrstu vašeg biznisa, naš sistem je fleksibilan i lako se integriše u vaše postojeće radne procese. Pružite svojim klijentima najbolje iskustvo u zakazivanju termina i uštedite dragoceno vreme!</p>
+      </section>
+
       <section id='about' className={styles['benefits-section']}>
         <h2>Zašto odabrati naš sistem?</h2>
         <div className={styles['benefits-cards']}>
@@ -112,7 +119,7 @@ export default function HomePage() {
             <div className={styles['benefit-icon']}><i className="fa-solid fa-chart-line"></i></div>
             <div className={styles['benefit-title']}>Analitika i pregled poslovanja</div>
             <div className={styles['benefit-desc']}>
-              Dobijte uvid u zauzetost, broj zakazanih termina, i produktivnost zaposlenih kroz pregledne grafikone i statistiku.
+              Dobijte uvid u zauzetost, broj zakazanih termina i produktivnost zaposlenih kroz pregledne grafikone i statistiku.
             </div>
           </div>
 
@@ -128,7 +135,7 @@ export default function HomePage() {
             <div className={styles['benefit-icon']}><i className="fa-solid fa-lock"></i></div>
             <div className={styles['benefit-title']}>Sigurnost podataka</div>
             <div className={styles['benefit-desc']}>
-              Svi podaci su zaštićeni modernim sigurnosnim protokolima kako biste vi i vaši klijenti bili bezbedni u svakom trenutku.
+              Svi podaci su zaštićeni modernim sigurnosnim protokolima kako bi vi i vaši klijenti bili bezbedni u svakom trenutku.
             </div>
           </div>
 
@@ -143,17 +150,10 @@ export default function HomePage() {
         </div>
       </section>
 
-
-      <section className={styles['info-between']}>
-        <h2 className='anim2'><br />Rešite sve svoje potrebe za zakazivanje termina na jednom mestu</h2>
-        <p className='anim'>Naš sistem za digitalno zakazivanje termina je jednostavan za korišćenje i prilagodljiv svim vrstama poslovanja. Bilo da ste frizer, lekar, trener ili neko drugi ko upravlja terminima, naš alat vam omogućava brzo i efikasno upravljanje, štedeći vreme i smanjujući greške. Sa našim rešenjem, vaši klijenti će imati jednostavan pristup, a vi ćete moći da se fokusirate na rast svog biznisa.</p>
-        <p className='anim3'><br/>Naš sistem nudi jednostavnu stranu za zakazivanje termina za vaše klijente, kontrolnu tablu za vas sa svim potrebnim informacijama, kao i analitiku koja vam pomaže da pratite učinkovitost vašeg poslovanja. Uz mogućnost automatskog slanja obaveštenja i bezbednost podataka, možete biti sigurni da će vaše poslovanje teći glatko i sigurno.</p>
-        <p className='anim4'><br/>Bez obzira na vrstu vašeg biznisa, naš sistem je fleksibilan i lako se integriše u vaše postojeće radne procese. Pružite svojim klijentima najbolje iskustvo u zakazivanju termina i uštedite dragoceno vreme!</p>
-      </section>
       
       <section className={styles['info-between']}>
         <h2 className='anim2'><br />Rešite sve svoje potrebe za zakazivanje termina na jednom mestu</h2>
-        <p className='anim'>Platforma takođe omogućava upravljanje više poslovnih lokacija, gde svaka može imati svoje radno vreme, zaposlene i usluge. Pored toga, možete dodavati zaposlene.  Sve informacije o terminima, zaposlenima i lokacijama nalaze se na jednom mestu, što olakšava svakodnevno upravljanje poslovanjem.</p>
+        <p className='anim'>Platforma takođe omogućava upravljanje više poslovnih lokacija, gde svaka može imati svoje radno vreme, zaposlene i usluge. Sve informacije o terminima, zaposlenima i lokacijama nalaze se na jednom mestu, što olakšava svakodnevno upravljanje poslovanjem.</p>
       </section>
 
       
@@ -166,7 +166,7 @@ export default function HomePage() {
           <p>Moj Termin prima rezervacije umesto vas – dok vi radite, odmarate ili spavate. <br />
           Sve funkcioniše automatski: klijenti sami biraju slobodan termin, a vi dobijate obaveštenje. Jednostavno, zar ne?</p>
           <a href='mailto:info@mojtermin.site'><button className={styles['cta-button']}>Kontaktirajte nas</button></a><br/><br/>
-          <span>Ili isprobajte besplatnu verziju <a href='/login' style={{color:"#0aadff"}}>kreiranjem naloga</a>.</span>
+          <span>Ili isprobajte besplatnu verziju <a href='/login?register=true' style={{color:"#0aadff"}}>kreiranjem naloga</a>.</span>
         </div>
       </section>
 
@@ -174,13 +174,12 @@ export default function HomePage() {
         <div className="container anim3">
           <h2>Dodatne usluge</h2>
           <p>
-            Pored osnovne ponude takođe možemo implementirati plugin za zakazivanje termina na Vaš sajt ukoliko ga imate. 
             Takođe nudimo i <strong>redizajn postojećih web sajtova</strong>,
             kao i <strong>izradu novih sajtova</strong> u potpunosti prilagođenih vašim poslovnim ciljevima.
           </p>
           <p style={{fontSize:'18px'}}>
             <br/>
-            Za više informacija i individualnu ponudu, slobodno se javite na <a href='mailto:jakovljevic.nemanja@outlook.com' style={{color:"#0aadff"}}>jakovljevic.nemanja@outlook.com</a>.
+            Za više informacija i individualnu ponudu, javite na <a href='mailto:jakovljevic.nemanja@outlook.com' style={{color:"#0aadff"}}>jakovljevic.nemanja@outlook.com</a>.
           </p>
         </div>
       </section>
